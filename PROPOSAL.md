@@ -69,9 +69,7 @@ State Space = Players * 2 * Card * Coins * Moves = 1,765,400
 Just under two million states. That's almost a 50x reduction of the state space.
 
 ### Solution Statement
-As mentioned before, the solution to this problem is reinforcement learning. Rewards for moves will be calculated by comparing the result of the move to known outcomes of the board states. At ~40 moves a game and a state space of ~2 million, we will probably need to play 50,000 games to train. The state of the learner will be snapshotted at the end of every game so that it can be called upon in future training as an opponent.
-
-If a solution is found too quickly, the project difficulty can be raised by implementing a second solution that uses basic artificial intelligence. The AI would use breadth-first search and some basic heuristics to calculate the best possible move. If even that proves to be too easy, a compound solution using both reinforcement learning and search (like the design of AlphaGo) can be implemented.
+The problem will be solved by using Q learning to determine the optimal policy. An off-policy method will be the way to approach this particular problem because there are so many possible ways to approach a situation. It seems way more reasonable to make no potentially incorrect assumptions about the optimal policy and instead allow a learner to explore the state space. The value-function approximator will be the win percentage of games from previous rounds. This Monte Carlo tree search implementation was chosen because the lack of historical data about the game would make it difficult to train a neural net or supervised learner about situations.
 
 ### Benchmark Model
 There seems to be only one game playing agent for Coup and that is the AI for the official Coup mobile app. The AI in this app seems to behave at random and plays without any regard for the current situation or the history of moves. A better solution is definitely possible. Because the rules of the Coup mobile app are slightly different than the actual game, a random opponent will be built to serve as the benchmark.
@@ -85,16 +83,12 @@ There are five metrics that will be used to evaluate success.
 5. Challenge Recall - What percentage of bluffs made by the opponent are caught by the agent?
 
 ### Project Design
-The project can be broken down into three stages with optional stages after that.
+The project can be broken down into three stages.
 
 Three Stages
 1. Setup
 2. Learning
 3. Testing
-
-Optional Stages
-4. Artificial Intelligence
-5. Deployment
 
 _Setup_
 The beginning of this project will be codifying the rules of Coup into a playable game. While we want the learner to figure the game out on its own, we need to make sure there are hard and fast rules so that the learner can figure out where the edge of the playing field is.
@@ -102,14 +96,10 @@ The beginning of this project will be codifying the rules of Coup into a playabl
 _Learning_
 Once the game has all of the rules established, we can set the learner loose. The original learner will assume equal probabilities of winning from all moves. At the end of each game, the probabilities will be updated to reflect what states have led to victories. Early on in the learning, states will be selected at random even as dominant strategies emerge. As the learning rate decays over time, the stronger moves will be utilized again and again.
 
+The agents value-function approximator will be saved at the end of each round. There will be a historical record of every iteration of the agent which means we can use experience replay to train the next version of the agent.
+
 _Testing_
 At the conclusion of learning, the agent will be ready for testing. It will play a set number of games against previous iterations of itself and record the results. It will also be spot checked by the development team and board game enthusiasts.
-
-_(OPTIONAL) Artificial Intelligence_
-If time permits, a second agent will be built using search and constraint propagation. This agent can then be tested against the learner.
-
-_(OPTIONAL) Deployment_
-The final agent can be deployed to a server where it can play a wider range of opponents and continue to learn and gow.
 
 ### Appendix A
 

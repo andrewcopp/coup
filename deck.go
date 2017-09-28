@@ -6,18 +6,20 @@ import (
 )
 
 type Deck struct {
-	Cards []Card
+	Cards []*Card
 }
 
-func NewDeck(cards []Card) *Deck {
+func NewDeck(cards []*Card) *Deck {
 	return &Deck{
 		Cards: cards,
 	}
 }
 
 func (d *Deck) Copy() *Deck {
-	cards := make([]Card, len(d.Cards))
-	_ = copy(cards, d.Cards)
+	cards := make([]*Card, len(d.Cards))
+	for i, card := range d.Cards {
+		cards[i] = card.Copy()
+	}
 	return NewDeck(cards)
 }
 
@@ -37,8 +39,13 @@ func (d *Deck) Shuffle() {
 	}
 }
 
-func (d *Deck) Deal() Card {
+func (d *Deck) Draw() *Card {
 	card := d.Cards[0]
 	d.Cards = d.Cards[1:]
 	return card
+}
+
+func (d *Deck) Add(card *Card) {
+	d.Cards = append(d.Cards, card)
+	d.Shuffle()
 }

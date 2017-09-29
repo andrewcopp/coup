@@ -54,8 +54,6 @@ func (t *Tax) Dispute() {
 
 func (t *Tax) Impede() {}
 
-func (t *Tax) DisputeImpedement() {}
-
 func (t *Tax) Describe() {
 	fmt.Printf("%s taxes.", t.Subject.Name)
 	Account(t.Subject)

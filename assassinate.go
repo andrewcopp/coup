@@ -31,10 +31,6 @@ func (a *Assassinate) Impede() {
 
 }
 
-func (a *Assassinate) DisputeImpedement() {
-
-}
-
 func (a *Assassinate) Describe() {
 	fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
 	Account(a.Subject)

@@ -23,10 +23,6 @@ func (f *ForeignAid) Impede() {
 
 }
 
-func (f *ForeignAid) DisputeImpedement() {
-
-}
-
 func (f *ForeignAid) Describe() {
 	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
 

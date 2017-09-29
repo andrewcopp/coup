@@ -38,10 +38,6 @@ func (s *Steal) Impede() {
 
 }
 
-func (s *Steal) DisputeImpedement() {
-
-}
-
 func (s *Steal) Describe() {
 	fmt.Printf("%s steals from %s.\n", s.Subject.Name, s.Object.Name)
 	Account(s.Subject)

@@ -27,8 +27,6 @@ func (e *Exchange) Dispute() {
 
 func (e *Exchange) Impede() {}
 
-func (e *Exchange) DisputeImpedement() {}
-
 func (e *Exchange) Describe() {
 	fmt.Printf("%s exchanges.\n", e.Subject.Name)
 }

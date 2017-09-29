@@ -6,7 +6,6 @@ type Action interface {
 	Modify(state *State)
 	Dispute()
 	Impede()
-	DisputeImpedement()
 	Describe()
 }
 

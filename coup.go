@@ -23,8 +23,6 @@ func (c *Coup) Dispute() {}
 
 func (c *Coup) Impede() {}
 
-func (c *Coup) DisputeImpedement() {}
-
 func (c *Coup) Describe() {
 	fmt.Printf("%s coups %s.\n", c.Subject.Name, c.Object.Name)
 	Account(c.Subject)

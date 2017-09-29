@@ -20,8 +20,6 @@ func (i *Income) Dispute() {}
 
 func (i *Income) Impede() {}
 
-func (i *Income) DisputeImpedement() {}
-
 func (i *Income) Describe() {
 	fmt.Printf("%s takes income.\n", i.Subject.Name)
 	Account(i.Subject)

@@ -23,11 +23,11 @@ func (brd *Board) Setup(players []*Player) {
 	deck.Shuffle()
 
 	for _, player := range players {
-		player.Hidden = append(player.Hidden, deck.Draw())
-		player.Hidden = append(player.Hidden, deck.Draw())
+		player.Hand = append(player.Hand, deck.Draw())
+		player.Hand = append(player.Hand, deck.Draw())
 	}
 
-	brd.States = []*State{NewState(deck, players)}
+	brd.States = []*State{NewState(deck, []*Card{}, players)}
 }
 
 func (brd *Board) Play() *Player {
@@ -58,7 +58,7 @@ func (brd *Board) Continue() bool {
 func (brd *Board) Shift(state *State) {
 	state.Players = append(state.Players[1:], state.Players[0])
 
-	for len(state.Players[0].Hidden) == 0 {
+	for len(state.Players[0].Hand) == 0 {
 		state.Players = append(state.Players[1:], state.Players[0])
 	}
 }

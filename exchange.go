@@ -14,8 +14,8 @@ func NewExchange(sub *Player) *Exchange {
 }
 
 func (e *Exchange) Modify(state *State) {
-	e.Subject.Hidden = append(e.Subject.Hidden, state.Deck.Draw())
-	e.Subject.Hidden = append(e.Subject.Hidden, state.Deck.Draw())
+	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
+	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
 
 	state.Deck.Add(e.Subject.Discard())
 	state.Deck.Add(e.Subject.Discard())

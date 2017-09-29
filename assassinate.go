@@ -34,21 +34,21 @@ func (a *Assassinate) Modify(state *State) {
 		fmt.Printf("%s challenges.\n", claim.Challenger.Name)
 		if card := a.Subject.Produce(claim.Declared); card != nil {
 			fmt.Printf("Challenge unsuccessful.\n")
-			claim.Challenger.Reveal()
-			fmt.Printf("%s reveals a %s.\n", claim.Challenger.Name, claim.Challenger.Revealed[len(claim.Challenger.Revealed)-1].Name())
+			claim.Challenger.Reveal(state)
+			fmt.Printf("%s reveals a %s.\n", claim.Challenger.Name, state.Revealed[len(state.Revealed)-1].Name())
 			state.Deck.Add(card)
-			a.Subject.Hidden = append(a.Subject.Hidden, state.Deck.Draw())
+			a.Subject.Hand = append(a.Subject.Hand, state.Deck.Draw())
 		} else {
 			fmt.Printf("Challenge successful.\n")
-			a.Subject.Reveal()
-			fmt.Printf("%s reveals a %s.\n", a.Subject.Name, a.Subject.Revealed[len(a.Subject.Revealed)-1].Name())
+			a.Subject.Reveal(state)
+			fmt.Printf("%s reveals a %s.\n", a.Subject.Name, state.Revealed[len(state.Revealed)-1].Name())
 			return
 		}
 	}
 
-	if len(a.Object.Hidden) != 0 {
-		a.Object.Reveal()
-		fmt.Printf("%s reveals a %s.\n", a.Object.Name, a.Object.Revealed[len(a.Object.Revealed)-1].Name())
+	if len(a.Object.Hand) != 0 {
+		a.Object.Reveal(state)
+		fmt.Printf("%s reveals a %s.\n", a.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
 	}
 
 }

@@ -30,11 +30,11 @@ func (s *Steal) Modify(state *State) {
 
 }
 
-func (s *Steal) Dispute() {
+func (s *Steal) Dispute(state *State) {
 
 }
 
-func (s *Steal) Impede() {
+func (s *Steal) Impede(state *State) {
 
 }
 

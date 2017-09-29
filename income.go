@@ -16,9 +16,9 @@ func (i *Income) Modify(state *State) {
 	i.Subject.Coins++
 }
 
-func (i *Income) Dispute() {}
+func (i *Income) Dispute(state *State) {}
 
-func (i *Income) Impede() {}
+func (i *Income) Impede(state *State) {}
 
 func (i *Income) Describe() {
 	fmt.Printf("%s takes income.\n", i.Subject.Name)

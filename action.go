@@ -4,8 +4,8 @@ import "fmt"
 
 type Action interface {
 	Modify(state *State)
-	Dispute()
-	Impede()
+	Dispute(state *State)
+	Impede(state *State)
 	Describe()
 }
 
@@ -31,6 +31,11 @@ func NewChallenge(challenger *Player) *Challenge {
 }
 
 type Block struct {
+	Blocker   *Player
 	Declared  Type
 	Challenge *Challenge
+}
+
+func NewBlock() *Block {
+	return &Block{}
 }

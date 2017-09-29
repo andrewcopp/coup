@@ -21,11 +21,11 @@ func (e *Exchange) Modify(state *State) {
 	state.Deck.Add(e.Subject.Discard())
 }
 
-func (e *Exchange) Dispute() {
+func (e *Exchange) Dispute(state *State) {
 
 }
 
-func (e *Exchange) Impede() {}
+func (e *Exchange) Impede(state *State) {}
 
 func (e *Exchange) Describe() {
 	fmt.Printf("%s exchanges.\n", e.Subject.Name)

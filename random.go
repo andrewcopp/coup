@@ -79,7 +79,12 @@ func (r *Random) ChallengeSteal(state *State, sub *Player, obj *Player) *Challen
 }
 
 func (r *Random) BlockForeignAid(state *State, sub *Player) *Block {
-	return nil
+	rand.Seed(int64(time.Now().Nanosecond()))
+	if rand.Intn(2) != 0 {
+		return nil
+	}
+
+	return NewBlock()
 }
 
 func (r *Random) BlockAssassinate(state *State, sub *Player, obj *Player, chg *Player) *Block {

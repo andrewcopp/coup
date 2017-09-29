@@ -19,9 +19,9 @@ func (c *Coup) Modify(state *State) {
 	c.Object.Reveal()
 }
 
-func (c *Coup) Dispute() {}
+func (c *Coup) Dispute(state *State) {}
 
-func (c *Coup) Impede() {}
+func (c *Coup) Impede(state *State) {}
 
 func (c *Coup) Describe() {
 	fmt.Printf("%s coups %s.\n", c.Subject.Name, c.Object.Name)

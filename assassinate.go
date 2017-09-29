@@ -23,11 +23,11 @@ func (a *Assassinate) Modify(state *State) {
 	a.Object.Reveal()
 }
 
-func (a *Assassinate) Dispute() {
+func (a *Assassinate) Dispute(state *State) {
 
 }
 
-func (a *Assassinate) Impede() {
+func (a *Assassinate) Impede(state *State) {
 
 }
 

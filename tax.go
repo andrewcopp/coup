@@ -48,13 +48,13 @@ func (t *Tax) Modify(state *State) {
 
 }
 
-func (t *Tax) Dispute() {
+func (t *Tax) Dispute(state *State) {
 
 }
 
-func (t *Tax) Impede() {}
+func (t *Tax) Impede(state *State) {}
 
 func (t *Tax) Describe() {
-	fmt.Printf("%s taxes.", t.Subject.Name)
+	fmt.Printf("%s taxes.\n", t.Subject.Name)
 	Account(t.Subject)
 }

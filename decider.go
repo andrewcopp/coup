@@ -2,6 +2,7 @@ package coup
 
 type Decider interface {
 	Decide(state *State) *Action
+	Dispute(claim *Claim) bool
 
 	ChallengeTax(state *State, sub *Player) *Challenge
 	ChallengeAssassinate(state *State, sub *Player, obj *Player) *Challenge

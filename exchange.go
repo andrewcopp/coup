@@ -22,7 +22,7 @@ func (e *Exchange) Modify(state *State) {
 }
 
 func (e *Exchange) Dispute(state *State) {
-
+	_ = NewClaim(e.Subject, Ambassador, nil)
 }
 
 func (e *Exchange) Impede(state *State) {}

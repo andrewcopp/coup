@@ -19,8 +19,38 @@ func NewAssassinate(sub *Player, obj *Player) *Assassinate {
 }
 
 func (a *Assassinate) Modify(state *State) {
+	fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
 	a.Subject.Coins -= 3
-	a.Object.Reveal()
+	Account(a.Subject)
+
+	claim := NewClaim(a.Subject, Assassin, a.Object)
+	for _, other := range state.Alive()[1:] {
+		if claim.Challenger == nil {
+			other.Dispute(claim)
+		}
+	}
+
+	if claim.Challenger != nil {
+		fmt.Printf("%s challenges.\n", claim.Challenger.Name)
+		if card := a.Subject.Produce(claim.Declared); card != nil {
+			fmt.Printf("Challenge unsuccessful.\n")
+			claim.Challenger.Reveal()
+			fmt.Printf("%s reveals a %s.\n", claim.Challenger.Name, claim.Challenger.Revealed[len(claim.Challenger.Revealed)-1].Name())
+			state.Deck.Add(card)
+			a.Subject.Hidden = append(a.Subject.Hidden, state.Deck.Draw())
+		} else {
+			fmt.Printf("Challenge successful.\n")
+			a.Subject.Reveal()
+			fmt.Printf("%s reveals a %s.\n", a.Subject.Name, a.Subject.Revealed[len(a.Subject.Revealed)-1].Name())
+			return
+		}
+	}
+
+	if len(a.Object.Hidden) != 0 {
+		a.Object.Reveal()
+		fmt.Printf("%s reveals a %s.\n", a.Object.Name, a.Object.Revealed[len(a.Object.Revealed)-1].Name())
+	}
+
 }
 
 func (a *Assassinate) Dispute(state *State) {
@@ -32,7 +62,7 @@ func (a *Assassinate) Impede(state *State) {
 }
 
 func (a *Assassinate) Describe() {
-	fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
-	Account(a.Subject)
-	fmt.Printf("%s reveals a %s.\n", a.Object.Name, a.Object.Revealed[len(a.Object.Revealed)-1].Name())
+	// fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
+	// Account(a.Subject)
+	// fmt.Printf("%s reveals a %s.\n", a.Object.Name, a.Object.Revealed[len(a.Object.Revealed)-1].Name())
 }

@@ -57,6 +57,15 @@ func (r *Random) Decide(state *State) *Action {
 	return action
 }
 
+func (r *Random) Dispute(claim *Claim) bool {
+	rand.Seed(int64(time.Now().Nanosecond()))
+	if rand.Intn(2) != 0 {
+		return false
+	}
+
+	return true
+}
+
 func (r *Random) ChallengeTax(state *State, player *Player) *Challenge {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	if rand.Intn(2) != 0 {

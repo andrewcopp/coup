@@ -65,3 +65,29 @@ func (p *Player) Discard() *Card {
 func (p *Player) Reveal() {
 	p.Revealed = append(p.Revealed, p.Discard())
 }
+
+type Claim struct {
+	Subject    *Player
+	Declared   Type
+	Object     *Player
+	Challenger *Player
+	Revealed   *Type
+}
+
+func NewClaim(sub *Player, dec Type, obj *Player) *Claim {
+	return &Claim{
+		Subject:  sub,
+		Declared: dec,
+		Object:   obj,
+	}
+}
+
+func (p *Player) Claim(t Type) {
+
+}
+
+func (p *Player) Dispute(claim *Claim) {
+	if (*p.Brain).Dispute(claim) {
+		claim.Challenger = p
+	}
+}

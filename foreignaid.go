@@ -40,14 +40,14 @@ func (f *ForeignAid) Modify(state *State) {
 	others := state.Alive()[1:]
 	for _, other := range others {
 		if block := (*other.Brain).BlockForeignAid(state, f.Subject); block != nil {
-			block.Blocker = other
+			block.Subject = other
 			f.Block = block
 			break
 		}
 	}
 
 	if f.Block != nil {
-		fmt.Printf("%s blocks foreign aid.\n", f.Block.Blocker.Name)
+		fmt.Printf("%s blocks foreign aid.\n", f.Block.Subject.Name)
 	}
 
 	f.Resolve(state)

@@ -12,6 +12,7 @@ type Action struct {
 func (a *Action) Modify(state *State) {
 	a.Announce()
 	a.Pay()
+
 	if !a.Claim(state) {
 		return
 	}
@@ -24,7 +25,8 @@ func NewAction(announce func(), pay func(), claim func(state *State) bool, resol
 		Announce: announce,
 		Pay:      pay,
 		Claim:    claim,
-		Resolve:  resolve,
+
+		Resolve: resolve,
 	}
 }
 
@@ -39,18 +41,18 @@ func Account(p *Player) {
 }
 
 type Challenge struct {
-	Challenger *Player
-	Revealed   Type
+	Subject    *Player
+	Successful bool
 }
 
-func NewChallenge(challenger *Player) *Challenge {
+func NewChallenge(sub *Player) *Challenge {
 	return &Challenge{
-		Challenger: challenger,
+		Subject: sub,
 	}
 }
 
 type Block struct {
-	Blocker   *Player
+	Subject   *Player
 	Declared  Type
 	Challenge *Challenge
 }

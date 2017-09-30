@@ -17,25 +17,30 @@ func (e *Exchange) Announce() {
 	fmt.Printf("%s exchanges.\n", e.Subject.Name)
 }
 
-func (e *Exchange) Modify(state *State) {
+func (e *Exchange) Pay() {}
 
+func (e *Exchange) Claim(state *State) bool {
 	claim := NewClaim(e.Subject, Ambassador, nil)
 	e.Subject.Make(claim, state)
 	if claim.Revealed == nil {
-		e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
-		e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
-
-		state.Deck.Add(e.Subject.Discard())
-		state.Deck.Add(e.Subject.Discard())
-		return
+		return true
 	}
 
 	if *claim.Revealed == claim.Declared {
-		e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
-		e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
-
-		state.Deck.Add(e.Subject.Discard())
-		state.Deck.Add(e.Subject.Discard())
-		return
+		return true
 	}
+
+	return false
+}
+
+func (e *Exchange) Resolve(state *State) {
+	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
+	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
+
+	state.Deck.Add(e.Subject.Discard())
+	state.Deck.Add(e.Subject.Discard())
+}
+
+func (e *Exchange) Modify(state *State) {
+
 }

@@ -22,26 +22,32 @@ func (a *Assassinate) Announce() {
 	fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
 }
 
-func (a *Assassinate) Modify(state *State) {
+func (a *Assassinate) Pay() {
 	a.Subject.Coins -= 3
 	Account(a.Subject)
+}
 
+func (a *Assassinate) Claim(state *State) bool {
 	claim := NewClaim(a.Subject, Assassin, a.Object)
 	a.Subject.Make(claim, state)
 	if claim.Revealed == nil {
-		if len(a.Object.Hand) != 0 {
-			a.Object.Reveal(state)
-			fmt.Printf("%s reveals a %s.\n", a.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
-		}
-		return
+		return true
 	}
 
 	if *claim.Revealed == claim.Declared {
-		if len(a.Object.Hand) != 0 {
-			a.Object.Reveal(state)
-			fmt.Printf("%s reveals a %s.\n", a.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
-		}
-		return
+		return true
 	}
+
+	return false
+}
+
+func (a *Assassinate) Resolve(state *State) {
+	if len(a.Object.Hand) != 0 {
+		a.Object.Reveal(state)
+		fmt.Printf("%s reveals a %s.\n", a.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
+	}
+}
+
+func (a *Assassinate) Modify(state *State) {
 
 }

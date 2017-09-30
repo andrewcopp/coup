@@ -4,6 +4,9 @@ import "fmt"
 
 type Action interface {
 	Announce()
+	Pay()
+	Claim(state *State) bool
+	Resolve(state *State)
 	Modify(state *State)
 }
 

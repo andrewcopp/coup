@@ -36,7 +36,11 @@ func (brd *Board) Play() *Player {
 		state := brd.State().Copy()
 		player := state.Players[0]
 		action := player.Move(state)
-		(*action).Modify(state)
+		(*action).Announce()
+		(*action).Pay()
+		if (*action).Claim(state) {
+			(*action).Resolve(state)
+		}
 		brd.Shift(state)
 		brd.States = append(brd.States, state)
 	}

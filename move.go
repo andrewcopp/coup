@@ -23,7 +23,7 @@ func (m *Move) Successful() bool {
 		return true
 	}
 
-	return m.Claim.Challenge.Successful
+	return !m.Claim.Challenge.Successful
 }
 
 func Account(p *Player) {
@@ -34,28 +34,4 @@ func Account(p *Player) {
 		format = "%s has %d coin.\n"
 	}
 	fmt.Printf(format, p.Name, p.Coins)
-}
-
-type Challenge struct {
-	Subject    *Player
-	Successful bool
-}
-
-func NewChallenge(sub *Player) *Challenge {
-	return &Challenge{
-		Subject: sub,
-	}
-}
-
-type Block struct {
-	Subject   *Player
-	Declared  Type
-	Challenge *Challenge
-}
-
-func NewBlock(sub *Player, dec Type) *Block {
-	return &Block{
-		Subject:  sub,
-		Declared: dec,
-	}
 }

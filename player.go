@@ -60,25 +60,6 @@ func (p *Player) Reveal(state *State) {
 	state.Revealed = append(state.Revealed, p.Discard())
 }
 
-type Claim struct {
-	Subject   *Player
-	Declared  Type
-	Object    *Player
-	Challenge *Challenge
-}
-
-func NewClaim(sub *Player, dec Type, obj *Player) *Claim {
-	return &Claim{
-		Subject:  sub,
-		Declared: dec,
-		Object:   obj,
-	}
-}
-
-func (p *Player) Claim(t Type) {
-
-}
-
 func (p *Player) Dispute(claim *Claim) {
 	if (*p.Brain).Dispute(claim) {
 		claim.Challenge.Subject = p

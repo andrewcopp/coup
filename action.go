@@ -3,14 +3,14 @@ package coup
 import "fmt"
 
 type Action struct {
-	Move    *Move
-	Counter *Counter
+	Move  *Move
+	Block *Block
 }
 
 func NewAction(mv *Move) *Action {
 	return &Action{
-		Move:    mv,
-		Counter: nil,
+		Move:  mv,
+		Block: nil,
 	}
 }
 

@@ -15,37 +15,34 @@ func NewTax(sub *Player) *Tax {
 }
 
 func (t *Tax) Modify(state *State) {
-	// others := state.Alive()[1:]
-	//
-	// var challenger *Player
-	// for _, other := range others {
-	// 	challenge := (*other.Brain).ChallengeTax(state, other)
-	// 	if challenge != nil {
-	// 		challenger = other
-	// 		break
-	// 	}
-	// }
-	//
-	// if challenger != nil {
-	// 	card := t.Subject.Produce(Duke)
-	// 	if card != nil {
-	t.Subject.Coins += 3
-	// 		challenger.Reveal()
-	// 		state.Deck.Add(card)
-	// 		t.Subject.Hidden = append(t.Subject.Hidden, state.Deck.Draw())
-	// 		fmt.Println(challenger.Name, "unsuccessfully challenged.")
-	// 		fmt.Println(challenger.Name, "reveals", challenger.Revealed[len(challenger.Revealed)-1].Name(), ".")
-	// 		fmt.Println(t.Subject.Name, "taxes. Has", t.Subject.Coins, "coins.")
-	// 	} else {
-	// 		t.Subject.Reveal()
-	// 		fmt.Println(challenger.Name, "successfully challenged.")
-	// 		fmt.Println(t.Subject.Name, "reveals", t.Subject.Revealed[len(t.Subject.Revealed)-1].Name(), ".")
-	// 	}
-	// } else {
-	// 	t.Subject.Coins += 3
-	// 	fmt.Println(t.Subject.Name, "taxes. Has", t.Subject.Coins, "coins.")
-	// }
+	fmt.Printf("%s taxes.\n", t.Subject.Name)
 
+	claim := NewClaim(t.Subject, Duke, nil)
+	for _, other := range state.Alive()[1:] {
+		if claim.Challenger == nil {
+			other.Dispute(claim)
+		}
+	}
+
+	if claim.Challenger != nil {
+		fmt.Printf("%s challenges.\n", claim.Challenger.Name)
+		if card := t.Subject.Produce(claim.Declared); card != nil {
+			fmt.Printf("Challenge unsuccessful.\n")
+			claim.Challenger.Reveal(state)
+			fmt.Printf("%s reveals a %s.\n", claim.Challenger.Name, state.Revealed[len(state.Revealed)-1].Name())
+			state.Deck.Add(card)
+			t.Subject.Hand = append(t.Subject.Hand, state.Deck.Draw())
+		} else {
+			fmt.Printf("Challenge successful.\n")
+			t.Subject.Reveal(state)
+			fmt.Printf("%s reveals a %s.\n", t.Subject.Name, state.Revealed[len(state.Revealed)-1].Name())
+			return
+		}
+	}
+
+	t.Subject.Coins += 3
+
+	Account(t.Subject)
 }
 
 func (t *Tax) Dispute(state *State) {
@@ -55,6 +52,4 @@ func (t *Tax) Dispute(state *State) {
 func (t *Tax) Impede(state *State) {}
 
 func (t *Tax) Describe() {
-	fmt.Printf("%s taxes.\n", t.Subject.Name)
-	Account(t.Subject)
 }

@@ -4,9 +4,6 @@ import "fmt"
 
 type Action interface {
 	Modify(state *State)
-	Dispute(state *State)
-	Impede(state *State)
-	Describe()
 }
 
 func Account(p *Player) {

@@ -49,22 +49,13 @@ func (r *Random) Dispute(claim *Claim) bool {
 	return true
 }
 
-func (r *Random) ChallengeTax(state *State, player *Player) *Challenge {
-	rand.Seed(int64(time.Now().Nanosecond()))
-	if rand.Intn(2) != 0 {
-		return nil
-	}
-
-	return NewChallenge(player)
-}
-
 func (r *Random) BlockForeignAid(state *State, sub *Player) *Block {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	if rand.Intn(2) != 0 {
 		return nil
 	}
 
-	return NewBlock()
+	return &Block{Declared: Duke}
 }
 
 func (r *Random) BlockAssassinate(state *State, sub *Player, obj *Player, chg *Player) *Block {
@@ -72,17 +63,5 @@ func (r *Random) BlockAssassinate(state *State, sub *Player, obj *Player, chg *P
 }
 
 func (r *Random) BlockSteal(state *State, sub *Player, obj *Player, chg *Player) *Block {
-	return nil
-}
-
-func (r *Random) ChallengeForeignAidBlock(state *State, sub *Player, blk *Player) *Challenge {
-	return nil
-}
-
-func (r *Random) ChallengeAssassinateBlock(state *State, sub *Player, obj *Player, chg *Player, blk *Player) *Challenge {
-	return nil
-}
-
-func (r *Random) ChallengeStealBlock(state *State, sub *Player, obj *Player, chg *Player, blk *Player) *Challenge {
 	return nil
 }

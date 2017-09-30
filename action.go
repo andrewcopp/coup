@@ -11,3 +11,11 @@ func NewAction(mv *Move) *Action {
 		Counter: nil,
 	}
 }
+
+func (a *Action) Apply(state *State) {
+	a.Move.Announce()
+	a.Move.Pay()
+	if a.Move.Claim(state) {
+		a.Move.Resolve(state)
+	}
+}

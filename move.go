@@ -56,6 +56,9 @@ type Block struct {
 	Challenge *Challenge
 }
 
-func NewBlock() *Block {
-	return &Block{}
+func NewBlock(sub *Player, dec Type) *Block {
+	return &Block{
+		Subject:  sub,
+		Declared: dec,
+	}
 }

@@ -3,6 +3,8 @@ package coup
 import "fmt"
 
 type Action struct {
+	Move     *Move
+	Counter  *Counter
 	Announce func()
 	Pay      func()
 	Claim    func(state *State) bool

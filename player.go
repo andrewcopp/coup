@@ -33,8 +33,9 @@ func (p *Player) Copy() *Player {
 
 }
 
-func (p *Player) Move(state *State) *Action {
-	return (*p.Brain).Decide(state)
+func (p *Player) Move(state *State) *Move {
+	action := (*p.Brain).Decide(state)
+	return NewMove(action)
 }
 
 func (p *Player) Produce(t Type) *Card {

@@ -3,6 +3,7 @@ package coup
 import "fmt"
 
 type Action interface {
+	Announce()
 	Modify(state *State)
 }
 

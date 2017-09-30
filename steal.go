@@ -16,9 +16,11 @@ func NewSteal(sub *Player, obj *Player) *Steal {
 	}
 }
 
-func (s *Steal) Modify(state *State) {
-
+func (s *Steal) Announce() {
 	fmt.Printf("%s steals from %s.\n", s.Subject.Name, s.Object.Name)
+}
+
+func (s *Steal) Modify(state *State) {
 
 	claim := NewClaim(s.Subject, Captain, s.Object)
 	s.Subject.Make(claim, state)

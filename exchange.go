@@ -13,8 +13,11 @@ func NewExchange(sub *Player) *Exchange {
 	}
 }
 
-func (e *Exchange) Modify(state *State) {
+func (e *Exchange) Announce() {
 	fmt.Printf("%s exchanges.\n", e.Subject.Name)
+}
+
+func (e *Exchange) Modify(state *State) {
 
 	claim := NewClaim(e.Subject, Ambassador, nil)
 	e.Subject.Make(claim, state)

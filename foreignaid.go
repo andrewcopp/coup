@@ -13,10 +13,12 @@ func NewForeignAid(sub *Player) *ForeignAid {
 	}
 }
 
+func (f *ForeignAid) Announce() {
+	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
+}
+
 func (f *ForeignAid) Modify(state *State) {
 	f.Subject.Coins += 2
-
-	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
 
 	others := state.Alive()[1:]
 	for _, other := range others {

@@ -14,8 +14,11 @@ func NewTax(sub *Player) *Tax {
 	}
 }
 
-func (t *Tax) Modify(state *State) {
+func (t *Tax) Announce() {
 	fmt.Printf("%s taxes.\n", t.Subject.Name)
+}
+
+func (t *Tax) Modify(state *State) {
 
 	claim := NewClaim(t.Subject, Duke, nil)
 	t.Subject.Make(claim, state)

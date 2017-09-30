@@ -12,8 +12,11 @@ func NewIncome(sub *Player) *Income {
 	}
 }
 
+func (i *Income) Announce() {
+	fmt.Printf("%s takes income.\n", i.Subject.Name)
+}
+
 func (i *Income) Modify(state *State) {
 	i.Subject.Coins++
-	fmt.Printf("%s takes income.\n", i.Subject.Name)
 	Account(i.Subject)
 }

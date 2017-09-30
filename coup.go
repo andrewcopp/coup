@@ -14,10 +14,13 @@ func NewCoup(sub *Player, obj *Player) *Coup {
 	}
 }
 
+func (c *Coup) Announce() {
+	fmt.Printf("%s coups %s.\n", c.Subject.Name, c.Object.Name)
+}
+
 func (c *Coup) Modify(state *State) {
 	c.Subject.Coins -= 7
 	c.Object.Reveal(state)
-	fmt.Printf("%s coups %s.\n", c.Subject.Name, c.Object.Name)
 	Account(c.Subject)
 	fmt.Printf("%s reveals a %s.\n", c.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
 }

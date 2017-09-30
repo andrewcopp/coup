@@ -18,8 +18,11 @@ func NewAssassinate(sub *Player, obj *Player) *Assassinate {
 	}
 }
 
-func (a *Assassinate) Modify(state *State) {
+func (a *Assassinate) Announce() {
 	fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
+}
+
+func (a *Assassinate) Modify(state *State) {
 	a.Subject.Coins -= 3
 	Account(a.Subject)
 

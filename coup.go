@@ -7,13 +7,13 @@ type Coup struct {
 	Object  *Player
 }
 
-func NewCoup(sub *Player, obj *Player) *Action {
+func NewCoup(sub *Player, obj *Player) *Move {
 	coup := Coup{
 		Subject: sub,
 		Object:  obj,
 	}
 
-	return NewAction(
+	return NewMove(
 		coup.Announce,
 		coup.Pay,
 		coup.Claim,

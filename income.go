@@ -6,12 +6,12 @@ type Income struct {
 	Subject *Player
 }
 
-func NewIncome(sub *Player) *Action {
+func NewIncome(sub *Player) *Move {
 	income := Income{
 		Subject: sub,
 	}
 
-	return NewAction(
+	return NewMove(
 		income.Announce,
 		income.Pay,
 		income.Claim,

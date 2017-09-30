@@ -9,7 +9,7 @@ type Assassinate struct {
 	Block     *Block
 }
 
-func NewAssassinate(sub *Player, obj *Player) *Action {
+func NewAssassinate(sub *Player, obj *Player) *Move {
 
 	assassinate := Assassinate{
 		Subject:   sub,
@@ -18,7 +18,7 @@ func NewAssassinate(sub *Player, obj *Player) *Action {
 		Block:     nil,
 	}
 
-	return NewAction(
+	return NewMove(
 		assassinate.Announce,
 		assassinate.Pay,
 		assassinate.Claim,

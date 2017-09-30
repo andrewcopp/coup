@@ -1,7 +1,7 @@
 package coup
 
 type Decider interface {
-	Decide(state *State) *Action
+	Decide(state *State) *Move
 	Dispute(claim *Claim) bool
 
 	BlockForeignAid(state *State, sub *Player) *Block

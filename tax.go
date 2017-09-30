@@ -7,13 +7,13 @@ type Tax struct {
 	Challenge *Challenge
 }
 
-func NewTax(sub *Player) *Action {
+func NewTax(sub *Player) *Move {
 	tax := Tax{
 		Subject:   sub,
 		Challenge: nil,
 	}
 
-	return NewAction(
+	return NewMove(
 		tax.Announce,
 		tax.Pay,
 		tax.Claim,

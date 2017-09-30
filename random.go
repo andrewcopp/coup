@@ -12,32 +12,32 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-func (r *Random) Decide(state *State) *Action {
-	actions := []*Action{}
+func (r *Random) Decide(state *State) *Move {
+	moves := []*Move{}
 	self := state.Players[0]
 
 	for _, other := range state.Alive()[1:] {
 		if state.Players[0].Coins >= 7 {
-			actions = append(actions, NewCoup(self, other))
+			moves = append(moves, NewCoup(self, other))
 		}
 
 		if state.Players[0].Coins < 10 {
-			actions = append(actions, NewIncome(self))
-			actions = append(actions, NewForeignAid(self))
-			actions = append(actions, NewTax(self))
-			actions = append(actions, NewExchange(self))
-			actions = append(actions, NewSteal(self, other))
+			moves = append(moves, NewIncome(self))
+			moves = append(moves, NewForeignAid(self))
+			moves = append(moves, NewTax(self))
+			moves = append(moves, NewExchange(self))
+			moves = append(moves, NewSteal(self, other))
 		}
 
 		if state.Players[0].Coins >= 3 {
-			actions = append(actions, NewAssassinate(self, other))
+			moves = append(moves, NewAssassinate(self, other))
 		}
 	}
 
 	rand.Seed(int64(time.Now().Nanosecond()))
-	i := rand.Intn(len(actions))
-	action := actions[i]
-	return action
+	i := rand.Intn(len(moves))
+	move := moves[i]
+	return move
 }
 
 func (r *Random) Dispute(claim *Claim) bool {

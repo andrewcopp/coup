@@ -7,12 +7,12 @@ type ForeignAid struct {
 	Block   *Block
 }
 
-func NewForeignAid(sub *Player) *Action {
+func NewForeignAid(sub *Player) *Move {
 	foreignAid := ForeignAid{
 		Subject: sub,
 	}
 
-	return NewAction(
+	return NewMove(
 		foreignAid.Announce,
 		foreignAid.Pay,
 		foreignAid.Claim,

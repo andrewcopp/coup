@@ -3,11 +3,10 @@ package coup
 import "fmt"
 
 type Move struct {
-	Announce  func()
-	Pay       func()
-	Claim     *Claim
-	Resolve   func(state *State)
-	Challenge *Challenge
+	Announce func()
+	Pay      func()
+	Claim    *Claim
+	Resolve  func(state *State)
 }
 
 func NewMove(announce func(), pay func(), claim *Claim, resolve func(state *State)) *Move {
@@ -20,11 +19,11 @@ func NewMove(announce func(), pay func(), claim *Claim, resolve func(state *Stat
 }
 
 func (m *Move) Successful() bool {
-	if m.Challenge == nil {
+	if m.Claim == nil {
 		return true
 	}
 
-	return m.Challenge.Successful
+	return m.Claim.Challenge.Successful
 }
 
 func Account(p *Player) {

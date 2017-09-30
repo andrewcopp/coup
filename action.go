@@ -33,24 +33,24 @@ func (a *Action) Apply(state *State) {
 func Make(claim *Claim, state *State) {
 
 	for _, other := range state.Alive()[1:] {
-		if claim.Challenger == nil {
+		if claim.Challenge.Subject == nil {
 			other.Dispute(claim)
 		}
 	}
 
-	if claim.Challenger != nil {
-		fmt.Printf("%s challenges.\n", claim.Challenger.Name)
+	if challenger := claim.Challenge.Subject; challenger != nil {
+		fmt.Printf("%s challenges.\n", challenger.Name)
 		if card := claim.Subject.Produce(claim.Declared); card != nil {
-			claim.Revealed = &card.Type
+			claim.Challenge.Successful = false
 			fmt.Printf("Challenge unsuccessful.\n")
-			claim.Challenger.Reveal(state)
-			fmt.Printf("%s reveals a %s.\n", claim.Challenger.Name, state.Revealed[len(state.Revealed)-1].Name())
+			challenger.Reveal(state)
+			fmt.Printf("%s reveals a %s.\n", challenger.Name, state.Revealed[len(state.Revealed)-1].Name())
 			state.Deck.Add(card)
 			claim.Subject.Hand = append(claim.Subject.Hand, state.Deck.Draw())
 		} else {
 			fmt.Printf("Challenge successful.\n")
 			claim.Subject.Reveal(state)
-			claim.Revealed = &state.Revealed[len(state.Revealed)-1].Type
+			claim.Challenge.Successful = true
 			fmt.Printf("%s reveals a %s.\n", claim.Subject.Name, state.Revealed[len(state.Revealed)-1].Name())
 		}
 	}

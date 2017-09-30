@@ -61,11 +61,10 @@ func (p *Player) Reveal(state *State) {
 }
 
 type Claim struct {
-	Subject    *Player
-	Declared   Type
-	Object     *Player
-	Challenger *Player
-	Revealed   *Type
+	Subject   *Player
+	Declared  Type
+	Object    *Player
+	Challenge *Challenge
 }
 
 func NewClaim(sub *Player, dec Type, obj *Player) *Claim {
@@ -82,6 +81,6 @@ func (p *Player) Claim(t Type) {
 
 func (p *Player) Dispute(claim *Claim) {
 	if (*p.Brain).Dispute(claim) {
-		claim.Challenger = p
+		claim.Challenge.Subject = p
 	}
 }

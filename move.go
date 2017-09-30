@@ -1,7 +1,5 @@
 package coup
 
-import "fmt"
-
 type Move struct {
 	Announce func()
 	Pay      func()
@@ -26,12 +24,12 @@ func (m *Move) Successful() bool {
 	return !m.Claim.Challenge.Successful
 }
 
-func Account(p *Player) {
-	var format string
-	if p.Coins != 1 {
-		format = "%s has %d coins.\n"
-	} else {
-		format = "%s has %d coin.\n"
+func (m *Move) Scrutinize(state *State) {
+	for _, other := range state.Alive()[1:] {
+		other.Dispute(m.Claim)
+		if m.Claim.Challenge.Subject != nil {
+			m.Claim.Verify(state)
+			return
+		}
 	}
-	fmt.Printf(format, p.Name, p.Coins)
 }

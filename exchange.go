@@ -45,13 +45,3 @@ func (e *Exchange) Modify(state *State) {
 	state.Deck.Add(e.Subject.Discard())
 	state.Deck.Add(e.Subject.Discard())
 }
-
-func (e *Exchange) Dispute(state *State) {
-	_ = NewClaim(e.Subject, Ambassador, nil)
-}
-
-func (e *Exchange) Impede(state *State) {}
-
-func (e *Exchange) Describe() {
-
-}

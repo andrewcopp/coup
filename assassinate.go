@@ -52,17 +52,3 @@ func (a *Assassinate) Modify(state *State) {
 	}
 
 }
-
-func (a *Assassinate) Dispute(state *State) {
-
-}
-
-func (a *Assassinate) Impede(state *State) {
-
-}
-
-func (a *Assassinate) Describe() {
-	// fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
-	// Account(a.Subject)
-	// fmt.Printf("%s reveals a %s.\n", a.Object.Name, a.Object.Revealed[len(a.Object.Revealed)-1].Name())
-}

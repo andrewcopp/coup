@@ -44,12 +44,3 @@ func (t *Tax) Modify(state *State) {
 
 	Account(t.Subject)
 }
-
-func (t *Tax) Dispute(state *State) {
-	_ = NewClaim(t.Subject, Duke, nil)
-}
-
-func (t *Tax) Impede(state *State) {}
-
-func (t *Tax) Describe() {
-}

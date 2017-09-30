@@ -15,11 +15,9 @@ func NewForeignAid(sub *Player) *ForeignAid {
 
 func (f *ForeignAid) Modify(state *State) {
 	f.Subject.Coins += 2
-}
 
-func (f *ForeignAid) Dispute(state *State) {}
+	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
 
-func (f *ForeignAid) Impede(state *State) {
 	others := state.Alive()[1:]
 	for _, other := range others {
 		if block := (*other.Brain).BlockForeignAid(state, f.Subject); block != nil {
@@ -29,10 +27,6 @@ func (f *ForeignAid) Impede(state *State) {
 			break
 		}
 	}
-}
-
-func (f *ForeignAid) Describe() {
-	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
 
 	if f.Block != nil {
 		fmt.Printf("%s blocks foreign aid.\n", f.Block.Blocker.Name)

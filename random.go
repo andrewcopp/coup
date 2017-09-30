@@ -75,18 +75,6 @@ func (r *Random) ChallengeTax(state *State, player *Player) *Challenge {
 	return NewChallenge(player)
 }
 
-func (r *Random) ChallengeAssassinate(state *State, sub *Player, obj *Player) *Challenge {
-	return nil
-}
-
-func (r *Random) ChallengeExchange(state *State, sub *Player) *Challenge {
-	return nil
-}
-
-func (r *Random) ChallengeSteal(state *State, sub *Player, obj *Player) *Challenge {
-	return nil
-}
-
 func (r *Random) BlockForeignAid(state *State, sub *Player) *Block {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	if rand.Intn(2) != 0 {

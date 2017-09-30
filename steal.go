@@ -57,15 +57,3 @@ func (s *Steal) Modify(state *State) {
 	Account(s.Object)
 
 }
-
-func (s *Steal) Dispute(state *State) {
-	_ = NewClaim(s.Subject, Captain, s.Object)
-}
-
-func (s *Steal) Impede(state *State) {
-
-}
-
-func (s *Steal) Describe() {
-
-}

@@ -3,25 +3,21 @@ package coup
 import "fmt"
 
 type Assassinate struct {
-	Subject   *Player
-	Object    *Player
-	Challenge *Challenge
-	Block     *Block
+	Subject *Player
+	Object  *Player
 }
 
 func NewAssassinate(sub *Player, obj *Player) *Move {
 
 	assassinate := Assassinate{
-		Subject:   sub,
-		Object:    obj,
-		Challenge: nil,
-		Block:     nil,
+		Subject: sub,
+		Object:  obj,
 	}
 
 	return NewMove(
 		assassinate.Announce,
 		assassinate.Pay,
-		assassinate.Claim,
+		NewClaim(sub, Assassin, obj),
 		assassinate.Resolve,
 	)
 }
@@ -35,27 +31,9 @@ func (a *Assassinate) Pay() {
 	Account(a.Subject)
 }
 
-func (a *Assassinate) Claim(state *State) bool {
-	claim := NewClaim(a.Subject, Assassin, a.Object)
-	a.Subject.Make(claim, state)
-	if claim.Revealed == nil {
-		return true
-	}
-
-	if *claim.Revealed == claim.Declared {
-		return true
-	}
-
-	return false
-}
-
 func (a *Assassinate) Resolve(state *State) {
 	if len(a.Object.Hand) != 0 {
 		a.Object.Reveal(state)
 		fmt.Printf("%s reveals a %s.\n", a.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
 	}
-}
-
-func (a *Assassinate) Modify(state *State) {
-
 }

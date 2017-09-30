@@ -14,8 +14,8 @@ func NewIncome(sub *Player) *Move {
 	return NewMove(
 		income.Announce,
 		income.Pay,
-		income.Claim,
-		income.Modify,
+		nil,
+		income.Resolve,
 	)
 }
 
@@ -25,15 +25,7 @@ func (i *Income) Announce() {
 
 func (i *Income) Pay() {}
 
-func (i *Income) Claim(state *State) bool {
-	return true
-}
-
 func (i *Income) Resolve(state *State) {
 	i.Subject.Coins++
 	Account(i.Subject)
-}
-
-func (i *Income) Modify(state *State) {
-
 }

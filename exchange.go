@@ -15,7 +15,7 @@ func NewExchange(sub *Player) *Move {
 	return NewMove(
 		exchange.Announce,
 		exchange.Pay,
-		exchange.Claim,
+		NewClaim(sub, Ambassador, nil),
 		exchange.Resolve,
 	)
 }
@@ -26,28 +26,10 @@ func (e *Exchange) Announce() {
 
 func (e *Exchange) Pay() {}
 
-func (e *Exchange) Claim(state *State) bool {
-	claim := NewClaim(e.Subject, Ambassador, nil)
-	e.Subject.Make(claim, state)
-	if claim.Revealed == nil {
-		return true
-	}
-
-	if *claim.Revealed == claim.Declared {
-		return true
-	}
-
-	return false
-}
-
 func (e *Exchange) Resolve(state *State) {
 	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
 	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
 
 	state.Deck.Add(e.Subject.Discard())
 	state.Deck.Add(e.Subject.Discard())
-}
-
-func (e *Exchange) Modify(state *State) {
-
 }

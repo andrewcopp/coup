@@ -1,4 +1,7 @@
 package coup
 
-type Counter interface {
+type Counter struct {
+	Subject   *Player
+	Declared  Type
+	Challenge *Challenge
 }

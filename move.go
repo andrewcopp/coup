@@ -3,30 +3,28 @@ package coup
 import "fmt"
 
 type Move struct {
-	Announce func()
-	Pay      func()
-	Claim    func(state *State) bool
-	Resolve  func(state *State)
+	Announce  func()
+	Pay       func()
+	Claim     *Claim
+	Resolve   func(state *State)
+	Challenge *Challenge
 }
 
-func (m *Move) Modify(state *State) {
-	m.Announce()
-	m.Pay()
-
-	if !m.Claim(state) {
-		return
-	}
-
-	m.Resolve(state)
-}
-
-func NewMove(announce func(), pay func(), claim func(state *State) bool, resolve func(state *State)) *Move {
+func NewMove(announce func(), pay func(), claim *Claim, resolve func(state *State)) *Move {
 	return &Move{
 		Announce: announce,
 		Pay:      pay,
 		Claim:    claim,
 		Resolve:  resolve,
 	}
+}
+
+func (m *Move) Successful() bool {
+	if m.Challenge == nil {
+		return true
+	}
+
+	return m.Challenge.Successful
 }
 
 func Account(p *Player) {

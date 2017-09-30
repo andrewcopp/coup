@@ -7,10 +7,17 @@ type Exchange struct {
 	Challenge *Challenge
 }
 
-func NewExchange(sub *Player) *Exchange {
-	return &Exchange{
+func NewExchange(sub *Player) *Action {
+	exchange := Exchange{
 		Subject: sub,
 	}
+
+	return NewAction(
+		exchange.Announce,
+		exchange.Pay,
+		exchange.Claim,
+		exchange.Resolve,
+	)
 }
 
 func (e *Exchange) Announce() {

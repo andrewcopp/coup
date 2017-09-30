@@ -6,10 +6,17 @@ type Income struct {
 	Subject *Player
 }
 
-func NewIncome(sub *Player) *Income {
-	return &Income{
+func NewIncome(sub *Player) *Action {
+	income := Income{
 		Subject: sub,
 	}
+
+	return NewAction(
+		income.Announce,
+		income.Pay,
+		income.Claim,
+		income.Modify,
+	)
 }
 
 func (i *Income) Announce() {

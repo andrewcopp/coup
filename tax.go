@@ -7,11 +7,18 @@ type Tax struct {
 	Challenge *Challenge
 }
 
-func NewTax(sub *Player) *Tax {
-	return &Tax{
+func NewTax(sub *Player) *Action {
+	tax := Tax{
 		Subject:   sub,
 		Challenge: nil,
 	}
+
+	return NewAction(
+		tax.Announce,
+		tax.Pay,
+		tax.Claim,
+		tax.Resolve,
+	)
 }
 
 func (t *Tax) Announce() {

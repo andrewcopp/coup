@@ -14,40 +14,23 @@ func NewRandom() *Random {
 
 func (r *Random) Decide(state *State) *Action {
 	actions := []*Action{}
+	self := state.Players[0]
 
 	for _, other := range state.Alive()[1:] {
 		if state.Players[0].Coins >= 7 {
-			var coup Action
-			coup = NewCoup(state.Players[0], other)
-			actions = append(actions, &coup)
+			actions = append(actions, NewCoup(self, other))
 		}
 
 		if state.Players[0].Coins < 10 {
-			var income Action
-			income = NewIncome(state.Players[0])
-			actions = append(actions, &income)
-
-			var foreignAid Action
-			foreignAid = NewForeignAid(state.Players[0])
-			actions = append(actions, &foreignAid)
-
-			var tax Action
-			tax = NewTax(state.Players[0])
-			actions = append(actions, &tax)
-
-			var exchange Action
-			exchange = NewExchange(state.Players[0])
-			actions = append(actions, &exchange)
-
-			var steal Action
-			steal = NewSteal(state.Players[0], other)
-			actions = append(actions, &steal)
+			actions = append(actions, NewIncome(self))
+			actions = append(actions, NewForeignAid(self))
+			actions = append(actions, NewTax(self))
+			actions = append(actions, NewExchange(self))
+			actions = append(actions, NewSteal(self, other))
 		}
 
 		if state.Players[0].Coins >= 3 {
-			var assassinate Action
-			assassinate = NewAssassinate(state.Players[0], other)
-			actions = append(actions, &assassinate)
+			actions = append(actions, NewAssassinate(self, other))
 		}
 	}
 

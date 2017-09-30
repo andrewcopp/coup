@@ -9,11 +9,18 @@ type Steal struct {
 	Block     *Block
 }
 
-func NewSteal(sub *Player, obj *Player) *Steal {
-	return &Steal{
+func NewSteal(sub *Player, obj *Player) *Action {
+	steal := Steal{
 		Subject: sub,
 		Object:  obj,
 	}
+
+	return NewAction(
+		steal.Announce,
+		steal.Pay,
+		steal.Claim,
+		steal.Resolve,
+	)
 }
 
 func (s *Steal) Announce() {

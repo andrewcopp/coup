@@ -2,12 +2,30 @@ package coup
 
 import "fmt"
 
-type Action interface {
-	Announce()
-	Pay()
-	Claim(state *State) bool
-	Resolve(state *State)
-	Modify(state *State)
+type Action struct {
+	Announce func()
+	Pay      func()
+	Claim    func(state *State) bool
+	Resolve  func(state *State)
+}
+
+func (a *Action) Modify(state *State) {
+	a.Announce()
+	a.Pay()
+	if !a.Claim(state) {
+		return
+	}
+
+	a.Resolve(state)
+}
+
+func NewAction(announce func(), pay func(), claim func(state *State) bool, resolve func(state *State)) *Action {
+	return &Action{
+		Announce: announce,
+		Pay:      pay,
+		Claim:    claim,
+		Resolve:  resolve,
+	}
 }
 
 func Account(p *Player) {

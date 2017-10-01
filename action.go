@@ -29,5 +29,17 @@ func (a *Action) Apply(state *State) {
 		return
 	}
 
+	for _, player := range state.Alive()[1:] {
+		if block := player.Impede(a.Move.Counters); block != nil {
+			a.Block = block
+			fmt.Printf("%s blocks with a %d.\n", player.Name, block.Claim.Declared)
+			a.Block.Scrutinize(state)
+		}
+	}
+
+	if a.Block.Successful() {
+		return
+	}
+
 	a.Move.Resolve(state)
 }

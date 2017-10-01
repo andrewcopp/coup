@@ -71,3 +71,13 @@ func (p *Player) Dispute(claim *Claim) {
 		claim.Challenge = NewChallenge(p)
 	}
 }
+
+func (p *Player) Impede(counters []Type) *Block {
+	for _, counter := range counters {
+		if (*p.Brain).Impede(counter) {
+			return NewBlock(p, counter)
+		}
+	}
+
+	return nil
+}

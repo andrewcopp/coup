@@ -23,7 +23,11 @@ func (m *Move) Successful() bool {
 		return true
 	}
 
-	return !m.Claim.Challenge.Successful
+	if m.Claim.Challenge == nil {
+		return true
+	}
+
+	return m.Claim.Declared == m.Claim.Challenge.Revealed
 }
 
 func (m *Move) Scrutinize(state *State) {

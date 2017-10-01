@@ -1,12 +1,12 @@
 package coup
 
 type Board struct {
-	States []*State
+	State *State
 }
 
 func NewBoard() *Board {
 	return &Board{
-		States: []*State{},
+		State: nil,
 	}
 }
 
@@ -27,29 +27,25 @@ func (brd *Board) Setup(players []*Player) {
 		player.Hand = append(player.Hand, deck.Draw())
 	}
 
-	brd.States = []*State{NewState(deck, []*Card{}, players)}
+	brd.State = NewState(nil, deck, []*Card{}, players)
 }
 
 func (brd *Board) Play() *Player {
 
 	for brd.Continue() {
-		state := brd.State().Copy()
+		state := brd.State.Copy()
 		player := state.Players[0]
 		action := player.Move(state)
 		action.Apply(state)
 		brd.Shift(state)
-		brd.States = append(brd.States, state)
+		brd.State = state
 	}
 
-	return brd.State().Players[0]
-}
-
-func (brd *Board) State() *State {
-	return brd.States[len(brd.States)-1]
+	return brd.State.Players[0]
 }
 
 func (brd *Board) Continue() bool {
-	return len(brd.State().Alive()) != 1
+	return len(brd.State.Alive()) != 1
 }
 
 func (brd *Board) Shift(state *State) {

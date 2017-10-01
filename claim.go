@@ -21,7 +21,7 @@ func (c *Claim) Verify(state *State) {
 	challenger := c.Challenge.Subject
 	fmt.Printf("%s challenges.\n", challenger.Name)
 	if card := c.Subject.Produce(c.Declared); card != nil {
-		c.Challenge.Successful = false
+		c.Challenge.Revealed = card.Type
 		fmt.Printf("Challenge unsuccessful.\n")
 		challenger.Reveal(state)
 		fmt.Printf("%s reveals a %s.\n", challenger.Name, state.Revealed[len(state.Revealed)-1].Name())
@@ -30,7 +30,8 @@ func (c *Claim) Verify(state *State) {
 	} else {
 		fmt.Printf("Challenge successful.\n")
 		c.Subject.Reveal(state)
-		c.Challenge.Successful = true
-		fmt.Printf("%s reveals a %s.\n", c.Subject.Name, state.Revealed[len(state.Revealed)-1].Name())
+		revealed := state.Revealed[len(state.Revealed)-1]
+		c.Challenge.Revealed = revealed.Type
+		fmt.Printf("%s reveals a %s.\n", c.Subject.Name, revealed.Name())
 	}
 }

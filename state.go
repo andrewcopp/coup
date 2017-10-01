@@ -1,13 +1,15 @@
 package coup
 
 type State struct {
+	Previous *State
 	Deck     *Deck
 	Revealed []*Card
 	Players  []*Player
 }
 
-func NewState(deck *Deck, revealed []*Card, players []*Player) *State {
+func NewState(prv *State, deck *Deck, revealed []*Card, players []*Player) *State {
 	return &State{
+		Previous: prv,
 		Deck:     deck,
 		Revealed: revealed,
 		Players:  players,
@@ -27,6 +29,7 @@ func (s *State) Copy() *State {
 	}
 
 	return NewState(
+		s,
 		s.Deck.Copy(),
 		revealed,
 		players,

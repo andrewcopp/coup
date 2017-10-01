@@ -32,6 +32,7 @@ func (a *Action) Apply(state *State) {
 	a.Block = a.Move.Block(state)
 	if a.Block != nil {
 		fmt.Printf("%s blocks with a %s.\n", a.Block.Claim.Subject.Name, a.Block.Claim.Name())
+		a.Block.Claim.Scrutinize(state)
 		if a.Block.Successful() {
 			return
 		}

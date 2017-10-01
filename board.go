@@ -13,7 +13,6 @@ func NewBoard() *Board {
 }
 
 func (brd *Board) Setup(players []*Player) {
-
 	cards := make([]*Card, 15)
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 3; j++ {
@@ -33,7 +32,6 @@ func (brd *Board) Setup(players []*Player) {
 }
 
 func (brd *Board) Play() *Player {
-
 	for count := 1; brd.Continue(); count++ {
 		fmt.Println()
 		fmt.Printf("Turn %d\n", count)

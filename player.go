@@ -7,22 +7,25 @@ type Player struct {
 	Hand  []*Card
 }
 
-func NewPlayer(name string, brain *Decider, coins int, hand []*Card) *Player {
+func NewPlayer(name string, brain *Decider, coins int) *Player {
 	return &Player{
 		Name:  name,
 		Brain: brain,
 		Coins: coins,
-		Hand:  hand,
+		Hand:  []*Card{},
 	}
 }
 
 func (p *Player) Copy() *Player {
+	player := NewPlayer(p.Name, p.Brain, p.Coins)
+
 	hand := make([]*Card, len(p.Hand))
 	for i, card := range p.Hand {
 		hand[i] = card.Copy()
 	}
+	player.Hand = hand
 
-	return NewPlayer(p.Name, p.Brain, p.Coins, hand)
+	return player
 }
 
 func (p *Player) Opponents(state *State) []*Player {

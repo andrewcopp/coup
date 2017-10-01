@@ -13,11 +13,11 @@ func init() {
 
 	var decider coup.Decider
 	decider = coup.NewRandom()
-	one := coup.NewPlayer("Player One", &decider, 2, []*coup.Card{})
-	two := coup.NewPlayer("Player Two", &decider, 2, []*coup.Card{})
-	three := coup.NewPlayer("Player Three", &decider, 2, []*coup.Card{})
-	four := coup.NewPlayer("Player Four", &decider, 2, []*coup.Card{})
-	five := coup.NewPlayer("Player Five", &decider, 2, []*coup.Card{})
+	one := coup.NewPlayer("Player One", &decider, 2)
+	two := coup.NewPlayer("Player Two", &decider, 2)
+	three := coup.NewPlayer("Player Three", &decider, 2)
+	four := coup.NewPlayer("Player Four", &decider, 2)
+	five := coup.NewPlayer("Player Five", &decider, 2)
 
 	board.Setup([]*coup.Player{one, two, three, four, five})
 }

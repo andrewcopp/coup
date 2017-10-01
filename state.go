@@ -39,7 +39,7 @@ func (s *State) Copy() *State {
 func (s *State) Alive() []*Player {
 	players := []*Player{}
 	for _, player := range s.Players {
-		if len(player.Hand) != 0 {
+		if player.Alive() {
 			players = append(players, player)
 		}
 	}

@@ -1,5 +1,7 @@
 package coup
 
+import "fmt"
+
 type Board struct {
 	State *State
 }
@@ -15,7 +17,7 @@ func (brd *Board) Setup(players []*Player) {
 	cards := make([]*Card, 15)
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 3; j++ {
-			cards[3*i+j] = NewCard(Type(i))
+			cards[3*i+j] = NewCard(CardType(i))
 		}
 	}
 
@@ -23,8 +25,8 @@ func (brd *Board) Setup(players []*Player) {
 	deck.Shuffle()
 
 	for _, player := range players {
-		player.Hand = append(player.Hand, deck.Draw())
-		player.Hand = append(player.Hand, deck.Draw())
+		player.Draw(deck)
+		player.Draw(deck)
 	}
 
 	brd.State = NewState(nil, deck, []*Card{}, players)
@@ -32,7 +34,10 @@ func (brd *Board) Setup(players []*Player) {
 
 func (brd *Board) Play() *Player {
 
-	for brd.Continue() {
+	for count := 1; brd.Continue(); count++ {
+		fmt.Println()
+		fmt.Printf("Turn %d\n", count)
+		fmt.Println("------")
 		state := brd.State.Copy()
 		player := state.Players[0]
 		action := player.Move(state)

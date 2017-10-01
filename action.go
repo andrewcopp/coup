@@ -22,34 +22,36 @@ func (a *Action) Apply(state *State) {
 	}
 
 	if a.Move.Claim != nil {
-		a.Move.Scrutinize(state)
+		a.Move.Claim.Scrutinize(state)
 	}
 
 	if !a.Move.Successful() {
 		return
 	}
 
+	a.Block = a.Move.Block()
+
 	if claim := a.Move.Claim; claim != nil {
 		if a.Move.Claim.Object != nil {
 			if block := a.Move.Claim.Object.Impede(a.Move.Counters); block != nil {
 				a.Block = block
 				fmt.Printf("%s blocks with a %d.\n", block.Claim.Subject.Name, block.Claim.Declared)
-				a.Block.Scrutinize(state)
+				a.Block.Claim.Scrutinize(state)
+				if a.Block.Successful() {
+					return
+				}
 			}
 		} else {
-			for _, player := range state.Alive()[1:] {
+			for _, player := range a.Move.Claim.Subject.Opponents(state) {
 				if block := player.Impede(a.Move.Counters); block != nil {
 					a.Block = block
 					fmt.Printf("%s blocks with a %d.\n", player.Name, block.Claim.Declared)
-					a.Block.Scrutinize(state)
+					a.Block.Claim.Scrutinize(state)
+					if a.Block.Successful() {
+						return
+					}
 				}
 			}
-		}
-	}
-
-	if a.Block != nil {
-		if a.Block.Successful() {
-			return
 		}
 	}
 

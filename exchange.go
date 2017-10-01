@@ -16,20 +16,14 @@ func NewExchange(sub *Player) *Move {
 		fmt.Sprintf("%s exchanges.", sub.Name),
 		0,
 		NewClaim(sub, Ambassador, nil),
-		[]Type{},
+		[]CardType{},
 		exchange.Resolve,
 	)
 }
 
-func (e *Exchange) Announce() {
-
-}
-
-func (e *Exchange) Pay() {}
-
 func (e *Exchange) Resolve(state *State) {
-	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
-	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
+	e.Subject.Draw(state.Deck)
+	e.Subject.Draw(state.Deck)
 
 	state.Deck.Add(e.Subject.Reveal(state, nil))
 	state.Deck.Add(e.Subject.Reveal(state, nil))

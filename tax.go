@@ -17,7 +17,7 @@ func NewTax(sub *Player) *Move {
 		fmt.Sprintf("%s taxes.", sub.Name),
 		0,
 		NewClaim(sub, Duke, nil),
-		[]Type{},
+		[]CardType{},
 		tax.Resolve,
 	)
 }

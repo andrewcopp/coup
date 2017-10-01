@@ -18,7 +18,7 @@ func NewAssassinate(sub *Player, obj *Player) *Move {
 		fmt.Sprintf("%s assassinates %s.", sub.Name, obj.Name),
 		3,
 		NewClaim(sub, Assassin, obj),
-		[]Type{Contessa},
+		[]CardType{Contessa},
 		assassinate.Resolve,
 	)
 }

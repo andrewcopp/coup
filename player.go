@@ -27,11 +27,29 @@ func (p *Player) Copy() *Player {
 
 }
 
+func (p *Player) Opponents(state *State) []*Player {
+	opponents := []*Player{}
+	for _, player := range state.Alive() {
+		if player != p {
+			opponents = append(opponents, player)
+		}
+	}
+	return opponents
+}
+
+func (p *Player) Alive() bool {
+	return len(p.Hand) > 0
+}
+
+func (p *Player) Draw(d *Deck) {
+	p.Hand = append(p.Hand, d.Draw())
+}
+
 func (p *Player) Move(state *State) *Action {
 	valid := []*Move{}
 	self := state.Players[0]
 
-	for _, other := range state.Alive()[1:] {
+	for _, other := range p.Opponents(state) {
 		if state.Players[0].Coins >= 7 {
 			valid = append(valid, NewCoup(self, other))
 		}
@@ -53,10 +71,10 @@ func (p *Player) Move(state *State) *Action {
 	return NewAction(move)
 }
 
-func (p *Player) Reveal(state *State, t *Type) *Card {
+func (p *Player) Reveal(state *State, t *CardType) *Card {
 	if t != nil {
 		for i, card := range p.Hand {
-			if card.Type == *t {
+			if card.CardType == *t {
 				p.Hand = append(p.Hand[:i], p.Hand[i+1:]...)
 				return card
 			}
@@ -72,7 +90,7 @@ func (p *Player) Dispute(claim *Claim) {
 	}
 }
 
-func (p *Player) Impede(counters []Type) *Block {
+func (p *Player) Impede(counters []CardType) *Block {
 	for _, counter := range counters {
 		if (*p.Brain).Impede(counter) {
 			return NewBlock(p, counter)

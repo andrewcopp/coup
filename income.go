@@ -15,7 +15,7 @@ func NewIncome(sub *Player) *Move {
 		fmt.Sprintf("%s takes income.", sub.Name),
 		0,
 		nil,
-		[]Type{},
+		[]CardType{},
 		income.Resolve,
 	)
 }

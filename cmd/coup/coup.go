@@ -24,5 +24,7 @@ func init() {
 
 func main() {
 	winner := board.Play()
+	fmt.Println()
 	fmt.Println(winner.Name, "wins!")
+	fmt.Println()
 }

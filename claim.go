@@ -4,12 +4,12 @@ import "fmt"
 
 type Claim struct {
 	Subject   *Player
-	Declared  Type
+	Declared  CardType
 	Object    *Player
 	Challenge *Challenge
 }
 
-func NewClaim(sub *Player, dec Type, obj *Player) *Claim {
+func NewClaim(sub *Player, dec CardType, obj *Player) *Claim {
 	return &Claim{
 		Subject:  sub,
 		Declared: dec,
@@ -17,11 +17,21 @@ func NewClaim(sub *Player, dec Type, obj *Player) *Claim {
 	}
 }
 
+func (c *Claim) Scrutinize(state *State) {
+	for _, other := range c.Subject.Opponents(state) {
+		other.Dispute(c)
+		if c.Challenge != nil {
+			c.Verify(state)
+			return
+		}
+	}
+}
+
 func (c *Claim) Verify(state *State) {
 	challenger := c.Challenge.Subject
 	fmt.Printf("%s challenges.\n", challenger.Name)
 	revealed := c.Subject.Reveal(state, &c.Declared)
-	c.Challenge.Revealed = revealed.Type
+	c.Challenge.Revealed = revealed.CardType
 
 	var loser *Player
 	var discarded *Card
@@ -34,7 +44,7 @@ func (c *Claim) Verify(state *State) {
 		loser = challenger
 		discarded = challenger.Reveal(state, nil)
 		state.Deck.Add(revealed)
-		c.Subject.Hand = append(c.Subject.Hand, state.Deck.Draw())
+		c.Subject.Draw(state.Deck)
 	}
 
 	fmt.Printf("%s discards a %s.\n", loser.Name, discarded.Name())

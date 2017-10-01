@@ -17,7 +17,7 @@ func NewCoup(sub *Player, obj *Player) *Move {
 		fmt.Sprintf("%s coups %s.", sub.Name, obj.Name),
 		7,
 		nil,
-		[]Type{},
+		[]CardType{},
 		coup.Resolve,
 	)
 }

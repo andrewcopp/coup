@@ -28,7 +28,7 @@ func (r *Random) Dispute(claim *Claim) bool {
 	return true
 }
 
-func (r *Random) Impede(counter Type) bool {
+func (r *Random) Impede(counter CardType) bool {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	if rand.Intn(5) != 0 {
 		return false

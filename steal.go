@@ -17,7 +17,7 @@ func NewSteal(sub *Player, obj *Player) *Move {
 		fmt.Sprintf("%s steals from %s.", sub.Name, obj.Name),
 		0,
 		NewClaim(sub, Captain, obj),
-		[]Type{Ambassador, Captain},
+		[]CardType{Ambassador, Captain},
 		steal.Resolve,
 	)
 }

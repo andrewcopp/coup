@@ -15,7 +15,7 @@ func NewForeignAid(sub *Player) *Move {
 		fmt.Sprintf("%s takes foreign aid.", sub.Name),
 		0,
 		nil,
-		[]Type{Duke},
+		[]CardType{Duke},
 		foreignAid.Resolve,
 	)
 }

@@ -2,31 +2,22 @@ package coup
 
 import "fmt"
 
-type Assassinate struct {
-	Subject *Player
-	Object  *Player
-}
-
-func NewAssassinate(sub *Player, obj *Player) *Move {
-
-	assassinate := Assassinate{
-		Subject: sub,
-		Object:  obj,
-	}
-
+func NewAssassinate(sub *Player, obj *Player, state *State) *Move {
 	return NewMove(
 		fmt.Sprintf("%s assassinates %s.", sub.Name, obj.Name),
 		3,
 		NewClaim(sub, Assassin, obj),
 		[]CardType{Contessa},
-		assassinate.Resolve,
+		AssassinateFunc(sub, obj, state),
 	)
 }
 
-func (a *Assassinate) Resolve(state *State) {
-	if len(a.Object.Hand) != 0 {
-		revealed := a.Object.Reveal(state, nil)
-		state.Revealed = append(state.Revealed, revealed)
-		fmt.Printf("%s discards a %s.\n", a.Object.Name, revealed.Name())
+func AssassinateFunc(sub *Player, obj *Player, state *State) func() {
+	return func() {
+		if len(obj.Hand) != 0 {
+			revealed := obj.Reveal(state, nil)
+			state.Discard.Add(revealed)
+			fmt.Printf("%s discards a %s.\n", obj.Name, revealed.Name())
+		}
 	}
 }

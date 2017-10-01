@@ -3,25 +3,20 @@ package coup
 type State struct {
 	Previous *State
 	Deck     *Deck
-	Revealed []*Card
+	Discard  *Pile
 	Players  []*Player
 }
 
-func NewState(prv *State, deck *Deck, revealed []*Card, players []*Player) *State {
+func NewState(prv *State, deck *Deck, discard *Pile, players []*Player) *State {
 	return &State{
 		Previous: prv,
 		Deck:     deck,
-		Revealed: revealed,
+		Discard:  discard,
 		Players:  players,
 	}
 }
 
 func (s *State) Copy() *State {
-
-	revealed := make([]*Card, len(s.Revealed))
-	for i, card := range s.Revealed {
-		revealed[i] = card.Copy()
-	}
 
 	players := make([]*Player, len(s.Players))
 	for i, player := range s.Players {
@@ -31,7 +26,7 @@ func (s *State) Copy() *State {
 	return NewState(
 		s,
 		s.Deck.Copy(),
-		revealed,
+		s.Discard.Copy(),
 		players,
 	)
 }

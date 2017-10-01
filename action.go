@@ -7,6 +7,18 @@ type Action struct {
 	Block *Block
 }
 
+type ActionType int
+
+const (
+	Income      ActionType = iota
+	ForeignAid             = iota
+	Coup                   = iota
+	Tax                    = iota
+	Assassinate            = iota
+	Exchange               = iota
+	Steal                  = iota
+)
+
 func NewAction(mv *Move) *Action {
 	return &Action{
 		Move:  mv,
@@ -55,5 +67,5 @@ func (a *Action) Apply(state *State) {
 		}
 	}
 
-	a.Move.Resolve(state)
+	a.Move.Resolve()
 }

@@ -51,19 +51,19 @@ func (p *Player) Move(state *State) *Action {
 
 	for _, other := range p.Opponents(state) {
 		if state.Players[0].Coins >= 7 {
-			valid = append(valid, NewCoup(self, other))
+			valid = append(valid, NewCoup(self, other, state))
 		}
 
 		if state.Players[0].Coins < 10 {
 			valid = append(valid, NewIncome(self))
 			valid = append(valid, NewForeignAid(self))
 			valid = append(valid, NewTax(self))
-			valid = append(valid, NewExchange(self))
+			valid = append(valid, NewExchange(self, state))
 			valid = append(valid, NewSteal(self, other))
 		}
 
 		if state.Players[0].Coins >= 3 {
-			valid = append(valid, NewAssassinate(self, other))
+			valid = append(valid, NewAssassinate(self, other, state))
 		}
 	}
 

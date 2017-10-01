@@ -29,7 +29,7 @@ func (brd *Board) Setup(players []*Player) {
 		player.Draw(deck)
 	}
 
-	brd.State = NewState(nil, deck, []*Card{}, players)
+	brd.State = NewState(nil, deck, NewPile(), players)
 }
 
 func (brd *Board) Play() *Player {

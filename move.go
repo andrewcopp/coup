@@ -5,10 +5,10 @@ type Move struct {
 	Cost         int
 	Claim        *Claim
 	Counters     []CardType
-	Resolve      func(state *State)
+	Resolve      func()
 }
 
-func NewMove(announcement string, cost int, claim *Claim, counters []CardType, resolve func(state *State)) *Move {
+func NewMove(announcement string, cost int, claim *Claim, counters []CardType, resolve func()) *Move {
 	return &Move{
 		Announcement: announcement,
 		Cost:         cost,

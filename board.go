@@ -50,7 +50,7 @@ func (brd *Board) Play() *Player {
 }
 
 func (brd *Board) Continue() bool {
-	return len(brd.State.Alive()) != 1
+	return len(brd.State.Alive()) > 1
 }
 
 func (brd *Board) Shift(state *State) {

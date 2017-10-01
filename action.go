@@ -7,18 +7,6 @@ type Action struct {
 	Block *Block
 }
 
-type ActionType int
-
-const (
-	Income      ActionType = iota
-	ForeignAid             = iota
-	Coup                   = iota
-	Tax                    = iota
-	Assassinate            = iota
-	Exchange               = iota
-	Steal                  = iota
-)
-
 func NewAction(mv *Move) *Action {
 	return &Action{
 		Move:  mv,
@@ -41,29 +29,11 @@ func (a *Action) Apply(state *State) {
 		return
 	}
 
-	a.Block = a.Move.Block()
-
-	if claim := a.Move.Claim; claim != nil {
-		if a.Move.Claim.Object != nil {
-			if block := a.Move.Claim.Object.Impede(a.Move.Counters); block != nil {
-				a.Block = block
-				fmt.Printf("%s blocks with a %d.\n", block.Claim.Subject.Name, block.Claim.Declared)
-				a.Block.Claim.Scrutinize(state)
-				if a.Block.Successful() {
-					return
-				}
-			}
-		} else {
-			for _, player := range a.Move.Claim.Subject.Opponents(state) {
-				if block := player.Impede(a.Move.Counters); block != nil {
-					a.Block = block
-					fmt.Printf("%s blocks with a %d.\n", player.Name, block.Claim.Declared)
-					a.Block.Claim.Scrutinize(state)
-					if a.Block.Successful() {
-						return
-					}
-				}
-			}
+	a.Block = a.Move.Block(state)
+	if a.Block != nil {
+		fmt.Printf("%s blocks with a %d.\n", a.Block.Claim.Subject.Name, a.Block.Claim.Declared)
+		if a.Block.Successful() {
+			return
 		}
 	}
 

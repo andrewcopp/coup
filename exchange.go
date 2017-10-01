@@ -4,6 +4,8 @@ import "fmt"
 
 func NewExchange(sub *Player, state *State) *Move {
 	return NewMove(
+		Exchange,
+		sub,
 		fmt.Sprintf("%s exchanges.", sub.Name),
 		0,
 		NewClaim(sub, Ambassador, nil),

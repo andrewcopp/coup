@@ -4,6 +4,8 @@ import "fmt"
 
 func NewSteal(sub *Player, obj *Player) *Move {
 	return NewMove(
+		Steal,
+		sub,
 		fmt.Sprintf("%s steals from %s.", sub.Name, obj.Name),
 		0,
 		NewClaim(sub, Captain, obj),

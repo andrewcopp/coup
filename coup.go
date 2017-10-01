@@ -4,6 +4,8 @@ import "fmt"
 
 func NewCoup(sub *Player, obj *Player, state *State) *Move {
 	return NewMove(
+		Coup,
+		sub,
 		fmt.Sprintf("%s coups %s.", sub.Name, obj.Name),
 		7,
 		nil,

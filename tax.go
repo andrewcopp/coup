@@ -4,6 +4,8 @@ import "fmt"
 
 func NewTax(sub *Player) *Move {
 	return NewMove(
+		Tax,
+		sub,
 		fmt.Sprintf("%s taxes.", sub.Name),
 		0,
 		NewClaim(sub, Duke, nil),

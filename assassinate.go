@@ -4,6 +4,8 @@ import "fmt"
 
 func NewAssassinate(sub *Player, obj *Player, state *State) *Move {
 	return NewMove(
+		Assassinate,
+		sub,
 		fmt.Sprintf("%s assassinates %s.", sub.Name, obj.Name),
 		3,
 		NewClaim(sub, Assassin, obj),

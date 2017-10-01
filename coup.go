@@ -14,7 +14,7 @@ func NewCoup(sub *Player, obj *Player) *Move {
 	}
 
 	return NewMove(
-		coup.Announce,
+		fmt.Sprintf("%s coups %s.", sub.Name, obj.Name),
 		7,
 		nil,
 		[]Type{},
@@ -22,11 +22,8 @@ func NewCoup(sub *Player, obj *Player) *Move {
 	)
 }
 
-func (c *Coup) Announce() {
-	fmt.Printf("%s coups %s.\n", c.Subject.Name, c.Object.Name)
-}
-
 func (c *Coup) Resolve(state *State) {
-	c.Object.Reveal(state, nil)
-	fmt.Printf("%s reveals a %s.\n", c.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
+	revealed := c.Object.Reveal(state, nil)
+	state.Revealed = append(state.Revealed, revealed)
+	fmt.Printf("%s reveals a %s.\n", c.Object.Name, revealed.Name())
 }

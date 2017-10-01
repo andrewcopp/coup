@@ -14,16 +14,12 @@ func NewTax(sub *Player) *Move {
 	}
 
 	return NewMove(
-		tax.Announce,
+		fmt.Sprintf("%s taxes.", sub.Name),
 		0,
 		NewClaim(sub, Duke, nil),
 		[]Type{},
 		tax.Resolve,
 	)
-}
-
-func (t *Tax) Announce() {
-	fmt.Printf("%s taxes.\n", t.Subject.Name)
 }
 
 func (t *Tax) Resolve(state *State) {

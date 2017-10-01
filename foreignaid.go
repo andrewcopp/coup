@@ -12,16 +12,12 @@ func NewForeignAid(sub *Player) *Move {
 	}
 
 	return NewMove(
-		foreignAid.Announce,
+		fmt.Sprintf("%s takes foreign aid.", sub.Name),
 		0,
 		nil,
 		[]Type{Duke},
 		foreignAid.Resolve,
 	)
-}
-
-func (f *ForeignAid) Announce() {
-	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
 }
 
 func (f *ForeignAid) Resolve(state *State) {

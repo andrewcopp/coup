@@ -14,16 +14,12 @@ func NewSteal(sub *Player, obj *Player) *Move {
 	}
 
 	return NewMove(
-		steal.Announce,
+		fmt.Sprintf("%s steals from %s.", sub.Name, obj.Name),
 		0,
 		NewClaim(sub, Captain, obj),
 		[]Type{Ambassador, Captain},
 		steal.Resolve,
 	)
-}
-
-func (s *Steal) Announce() {
-	fmt.Printf("%s steals from %s.\n", s.Subject.Name, s.Object.Name)
 }
 
 func (s *Steal) Resolve(state *State) {

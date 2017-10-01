@@ -13,7 +13,7 @@ func NewExchange(sub *Player) *Move {
 	}
 
 	return NewMove(
-		exchange.Announce,
+		fmt.Sprintf("%s exchanges.", sub.Name),
 		0,
 		NewClaim(sub, Ambassador, nil),
 		[]Type{},
@@ -22,7 +22,7 @@ func NewExchange(sub *Player) *Move {
 }
 
 func (e *Exchange) Announce() {
-	fmt.Printf("%s exchanges.\n", e.Subject.Name)
+
 }
 
 func (e *Exchange) Pay() {}

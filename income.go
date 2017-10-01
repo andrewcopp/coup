@@ -12,16 +12,12 @@ func NewIncome(sub *Player) *Move {
 	}
 
 	return NewMove(
-		income.Announce,
+		fmt.Sprintf("%s takes income.", sub.Name),
 		0,
 		nil,
 		[]Type{},
 		income.Resolve,
 	)
-}
-
-func (i *Income) Announce() {
-	fmt.Printf("%s takes income.\n", i.Subject.Name)
 }
 
 func (i *Income) Resolve(state *State) {

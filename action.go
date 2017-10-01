@@ -1,5 +1,7 @@
 package coup
 
+import "fmt"
+
 type Action struct {
 	Move  *Move
 	Block *Block
@@ -13,7 +15,7 @@ func NewAction(mv *Move) *Action {
 }
 
 func (a *Action) Apply(state *State) {
-	a.Move.Announce()
+	fmt.Println(a.Move.Announcement)
 	if a.Move.Cost != 0 {
 		state.Players[0].Coins -= a.Move.Cost
 		Account(state.Players[0])

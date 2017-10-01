@@ -17,6 +17,7 @@ func NewCoup(sub *Player, obj *Player) *Move {
 		coup.Announce,
 		coup.Pay,
 		nil,
+		[]Type{},
 		coup.Resolve,
 	)
 }

@@ -4,14 +4,16 @@ type Move struct {
 	Announce func()
 	Pay      func()
 	Claim    *Claim
+	Counters []Type
 	Resolve  func(state *State)
 }
 
-func NewMove(announce func(), pay func(), claim *Claim, resolve func(state *State)) *Move {
+func NewMove(announce func(), pay func(), claim *Claim, counters []Type, resolve func(state *State)) *Move {
 	return &Move{
 		Announce: announce,
 		Pay:      pay,
 		Claim:    claim,
+		Counters: counters,
 		Resolve:  resolve,
 	}
 }

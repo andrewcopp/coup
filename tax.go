@@ -17,6 +17,7 @@ func NewTax(sub *Player) *Move {
 		tax.Announce,
 		tax.Pay,
 		NewClaim(sub, Duke, nil),
+		[]Type{},
 		tax.Resolve,
 	)
 }

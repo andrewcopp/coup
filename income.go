@@ -15,6 +15,7 @@ func NewIncome(sub *Player) *Move {
 		income.Announce,
 		income.Pay,
 		nil,
+		[]Type{},
 		income.Resolve,
 	)
 }

@@ -48,20 +48,3 @@ func (r *Random) Dispute(claim *Claim) bool {
 
 	return true
 }
-
-func (r *Random) BlockForeignAid(state *State, sub *Player) *Block {
-	rand.Seed(int64(time.Now().Nanosecond()))
-	if rand.Intn(2) != 0 {
-		return nil
-	}
-
-	return &Block{Declared: Duke}
-}
-
-func (r *Random) BlockAssassinate(state *State, sub *Player, obj *Player, chg *Player) *Block {
-	return nil
-}
-
-func (r *Random) BlockSteal(state *State, sub *Player, obj *Player, chg *Player) *Block {
-	return nil
-}

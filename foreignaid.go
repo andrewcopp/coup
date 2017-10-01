@@ -15,6 +15,7 @@ func NewForeignAid(sub *Player) *Move {
 		foreignAid.Announce,
 		foreignAid.Pay,
 		nil,
+		[]Type{Duke},
 		foreignAid.Resolve,
 	)
 }

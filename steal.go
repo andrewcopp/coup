@@ -17,6 +17,7 @@ func NewSteal(sub *Player, obj *Player) *Move {
 		steal.Announce,
 		steal.Pay,
 		NewClaim(sub, Captain, obj),
+		[]Type{Ambassador, Captain},
 		steal.Resolve,
 	)
 }

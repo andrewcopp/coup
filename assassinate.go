@@ -18,6 +18,7 @@ func NewAssassinate(sub *Player, obj *Player) *Move {
 		assassinate.Announce,
 		assassinate.Pay,
 		NewClaim(sub, Assassin, obj),
+		[]Type{Contessa},
 		assassinate.Resolve,
 	)
 }

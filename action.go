@@ -31,7 +31,7 @@ func (a *Action) Apply(state *State) {
 
 	a.Block = a.Move.Block(state)
 	if a.Block != nil {
-		fmt.Printf("%s blocks with a %d.\n", a.Block.Claim.Subject.Name, a.Block.Claim.Declared)
+		fmt.Printf("%s blocks with a %s.\n", a.Block.Claim.Subject.Name, a.Block.Claim.Name())
 		if a.Block.Successful() {
 			return
 		}

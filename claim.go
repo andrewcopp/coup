@@ -17,6 +17,23 @@ func NewClaim(sub *Player, dec CardType, obj *Player) *Claim {
 	}
 }
 
+func (c *Claim) Name() string {
+	switch c.Declared {
+	case Duke:
+		return "Duke"
+	case Assassin:
+		return "Assassin"
+	case Ambassador:
+		return "Ambassador"
+	case Captain:
+		return "Captain"
+	case Contessa:
+		return "Contessa"
+	}
+
+	panic("Weird CardType")
+}
+
 func (c *Claim) Scrutinize(state *State) {
 	for _, other := range c.Subject.Opponents(state) {
 		other.Dispute(c)

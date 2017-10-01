@@ -17,14 +17,12 @@ func NewPlayer(name string, brain *Decider, coins int, hand []*Card) *Player {
 }
 
 func (p *Player) Copy() *Player {
-
 	hand := make([]*Card, len(p.Hand))
 	for i, card := range p.Hand {
 		hand[i] = card.Copy()
 	}
 
 	return NewPlayer(p.Name, p.Brain, p.Coins, hand)
-
 }
 
 func (p *Player) Opponents(state *State) []*Player {

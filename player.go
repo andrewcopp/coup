@@ -33,7 +33,28 @@ func (p *Player) Copy() *Player {
 }
 
 func (p *Player) Move(state *State) *Action {
-	move := (*p.Brain).Decide(state)
+	valid := []*Move{}
+	self := state.Players[0]
+
+	for _, other := range state.Alive()[1:] {
+		if state.Players[0].Coins >= 7 {
+			valid = append(valid, NewCoup(self, other))
+		}
+
+		if state.Players[0].Coins < 10 {
+			valid = append(valid, NewIncome(self))
+			valid = append(valid, NewForeignAid(self))
+			valid = append(valid, NewTax(self))
+			valid = append(valid, NewExchange(self))
+			valid = append(valid, NewSteal(self, other))
+		}
+
+		if state.Players[0].Coins >= 3 {
+			valid = append(valid, NewAssassinate(self, other))
+		}
+	}
+
+	move := (*p.Brain).Decide(state, valid)
 	return NewAction(move)
 }
 
@@ -62,6 +83,6 @@ func (p *Player) Reveal(state *State) {
 
 func (p *Player) Dispute(claim *Claim) {
 	if (*p.Brain).Dispute(claim) {
-		claim.Challenge.Subject = p
+		claim.Challenge = NewChallenge(p)
 	}
 }

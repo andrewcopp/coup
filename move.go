@@ -33,7 +33,7 @@ func (m *Move) Successful() bool {
 func (m *Move) Scrutinize(state *State) {
 	for _, other := range state.Alive()[1:] {
 		other.Dispute(m.Claim)
-		if m.Claim.Challenge.Subject != nil {
+		if m.Claim.Challenge != nil {
 			m.Claim.Verify(state)
 			return
 		}

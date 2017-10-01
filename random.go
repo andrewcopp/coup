@@ -12,37 +12,16 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-func (r *Random) Decide(state *State) *Move {
-	moves := []*Move{}
-	self := state.Players[0]
-
-	for _, other := range state.Alive()[1:] {
-		if state.Players[0].Coins >= 7 {
-			moves = append(moves, NewCoup(self, other))
-		}
-
-		if state.Players[0].Coins < 10 {
-			moves = append(moves, NewIncome(self))
-			moves = append(moves, NewForeignAid(self))
-			moves = append(moves, NewTax(self))
-			moves = append(moves, NewExchange(self))
-			moves = append(moves, NewSteal(self, other))
-		}
-
-		if state.Players[0].Coins >= 3 {
-			moves = append(moves, NewAssassinate(self, other))
-		}
-	}
-
+func (r *Random) Decide(state *State, valid []*Move) *Move {
 	rand.Seed(int64(time.Now().Nanosecond()))
-	i := rand.Intn(len(moves))
-	move := moves[i]
+	i := rand.Intn(len(valid))
+	move := valid[i]
 	return move
 }
 
 func (r *Random) Dispute(claim *Claim) bool {
 	rand.Seed(int64(time.Now().Nanosecond()))
-	if rand.Intn(2) != 0 {
+	if rand.Intn(5) != 0 {
 		return false
 	}
 

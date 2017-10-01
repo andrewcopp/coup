@@ -17,8 +17,9 @@ func init() {
 	two := coup.NewPlayer("Player Two", &decider, 2, []*coup.Card{})
 	three := coup.NewPlayer("Player Three", &decider, 2, []*coup.Card{})
 	four := coup.NewPlayer("Player Four", &decider, 2, []*coup.Card{})
+	five := coup.NewPlayer("Player Five", &decider, 2, []*coup.Card{})
 
-	board.Setup([]*coup.Player{one, two, three, four})
+	board.Setup([]*coup.Player{one, two, three, four, five})
 }
 
 func main() {

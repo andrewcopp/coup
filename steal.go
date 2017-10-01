@@ -15,7 +15,7 @@ func NewSteal(sub *Player, obj *Player) *Move {
 
 	return NewMove(
 		steal.Announce,
-		steal.Pay,
+		0,
 		NewClaim(sub, Captain, obj),
 		[]Type{Ambassador, Captain},
 		steal.Resolve,
@@ -25,8 +25,6 @@ func NewSteal(sub *Player, obj *Player) *Move {
 func (s *Steal) Announce() {
 	fmt.Printf("%s steals from %s.\n", s.Subject.Name, s.Object.Name)
 }
-
-func (s *Steal) Pay() {}
 
 func (s *Steal) Resolve(state *State) {
 	amt := 2

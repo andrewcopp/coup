@@ -14,7 +14,7 @@ func NewExchange(sub *Player) *Move {
 
 	return NewMove(
 		exchange.Announce,
-		exchange.Pay,
+		0,
 		NewClaim(sub, Ambassador, nil),
 		[]Type{},
 		exchange.Resolve,

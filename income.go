@@ -13,7 +13,7 @@ func NewIncome(sub *Player) *Move {
 
 	return NewMove(
 		income.Announce,
-		income.Pay,
+		0,
 		nil,
 		[]Type{},
 		income.Resolve,
@@ -23,8 +23,6 @@ func NewIncome(sub *Player) *Move {
 func (i *Income) Announce() {
 	fmt.Printf("%s takes income.\n", i.Subject.Name)
 }
-
-func (i *Income) Pay() {}
 
 func (i *Income) Resolve(state *State) {
 	i.Subject.Coins++

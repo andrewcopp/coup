@@ -15,7 +15,7 @@ func NewTax(sub *Player) *Move {
 
 	return NewMove(
 		tax.Announce,
-		tax.Pay,
+		0,
 		NewClaim(sub, Duke, nil),
 		[]Type{},
 		tax.Resolve,
@@ -25,8 +25,6 @@ func NewTax(sub *Player) *Move {
 func (t *Tax) Announce() {
 	fmt.Printf("%s taxes.\n", t.Subject.Name)
 }
-
-func (t *Tax) Pay() {}
 
 func (t *Tax) Resolve(state *State) {
 	t.Subject.Coins += 3

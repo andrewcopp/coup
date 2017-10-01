@@ -15,7 +15,7 @@ func NewCoup(sub *Player, obj *Player) *Move {
 
 	return NewMove(
 		coup.Announce,
-		coup.Pay,
+		7,
 		nil,
 		[]Type{},
 		coup.Resolve,
@@ -24,11 +24,6 @@ func NewCoup(sub *Player, obj *Player) *Move {
 
 func (c *Coup) Announce() {
 	fmt.Printf("%s coups %s.\n", c.Subject.Name, c.Object.Name)
-}
-
-func (c *Coup) Pay() {
-	c.Subject.Coins -= 7
-	Account(c.Subject)
 }
 
 func (c *Coup) Resolve(state *State) {

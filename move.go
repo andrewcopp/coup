@@ -2,16 +2,16 @@ package coup
 
 type Move struct {
 	Announce func()
-	Pay      func()
+	Cost     int
 	Claim    *Claim
 	Counters []Type
 	Resolve  func(state *State)
 }
 
-func NewMove(announce func(), pay func(), claim *Claim, counters []Type, resolve func(state *State)) *Move {
+func NewMove(announce func(), cost int, claim *Claim, counters []Type, resolve func(state *State)) *Move {
 	return &Move{
 		Announce: announce,
-		Pay:      pay,
+		Cost:     cost,
 		Claim:    claim,
 		Counters: counters,
 		Resolve:  resolve,

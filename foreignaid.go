@@ -13,7 +13,7 @@ func NewForeignAid(sub *Player) *Move {
 
 	return NewMove(
 		foreignAid.Announce,
-		foreignAid.Pay,
+		0,
 		nil,
 		[]Type{Duke},
 		foreignAid.Resolve,
@@ -23,8 +23,6 @@ func NewForeignAid(sub *Player) *Move {
 func (f *ForeignAid) Announce() {
 	fmt.Printf("%s takes foreign aid.\n", f.Subject.Name)
 }
-
-func (f *ForeignAid) Pay() {}
 
 func (f *ForeignAid) Resolve(state *State) {
 	f.Subject.Coins += 2

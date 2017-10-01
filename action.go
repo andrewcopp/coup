@@ -14,7 +14,10 @@ func NewAction(mv *Move) *Action {
 
 func (a *Action) Apply(state *State) {
 	a.Move.Announce()
-	a.Move.Pay()
+	if a.Move.Cost != 0 {
+		state.Players[0].Coins -= a.Move.Cost
+		Account(state.Players[0])
+	}
 
 	if a.Move.Claim != nil {
 		a.Move.Scrutinize(state)

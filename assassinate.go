@@ -16,7 +16,7 @@ func NewAssassinate(sub *Player, obj *Player) *Move {
 
 	return NewMove(
 		assassinate.Announce,
-		assassinate.Pay,
+		3,
 		NewClaim(sub, Assassin, obj),
 		[]Type{Contessa},
 		assassinate.Resolve,
@@ -25,11 +25,6 @@ func NewAssassinate(sub *Player, obj *Player) *Move {
 
 func (a *Assassinate) Announce() {
 	fmt.Printf("%s assassinates %s.\n", a.Subject.Name, a.Object.Name)
-}
-
-func (a *Assassinate) Pay() {
-	a.Subject.Coins -= 3
-	Account(a.Subject)
 }
 
 func (a *Assassinate) Resolve(state *State) {

@@ -34,7 +34,7 @@ func (a *Assassinate) Pay() {
 
 func (a *Assassinate) Resolve(state *State) {
 	if len(a.Object.Hand) != 0 {
-		a.Object.Reveal(state)
+		a.Object.Reveal(state, nil)
 		fmt.Printf("%s reveals a %s.\n", a.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
 	}
 }

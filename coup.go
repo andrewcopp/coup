@@ -32,6 +32,6 @@ func (c *Coup) Pay() {
 }
 
 func (c *Coup) Resolve(state *State) {
-	c.Object.Reveal(state)
+	c.Object.Reveal(state, nil)
 	fmt.Printf("%s reveals a %s.\n", c.Object.Name, state.Revealed[len(state.Revealed)-1].Name())
 }

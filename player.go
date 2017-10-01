@@ -1,10 +1,5 @@
 package coup
 
-import (
-	"math/rand"
-	"time"
-)
-
 type Player struct {
 	Name  string
 	Brain *Decider
@@ -58,27 +53,17 @@ func (p *Player) Move(state *State) *Action {
 	return NewAction(move)
 }
 
-func (p *Player) Produce(t Type) *Card {
-	for i, card := range p.Hand {
-		if card.Type == t {
-			p.Hand = append(p.Hand[:i], p.Hand[i+1:]...)
-			return card
+func (p *Player) Reveal(state *State, t *Type) *Card {
+	if t != nil {
+		for i, card := range p.Hand {
+			if card.Type == *t {
+				p.Hand = append(p.Hand[:i], p.Hand[i+1:]...)
+				return card
+			}
 		}
 	}
 
-	return nil
-}
-
-func (p *Player) Discard() *Card {
-	rand.Seed(int64(time.Now().Nanosecond()))
-	i := rand.Intn(len(p.Hand))
-	card := p.Hand[i]
-	p.Hand = append(p.Hand[:i], p.Hand[i+1:]...)
-	return card
-}
-
-func (p *Player) Reveal(state *State) {
-	state.Revealed = append(state.Revealed, p.Discard())
+	return (*p.Brain).Discard(state)
 }
 
 func (p *Player) Dispute(claim *Claim) {

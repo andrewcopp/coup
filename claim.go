@@ -20,18 +20,19 @@ func NewClaim(sub *Player, dec Type, obj *Player) *Claim {
 func (c *Claim) Verify(state *State) {
 	challenger := c.Challenge.Subject
 	fmt.Printf("%s challenges.\n", challenger.Name)
-	if card := c.Subject.Produce(c.Declared); card != nil {
-		c.Challenge.Revealed = card.Type
+	revealed := c.Subject.Reveal(state, &c.Declared)
+	c.Challenge.Revealed = revealed.Type
+
+	var discarded *Card
+	if c.Declared != c.Challenge.Revealed {
 		fmt.Printf("Challenge unsuccessful.\n")
-		challenger.Reveal(state)
-		fmt.Printf("%s reveals a %s.\n", challenger.Name, state.Revealed[len(state.Revealed)-1].Name())
-		state.Deck.Add(card)
+		discarded = challenger.Reveal(state, nil)
+		state.Deck.Add(revealed)
 		c.Subject.Hand = append(c.Subject.Hand, state.Deck.Draw())
 	} else {
 		fmt.Printf("Challenge successful.\n")
-		c.Subject.Reveal(state)
-		revealed := state.Revealed[len(state.Revealed)-1]
-		c.Challenge.Revealed = revealed.Type
-		fmt.Printf("%s reveals a %s.\n", c.Subject.Name, revealed.Name())
+		discarded = revealed
 	}
+
+	fmt.Printf("%s discards a %s.\n", c.Subject.Name, discarded.Name())
 }

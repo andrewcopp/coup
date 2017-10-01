@@ -31,6 +31,6 @@ func (e *Exchange) Resolve(state *State) {
 	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
 	e.Subject.Hand = append(e.Subject.Hand, state.Deck.Draw())
 
-	state.Deck.Add(e.Subject.Discard())
-	state.Deck.Add(e.Subject.Discard())
+	state.Deck.Add(e.Subject.Reveal(state, nil))
+	state.Deck.Add(e.Subject.Reveal(state, nil))
 }

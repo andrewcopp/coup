@@ -27,3 +27,12 @@ func (r *Random) Dispute(claim *Claim) bool {
 
 	return true
 }
+
+func (r *Random) Discard(state *State) *Card {
+	self := state.Players[0]
+	rand.Seed(int64(time.Now().Nanosecond()))
+	i := rand.Intn(len(self.Hand))
+	card := self.Hand[i]
+	self.Hand = append(self.Hand[:i], self.Hand[i+1:]...)
+	return card
+}

@@ -63,7 +63,7 @@ func (p *Player) Reveal(state *State, t *Type) *Card {
 		}
 	}
 
-	return (*p.Brain).Discard(state)
+	return (*p.Brain).Discard(state, p)
 }
 
 func (p *Player) Dispute(claim *Claim) {

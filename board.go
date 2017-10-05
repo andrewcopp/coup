@@ -43,10 +43,13 @@ func (b *Board) Deal() {
 func (b *Board) Play() *Player {
 
 	for b.Next() {
-
+		// Move
+		// Challenge
+		// Block
+		// Challenge
 	}
 
-	return nil
+	return b.Players[0]
 }
 
 func (b *Board) Next() bool {
@@ -73,6 +76,10 @@ func (b *Board) State(player int) *State {
 	return NewState(self, others, b.Discard)
 }
 
+// func (b *Board) Move() Action {
+//
+// }
+
 // func (brd *Board) Play() *Player {
 // 	for count := 1; brd.Continue(); count++ {
 // 		fmt.Println()
@@ -87,16 +94,4 @@ func (b *Board) State(player int) *State {
 // 	}
 //
 // 	return brd.State.Players[0]
-// }
-//
-// func (brd *Board) Continue() bool {
-// 	return len(brd.State.Alive()) > 1
-// }
-//
-// func (brd *Board) Shift(state *State) {
-// 	state.Players = append(state.Players[1:], state.Players[0])
-//
-// 	for len(state.Players[0].Hand) == 0 {
-// 		state.Players = append(state.Players[1:], state.Players[0])
-// 	}
 // }

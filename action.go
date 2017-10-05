@@ -1,5 +1,9 @@
 package coup
 
+// type Action interface {
+// 	Modify(board *Board)
+// }
+
 //
 // type Action struct {
 // 	Move  *Move

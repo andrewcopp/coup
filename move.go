@@ -1,5 +1,47 @@
 package coup
 
+type Move struct {
+	SubjectOne  bool
+	SubjectTwo  bool
+	ObjectOne   bool
+	ObjectTwo   bool
+	Tax         bool
+	Exchange    bool
+	Assassinate bool
+	Steal       bool
+}
+
+func NewMove(sub int, obj int, tax bool, exchange bool, assassinate bool, steal bool) *Move {
+	var subOne bool
+	var subTwo bool
+	switch sub {
+	case 0:
+		subOne = true
+	case 1:
+		subTwo = true
+	}
+
+	var objOne bool
+	var objTwo bool
+	switch obj {
+	case 0:
+		objOne = true
+	case 1:
+		objTwo = true
+	}
+
+	return &Move{
+		SubjectOne:  subOne,
+		SubjectTwo:  subTwo,
+		ObjectOne:   objOne,
+		ObjectTwo:   objTwo,
+		Tax:         tax,
+		Exchange:    exchange,
+		Assassinate: assassinate,
+		Steal:       steal,
+	}
+}
+
 // type MoveType int
 //
 // const (

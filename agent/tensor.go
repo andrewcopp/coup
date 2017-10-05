@@ -1,0 +1,53 @@
+package agent
+
+type Tensor struct {
+	OneCoins                              int
+	OneDukes                              int
+	OneAssassins                          int
+	OneAmbassadors                        int
+	OneCaptains                           int
+	OneContessa                           int
+	TwoCoins                              int
+	TwoCards                              int
+	DiscardedDukes                        int
+	DiscardedAssassins                    int
+	DiscardedAmbassadors                  int
+	DiscardedCaptains                     int
+	DiscardedContessas                    int
+	MoveZeroIncome                        bool
+	MoveZeroForeignAid                    bool
+	MoveZeroCoup                          bool
+	MoveZeroTax                           bool
+	MoveZeroAssassinate                   bool
+	MoveZeroExchange                      bool
+	MoveZeroSteal                         bool
+	MoveZeroSubjectOne                    bool
+	MoveZeroSubjectTwo                    bool
+	MoveZeroObjectOne                     bool
+	MoveZeroObjectTwo                     bool
+	MoveZeroChallengerNone                bool
+	MoveZeroChallengerOne                 bool
+	MoveZeroChallengerTwo                 bool
+	MoveZeroChallengeSuccessful           bool
+	MoveZeroChallengeDiscardedDuke        bool
+	MoveZeroChallengeDiscardedAssassin    bool
+	MoveZeroChallengeDiscardedAmbassador  bool
+	MoveZeroChallengeDiscardedCaptain     bool
+	MoveZeroChallengeDiscardedContessa    bool
+	BlockZeroDuke                         bool
+	BlockZeroAmbassador                   bool
+	BlockZeroCaptain                      bool
+	BlockZeroContessa                     bool
+	BlockZeroSubjectNone                  bool
+	BlockZeroSubjectOne                   bool
+	BlockZeroSubjectTwo                   bool
+	BlockZeroChallengerNone               bool
+	BlockZeroChallengerOne                bool
+	BLockZeroChallengerTwo                bool
+	BlockZeroChallengeSuccessful          bool
+	BlockZeroChallengeDiscardedDuke       bool
+	BlockZeroChallengeDiscardedAssassin   bool
+	BlockZeroChallengeDiscardedAmbassador bool
+	BlockZeroChallengeDiscardedCaptain    bool
+	BlockZeroChallengeDiscardedContessa   bool
+}

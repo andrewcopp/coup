@@ -1,60 +1,102 @@
 package coup
 
-import "fmt"
+import (
+	"math/rand"
+	"time"
+)
 
 type Board struct {
-	State *State
+	Deck    *Hand
+	Discard *Hand
+	Players []*Player
 }
 
 func NewBoard() *Board {
 	return &Board{
-		State: nil,
+		Deck:    NewHand(3, 3, 3, 3, 3),
+		Discard: NewHand(0, 0, 0, 0, 0),
+		Players: []*Player{},
 	}
 }
 
-func (brd *Board) Setup(players []*Player) {
-	cards := make([]*Card, 15)
-	for i := 0; i < 5; i++ {
-		for j := 0; j < 3; j++ {
-			cards[3*i+j] = NewCard(CardType(i))
+func (b *Board) Add(player *Player) {
+	player.Coins = 2
+	b.Players = append(b.Players, player)
+}
+
+func (b *Board) Setup() {
+	rand.Seed(int64(time.Now().Nanosecond()))
+	for i := range b.Players {
+		j := rand.Intn(i + 1)
+		b.Players[i], b.Players[j] = b.Players[j], b.Players[i]
+	}
+}
+
+func (b *Board) Deal() {
+	for i := 0; i < 2; i++ {
+		for _, player := range append(b.Players[1:], b.Players[0]) {
+			player.Draw(b.Deck)
 		}
 	}
+}
 
-	deck := NewDeck(cards)
-	deck.Shuffle()
+func (b *Board) Play() *Player {
 
-	for _, player := range players {
-		player.Draw(deck)
-		player.Draw(deck)
+	for b.Next() {
+
 	}
 
-	brd.State = NewState(nil, deck, NewPile(), players)
+	return nil
 }
 
-func (brd *Board) Play() *Player {
-	for count := 1; brd.Continue(); count++ {
-		fmt.Println()
-		fmt.Printf("Turn %d\n", count)
-		fmt.Println("------")
-		state := brd.State.Copy()
-		player := state.Players[0]
-		action := player.Move(state)
-		action.Apply(state)
-		brd.Shift(state)
-		brd.State = state
+func (b *Board) Next() bool {
+	b.Players = append(b.Players[1:], b.Players[0])
+	for b.Players[0].Hand.Size() == 0 {
+		b.Players = append(b.Players[1:], b.Players[0])
 	}
 
-	return brd.State.Players[0]
-}
-
-func (brd *Board) Continue() bool {
-	return len(brd.State.Alive()) > 1
-}
-
-func (brd *Board) Shift(state *State) {
-	state.Players = append(state.Players[1:], state.Players[0])
-
-	for len(state.Players[0].Hand) == 0 {
-		state.Players = append(state.Players[1:], state.Players[0])
+	for _, player := range b.Players[1:] {
+		if player.Alive() {
+			return true
+		}
 	}
+	return false
 }
+
+func (b *Board) State(player int) *State {
+	players := append(b.Players[player:], b.Players[:player]...)
+	self := NewSelf(players[0])
+	others := make([]*Other, len(players[1:]))
+	for i, player := range players[1:] {
+		others[i] = NewOther(player)
+	}
+	return NewState(self, others, b.Discard)
+}
+
+// func (brd *Board) Play() *Player {
+// 	for count := 1; brd.Continue(); count++ {
+// 		fmt.Println()
+// 		fmt.Printf("Turn %d\n", count)
+// 		fmt.Println("------")
+// 		state := brd.State.Copy()
+// 		player := state.Players[0]
+// 		action := player.Move(state)
+// 		action.Apply(state)
+// 		brd.Shift(state)
+// 		brd.State = state
+// 	}
+//
+// 	return brd.State.Players[0]
+// }
+//
+// func (brd *Board) Continue() bool {
+// 	return len(brd.State.Alive()) > 1
+// }
+//
+// func (brd *Board) Shift(state *State) {
+// 	state.Players = append(state.Players[1:], state.Players[0])
+//
+// 	for len(state.Players[0].Hand) == 0 {
+// 		state.Players = append(state.Players[1:], state.Players[0])
+// 	}
+// }

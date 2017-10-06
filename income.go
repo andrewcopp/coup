@@ -5,7 +5,7 @@ func NewIncome(sub int) *Action {
 		StateFunc: func(state *State) []*State {
 			return []*State{state}
 		}, BoardFunc: func(board *Board) {
-			board.Players[sub].Coins++
+			// board.Players[sub].Coins++
 		},
 	}
 }

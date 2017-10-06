@@ -1,6 +1,6 @@
 package coup
 
-func NewSteal(sub int) *Action {
+func NewSteal(sub int, obj int) *Action {
 	return &Action{
 		StateFunc: func(state *State) []*State {
 			return []*State{state}

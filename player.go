@@ -20,6 +20,41 @@ func (p *Player) Copy() *Player {
 	}
 }
 
+func (p *Player) Moves(state *State) []*Action {
+	actions := []*Action{}
+
+	if state.Self.Coins < 10 {
+		actions = append(actions, NewIncome(0))
+		actions = append(actions, NewForeignAid(0))
+		actions = append(actions, NewTax(0))
+		actions = append(actions, NewExchange(0))
+	}
+
+	for _, other := range p.Opponents(state) {
+		if state.Self.Coins >= 7 {
+			actions = append(actions, NewCoup(0, other))
+		}
+
+		if state.Self.Coins < 10 {
+			actions = append(actions, NewSteal(0, other))
+		}
+
+		if state.Self.Coins >= 3 {
+			actions = append(actions, NewAssassinate(0, other))
+		}
+	}
+
+	return actions
+}
+
+func (p *Player) Challenges(state *State) []*Action {
+	return []*Action{}
+}
+
+func (p *Player) Blocks(state *State) []*Action {
+	return []*Action{}
+}
+
 //
 // func NewPlayer(name string, brain *Decider, coins int) *Player {
 // 	return &Player{
@@ -41,16 +76,16 @@ func (p *Player) Copy() *Player {
 //
 // 	return player
 // }
-//
-// func (p *Player) Opponents(state *State) []*Player {
-// 	opponents := []*Player{}
-// 	for _, player := range state.Alive() {
-// 		if player != p {
-// 			opponents = append(opponents, player)
-// 		}
-// 	}
-// 	return opponents
-// }
+
+func (p *Player) Opponents(state *State) []int {
+	opponents := []int{}
+	for i, other := range state.Others {
+		if other.Cards != 0 {
+			opponents = append(opponents, i)
+		}
+	}
+	return opponents
+}
 
 func (p *Player) Alive() bool {
 	return p.Hand.Size() > 0

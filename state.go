@@ -4,8 +4,7 @@ type State struct {
 	Self    *Self
 	Others  []*Other
 	Discard *Hand
-	Move    *Move
-	Block   *Block
+	Turn    *Turn
 }
 
 func NewState(self *Self, others []*Other, discard *Hand) *State {
@@ -13,6 +12,7 @@ func NewState(self *Self, others []*Other, discard *Hand) *State {
 		Self:    self,
 		Others:  others,
 		Discard: discard,
+		Turn:    NewTurn(),
 	}
 }
 
@@ -26,8 +26,7 @@ func (s *State) Copy() *State {
 		Self:    s.Self.Copy(),
 		Others:  others,
 		Discard: s.Discard.Copy(),
-		Move:    s.Move.Copy(),
-		Block:   s.Block.Copy(),
+		Turn:    s.Turn.Copy(),
 	}
 }
 

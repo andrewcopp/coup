@@ -1,6 +1,6 @@
 package coup
 
-func NewAssassinate(sub int) *Action {
+func NewAssassinate(sub int, obj int) *Action {
 	return &Action{
 		StateFunc: func(state *State) []*State {
 			return []*State{state}

@@ -20,8 +20,8 @@ func (p *Player) Copy() *Player {
 	}
 }
 
-func (p *Player) Moves(state *State) []*Action {
-	actions := []*Action{}
+func (p *Player) Moves(state *State) []Action {
+	actions := []Action{}
 
 	if state.Self.Coins < 10 {
 		actions = append(actions, NewIncome(0))

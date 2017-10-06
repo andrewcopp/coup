@@ -1,13 +1,21 @@
 package coup
 
-func NewIncome(sub int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
-			// board.Players[sub].Coins++
-		},
+type Income struct {
+	Subject int
+}
+
+func NewIncome(sub int) *Income {
+	return &Income{
+		Subject: sub,
 	}
+}
+
+func (i *Income) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (i *Income) Modify(board *Board) {
+
 }
 
 // func NewIncome(sub *Player) *Move {

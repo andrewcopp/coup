@@ -1,13 +1,21 @@
 package coup
 
-func NewExchange(sub int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
+type Exchange struct {
+	Subject int
+}
 
-		},
+func NewExchange(sub int) *Exchange {
+	return &Exchange{
+		Subject: sub,
 	}
+}
+
+func (e *Exchange) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (e *Exchange) Modify(board *Board) {
+
 }
 
 // func NewExchange(sub *Player, state *State) *Move {

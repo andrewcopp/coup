@@ -1,13 +1,21 @@
 package coup
 
-func NewForeignAid(sub int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
+type ForeignAid struct {
+	Subject int
+}
 
-		},
+func NewForeignAid(sub int) *ForeignAid {
+	return &ForeignAid{
+		Subject: sub,
 	}
+}
+
+func (f *ForeignAid) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (f *ForeignAid) Modify(board *Board) {
+
 }
 
 // func NewForeignAid(sub *Player) *Move {

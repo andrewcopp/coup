@@ -1,13 +1,21 @@
 package coup
 
-func NewTax(sub int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
+type Tax struct {
+	Subject int
+}
 
-		},
+func NewTax(sub int) *Tax {
+	return &Tax{
+		Subject: sub,
 	}
+}
+
+func (t *Tax) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (t *Tax) Modify(board *Board) {
+
 }
 
 // func NewTax(sub *Player) *Move {

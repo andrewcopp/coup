@@ -1,13 +1,23 @@
 package coup
 
-func NewAssassinate(sub int, obj int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
+type Assassinate struct {
+	Subject int
+	Object  int
+}
 
-		},
+func NewAssassinate(sub int, obj int) *Assassinate {
+	return &Assassinate{
+		Subject: sub,
+		Object:  obj,
 	}
+}
+
+func (a *Assassinate) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (a *Assassinate) Modify(board *Board) {
+
 }
 
 // func NewAssassinate(sub *Player, obj *Player, state *State) *Move {

@@ -1,13 +1,23 @@
 package coup
 
-func NewCoup(sub int, obj int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
+type Coup struct {
+	Subject int
+	Object  int
+}
 
-		},
+func NewCoup(sub int, obj int) *Coup {
+	return &Coup{
+		Subject: sub,
+		Object:  obj,
 	}
+}
+
+func (c *Coup) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (c *Coup) Modify(board *Board) {
+
 }
 
 // func NewCoup(sub *Player, obj *Player, state *State) *Move {

@@ -1,13 +1,23 @@
 package coup
 
-func NewSteal(sub int, obj int) *Action {
-	return &Action{
-		StateFunc: func(state *State) []*State {
-			return []*State{state}
-		}, BoardFunc: func(board *Board) {
+type Steal struct {
+	Subject int
+	Object  int
+}
 
-		},
+func NewSteal(sub int, obj int) *Steal {
+	return &Steal{
+		Subject: sub,
+		Object:  obj,
 	}
+}
+
+func (s *Steal) Consider(state *State) []*State {
+	return []*State{state}
+}
+
+func (s *Steal) Modify(board *Board) {
+
 }
 
 // func NewSteal(sub *Player, obj *Player) *Move {

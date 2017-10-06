@@ -1,8 +1,8 @@
 package coup
 
-type Action struct {
-	StateFunc func(state *State) []*State
-	BoardFunc func(board *Board)
+type Action interface {
+	Consider(state *State) []*State
+	Modify(board *Board)
 }
 
 // type Action interface {

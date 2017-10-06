@@ -1,5 +1,15 @@
 package coup
 
+func NewForeignAid(sub int) *Action {
+	return &Action{
+		StateFunc: func(state *State) []*State {
+			return []*State{state}
+		}, BoardFunc: func(board *Board) {
+
+		},
+	}
+}
+
 // func NewForeignAid(sub *Player) *Move {
 // 	return NewMove(
 // 		ForeignAid,

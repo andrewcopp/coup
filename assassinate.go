@@ -1,5 +1,15 @@
 package coup
 
+func NewAssassinate(sub int) *Action {
+	return &Action{
+		StateFunc: func(state *State) []*State {
+			return []*State{state}
+		}, BoardFunc: func(board *Board) {
+
+		},
+	}
+}
+
 // func NewAssassinate(sub *Player, obj *Player, state *State) *Move {
 // 	return NewMove(
 // 		Assassinate,

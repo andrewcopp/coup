@@ -42,6 +42,19 @@ func NewMove(sub int, obj int, tax bool, exchange bool, assassinate bool, steal 
 	}
 }
 
+func (m *Move) Copy() *Move {
+	return &Move{
+		SubjectOne:  m.SubjectOne,
+		SubjectTwo:  m.SubjectTwo,
+		ObjectOne:   m.ObjectOne,
+		ObjectTwo:   m.ObjectTwo,
+		Tax:         m.Tax,
+		Exchange:    m.Exchange,
+		Assassinate: m.Assassinate,
+		Steal:       m.Steal,
+	}
+}
+
 // type MoveType int
 //
 // const (

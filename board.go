@@ -19,6 +19,19 @@ func NewBoard() *Board {
 	}
 }
 
+func (b *Board) Copy() *Board {
+	players := make([]*Player, len(b.Players))
+	for i, player := range b.Players {
+		players[i] = player.Copy()
+	}
+
+	return &Board{
+		Deck:    b.Deck.Copy(),
+		Discard: b.Discard.Copy(),
+		Players: players,
+	}
+}
+
 func (b *Board) Add(player *Player) {
 	player.Coins = 2
 	b.Players = append(b.Players, player)

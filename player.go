@@ -12,6 +12,14 @@ type Player struct {
 	Hand  *Hand
 }
 
+func (p *Player) Copy() *Player {
+	return &Player{
+		Name:  p.Name,
+		Coins: p.Coins,
+		Hand:  p.Hand.Copy(),
+	}
+}
+
 //
 // func NewPlayer(name string, brain *Decider, coins int) *Player {
 // 	return &Player{

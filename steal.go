@@ -1,5 +1,15 @@
 package coup
 
+func NewSteal(sub int) *Action {
+	return &Action{
+		StateFunc: func(state *State) []*State {
+			return []*State{state}
+		}, BoardFunc: func(board *Board) {
+
+		},
+	}
+}
+
 // func NewSteal(sub *Player, obj *Player) *Move {
 // 	return NewMove(
 // 		Steal,

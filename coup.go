@@ -1,5 +1,15 @@
 package coup
 
+func NewCoup(sub int, obj int) *Action {
+	return &Action{
+		StateFunc: func(state *State) []*State {
+			return []*State{state}
+		}, BoardFunc: func(board *Board) {
+
+		},
+	}
+}
+
 // func NewCoup(sub *Player, obj *Player, state *State) *Move {
 // 	return NewMove(
 // 		Coup,

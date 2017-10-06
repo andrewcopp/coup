@@ -1,5 +1,15 @@
 package coup
 
+func NewExchange(sub int) *Action {
+	return &Action{
+		StateFunc: func(state *State) []*State {
+			return []*State{state}
+		}, BoardFunc: func(board *Board) {
+
+		},
+	}
+}
+
 // func NewExchange(sub *Player, state *State) *Move {
 // 	return NewMove(
 // 		Exchange,

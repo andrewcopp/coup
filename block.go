@@ -25,6 +25,15 @@ func NewBlock(sub int, ambassador bool, captain bool) *Block {
 	}
 }
 
+func (b *Block) Copy() *Block {
+	return &Block{
+		SubjectOne: b.SubjectOne,
+		SubjectTwo: b.SubjectTwo,
+		Ambassador: b.Ambassador,
+		Captain:    b.Captain,
+	}
+}
+
 // type Block struct {
 // 	// Claim *Claim
 // }

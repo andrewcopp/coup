@@ -16,6 +16,21 @@ func NewState(self *Self, others []*Other, discard *Hand) *State {
 	}
 }
 
+func (s *State) Copy() *State {
+	others := make([]*Other, len(s.Others))
+	for i, other := range s.Others {
+		others[i] = other.Copy()
+	}
+
+	return &State{
+		Self:    s.Self.Copy(),
+		Others:  others,
+		Discard: s.Discard.Copy(),
+		Move:    s.Move.Copy(),
+		Block:   s.Block.Copy(),
+	}
+}
+
 type Self struct {
 	Coins int
 	Hand  *Hand
@@ -28,6 +43,13 @@ func NewSelf(player *Player) *Self {
 	}
 }
 
+func (s *Self) Copy() *Self {
+	return &Self{
+		Coins: s.Coins,
+		Hand:  s.Hand.Copy(),
+	}
+}
+
 type Other struct {
 	Coins int
 	Cards int
@@ -37,6 +59,13 @@ func NewOther(player *Player) *Other {
 	return &Other{
 		Coins: player.Coins,
 		Cards: player.Hand.Size(),
+	}
+}
+
+func (o *Other) Copy() *Other {
+	return &Other{
+		Coins: o.Coins,
+		Cards: o.Cards,
 	}
 }
 
@@ -55,6 +84,16 @@ func NewHand(dukes int, assassins int, ambassadors int, captains int, contessas 
 		Ambassadors: ambassadors,
 		Captains:    captains,
 		Contessas:   contessas,
+	}
+}
+
+func (h *Hand) Copy() *Hand {
+	return &Hand{
+		Dukes:       h.Dukes,
+		Assassins:   h.Assassins,
+		Ambassadors: h.Ambassadors,
+		Captains:    h.Captains,
+		Contessas:   h.Contessas,
 	}
 }
 

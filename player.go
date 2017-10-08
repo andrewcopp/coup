@@ -20,31 +20,31 @@ func (p *Player) Copy() *Player {
 	}
 }
 
-func (p *Player) Moves(state *State) []Action {
-	actions := []Action{}
+func (p *Player) Moves(game *Game) []Move {
+	moves := []Move{}
 
-	if state.Self.Coins < 10 {
-		actions = append(actions, NewIncome(0))
-		actions = append(actions, NewForeignAid(0))
-		actions = append(actions, NewTax(0))
-		actions = append(actions, NewExchange(0))
+	if game.Players[0].Coins < 10 {
+		moves = append(moves, NewIncome(p))
+		moves = append(moves, NewForeignAid(p))
+		moves = append(moves, NewTax(p))
+		moves = append(moves, NewExchange(p))
 	}
 
-	for _, other := range p.Opponents(state) {
-		if state.Self.Coins >= 7 {
-			actions = append(actions, NewCoup(0, other))
+	for _, other := range p.Opponents(game) {
+		if game.Players[0].Coins >= 7 {
+			moves = append(moves, NewCoup(p, other))
 		}
 
-		if state.Self.Coins < 10 {
-			actions = append(actions, NewSteal(0, other))
+		if game.Players[0].Coins < 10 {
+			moves = append(moves, NewSteal(p, other))
 		}
 
-		if state.Self.Coins >= 3 {
-			actions = append(actions, NewAssassinate(0, other))
+		if game.Players[0].Coins >= 3 {
+			moves = append(moves, NewAssassinate(p, other))
 		}
 	}
 
-	return actions
+	return moves
 }
 
 func (p *Player) Challenges(state *State) []*Action {
@@ -77,11 +77,11 @@ func (p *Player) Blocks(state *State) []*Action {
 // 	return player
 // }
 
-func (p *Player) Opponents(state *State) []int {
-	opponents := []int{}
-	for i, other := range state.Others {
-		if other.Cards != 0 {
-			opponents = append(opponents, i)
+func (p *Player) Opponents(game *Game) []*Player {
+	opponents := []*Player{}
+	for _, player := range game.Players {
+		if player.Hand.Size() != 0 && p != player {
+			opponents = append(opponents, player)
 		}
 	}
 	return opponents
@@ -126,6 +126,19 @@ func (p *Player) Draw(deck *Hand) {
 
 	rand.Seed(int64(time.Now().Nanosecond()))
 	draws[rand.Intn(len(draws))]()
+}
+
+func (p *Player) Move(game *Game) Move {
+
+	return nil
+}
+
+func (p *Player) Block(game *Game, move Move) *Block {
+	return nil
+}
+
+func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
+	return nil
 }
 
 // func (p *Player) Move(state *State) *Action {

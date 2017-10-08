@@ -1,21 +1,27 @@
 package coup
 
 type Tax struct {
-	Subject int
+	Subject *Player
 }
 
-func NewTax(sub int) *Tax {
+func NewTax(sub *Player) *Tax {
 	return &Tax{
 		Subject: sub,
 	}
 }
 
-func (t *Tax) Consider(state *State) []*State {
-	return []*State{state}
+func (t *Tax) Pay() {}
+
+func (t *Tax) Claim() *Claim {
+	return NewClaim(Duke, nil)
 }
 
-func (t *Tax) Modify(board *Board) {
+func (t *Tax) Counter() *func(game *Game) *Block {
+	return nil
+}
 
+func (t *Tax) Resolve() {
+	t.Subject.Coins += 3
 }
 
 // func NewTax(sub *Player) *Move {
@@ -28,11 +34,4 @@ func (t *Tax) Modify(board *Board) {
 // 		[]CardType{},
 // 		TaxFunc(sub),
 // 	)
-// }
-//
-// func TaxFunc(sub *Player) func() {
-// 	return func() {
-// 		sub.Coins += 3
-// 		Account(sub)
-// 	}
 // }

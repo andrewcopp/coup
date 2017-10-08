@@ -33,13 +33,57 @@ func (g *Game) Setup() {
 func (g *Game) Play() *Player {
 
 	for g.Next() {
-		g.Move()
-		g.Challenge()
-		g.Block()
-		g.Challenge()
+		move := g.Players[0].Move(g)
+
+		successful := true
+		if claim := move.Claim(); claim != nil {
+			if challenge := g.Dispute(g.Players[0], claim); challenge != nil {
+				if g.Verify(claim) {
+					// challenge.Subject
+				} else {
+					// g.Players[0]
+					successful = false
+				}
+			}
+		}
+
+		if successful {
+			if counter := move.Counter(); counter != nil {
+				if block := (*counter)(g); block != nil {
+					if challenge := g.Dispute(block.Subject, block.Claim); challenge != nil {
+						if g.Verify(block.Claim) {
+							// challenge.Subject
+							successful = false
+						} else {
+							// block.Subject
+						}
+					} else {
+						successful = false
+					}
+				}
+			}
+
+			if successful {
+				move.Resolve()
+			}
+		}
+
 	}
 
 	return g.Players[0]
+}
+
+func (g *Game) Dispute(sub *Player, claim *Claim) *Challenge {
+	for _, opponent := range sub.Opponents(g) {
+		if challenge := opponent.Challenge(g, claim); challenge != nil {
+			return challenge
+		}
+	}
+	return nil
+}
+
+func (g *Game) Verify(claim *Claim) bool {
+	return true
 }
 
 func (g *Game) Next() bool {
@@ -54,28 +98,4 @@ func (g *Game) Next() bool {
 		}
 	}
 	return false
-}
-
-func (g *Game) State(player int) *State {
-	players := append(g.Players[player:], g.Players[:player]...)
-	self := NewSelf(players[0])
-	others := make([]*Other, len(players[1:]))
-	for i, player := range players[1:] {
-		others[i] = NewOther(player)
-	}
-	return NewState(self, others, g.Board.Discard)
-}
-
-func (g *Game) Move() {
-	state := g.State(0)
-	actions := g.Players[0].Moves(state)
-	print(actions)
-}
-
-func (g *Game) Challenge() {
-
-}
-
-func (g *Game) Block() {
-
 }

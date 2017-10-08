@@ -1,21 +1,27 @@
 package coup
 
 type Income struct {
-	Subject int
+	Subject *Player
 }
 
-func NewIncome(sub int) *Income {
+func NewIncome(sub *Player) *Income {
 	return &Income{
 		Subject: sub,
 	}
 }
 
-func (i *Income) Consider(state *State) []*State {
-	return []*State{state}
+func (i *Income) Pay() {}
+
+func (i *Income) Claim() *Claim {
+	return nil
 }
 
-func (i *Income) Modify(board *Board) {
+func (i *Income) Counter() *func(game *Game) *Block {
+	return nil
+}
 
+func (i *Income) Resolve() {
+	i.Subject.Coins++
 }
 
 // func NewIncome(sub *Player) *Move {

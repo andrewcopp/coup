@@ -1,20 +1,26 @@
 package coup
 
 type Exchange struct {
-	Subject int
+	Subject *Player
 }
 
-func NewExchange(sub int) *Exchange {
+func NewExchange(sub *Player) *Exchange {
 	return &Exchange{
 		Subject: sub,
 	}
 }
 
-func (e *Exchange) Consider(state *State) []*State {
-	return []*State{state}
+func (e *Exchange) Pay() {}
+
+func (e *Exchange) Claim() *Claim {
+	return NewClaim(Ambassador, nil)
 }
 
-func (e *Exchange) Modify(board *Board) {
+func (e *Exchange) Counter() *func(game *Game) *Block {
+	return nil
+}
+
+func (e *Exchange) Resolve() {
 
 }
 

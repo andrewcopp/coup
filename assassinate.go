@@ -1,22 +1,33 @@
 package coup
 
 type Assassinate struct {
-	Subject int
-	Object  int
+	Subject *Player
+	Object  *Player
 }
 
-func NewAssassinate(sub int, obj int) *Assassinate {
+func NewAssassinate(sub *Player, obj *Player) *Assassinate {
 	return &Assassinate{
 		Subject: sub,
 		Object:  obj,
 	}
 }
 
-func (a *Assassinate) Consider(state *State) []*State {
-	return []*State{state}
+func (a *Assassinate) Pay() {
+	a.Subject.Coins -= 3
 }
 
-func (a *Assassinate) Modify(board *Board) {
+func (a *Assassinate) Claim() *Claim {
+	return NewClaim(Assassin, a.Object)
+}
+
+func (a *Assassinate) Counter() *func(game *Game) *Block {
+	blockFunc := func(game *Game) *Block {
+		return nil
+	}
+	return &blockFunc
+}
+
+func (a *Assassinate) Resolve() {
 
 }
 

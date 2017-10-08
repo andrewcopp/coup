@@ -1,22 +1,30 @@
 package coup
 
 type Coup struct {
-	Subject int
-	Object  int
+	Subject *Player
+	Object  *Player
 }
 
-func NewCoup(sub int, obj int) *Coup {
+func NewCoup(sub *Player, obj *Player) *Coup {
 	return &Coup{
 		Subject: sub,
 		Object:  obj,
 	}
 }
 
-func (c *Coup) Consider(state *State) []*State {
-	return []*State{state}
+func (c *Coup) Pay() {
+	c.Subject.Coins -= 7
 }
 
-func (c *Coup) Modify(board *Board) {
+func (c *Coup) Claim() *Claim {
+	return nil
+}
+
+func (c *Coup) Counter() *func(game *Game) *Block {
+	return nil
+}
+
+func (c *Coup) Resolve() {
 
 }
 

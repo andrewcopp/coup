@@ -1,20 +1,17 @@
 package coup
 
-// type Claim struct {
-// 	Subject   *Player
-// 	Declared  CardType
-// 	Object    *Player
-// 	Challenge *Challenge
-// }
-//
-// func NewClaim(sub *Player, dec CardType, obj *Player) *Claim {
-// 	return &Claim{
-// 		Subject:  sub,
-// 		Declared: dec,
-// 		Object:   obj,
-// 	}
-// }
-//
+type Claim struct {
+	Declared CardType
+	Object   *Player
+}
+
+func NewClaim(dec CardType, obj *Player) *Claim {
+	return &Claim{
+		Declared: dec,
+		Object:   obj,
+	}
+}
+
 // func (c *Claim) Name() string {
 // 	switch c.Declared {
 // 	case Duke:

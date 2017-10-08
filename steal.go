@@ -1,23 +1,38 @@
 package coup
 
 type Steal struct {
-	Subject int
-	Object  int
+	Subject *Player
+	Object  *Player
 }
 
-func NewSteal(sub int, obj int) *Steal {
+func NewSteal(sub *Player, obj *Player) *Steal {
 	return &Steal{
 		Subject: sub,
 		Object:  obj,
 	}
 }
 
-func (s *Steal) Consider(state *State) []*State {
-	return []*State{state}
+func (s *Steal) Pay() {}
+
+func (s *Steal) Claim() *Claim {
+	return NewClaim(Captain, s.Object)
 }
 
-func (s *Steal) Modify(board *Board) {
+func (s *Steal) Counter() *func(game *Game) *Block {
+	blockFunc := func(game *Game) *Block {
+		return nil
+	}
+	return &blockFunc
+}
 
+func (s *Steal) Resolve() {
+	amt := 2
+	if s.Object.Coins < 2 {
+		amt = s.Object.Coins
+	}
+
+	s.Object.Coins -= amt
+	s.Subject.Coins += amt
 }
 
 // func NewSteal(sub *Player, obj *Player) *Move {
@@ -30,19 +45,4 @@ func (s *Steal) Modify(board *Board) {
 // 		[]CardType{Ambassador, Captain},
 // 		StealFunc(sub, obj),
 // 	)
-// }
-//
-// func StealFunc(sub *Player, obj *Player) func() {
-// 	return func() {
-// 		amt := 2
-// 		if obj.Coins < 2 {
-// 			amt = obj.Coins
-// 		}
-//
-// 		obj.Coins -= amt
-// 		sub.Coins += amt
-//
-// 		Account(sub)
-// 		Account(obj)
-// 	}
 // }

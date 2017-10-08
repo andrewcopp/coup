@@ -1,13 +1,13 @@
 package coup
 
-type Card int
+type CardType int
 
 const (
-	Duke       Card = iota
-	Ambassador      = iota
-	Assassin        = iota
-	Captain         = iota
-	Contessa        = iota
+	Duke       CardType = iota
+	Ambassador          = iota
+	Assassin            = iota
+	Captain             = iota
+	Contessa            = iota
 )
 
 // type Card struct {

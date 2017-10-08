@@ -1,5 +1,10 @@
 package coup
 
+type Block struct {
+	Subject *Player
+	Claim   *Claim
+}
+
 // type Block struct {
 // 	SubjectOne bool
 // 	SubjectTwo bool

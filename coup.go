@@ -26,6 +26,6 @@ func (c *Coup) Counter() *func(game *Game) *Block {
 
 func (c *Coup) Resolve() func(game *Game) {
 	return func(game *Game) {
-
+		game.Board.Deck.Add(c.Object.Discard(c.Object.Chooser.ChooseDiscard()))
 	}
 }

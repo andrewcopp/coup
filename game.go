@@ -17,16 +17,21 @@ func NewGame(players []*Player) *Game {
 	}
 }
 
-func (g *Game) Add(player *Player) {
-	player.Coins = 2
-	g.Players = append(g.Players, player)
-}
-
 func (g *Game) Setup() {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	for i := range g.Players {
 		j := rand.Intn(i + 1)
 		g.Players[i], g.Players[j] = g.Players[j], g.Players[i]
+	}
+
+	for _, player := range g.Players {
+		player.Coins = 2
+	}
+
+	for i := 0; i < 2; i++ {
+		for _, player := range append(g.Players[1:], g.Players[0]) {
+			player.Draw(g.Board.Deck)
+		}
 	}
 }
 

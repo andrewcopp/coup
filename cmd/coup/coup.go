@@ -6,24 +6,23 @@ import (
 	"github.com/andrewcopp/coup"
 )
 
-var board *coup.Board
+var game *coup.Game
 
 func init() {
-	board = coup.NewBoard()
+	var chooser coup.Chooser
+	chooser = coup.NewRandom()
+	one := coup.NewPlayer("Player One", chooser, 2)
+	two := coup.NewPlayer("Player Two", chooser, 2)
+	three := coup.NewPlayer("Player Three", chooser, 2)
+	four := coup.NewPlayer("Player Four", chooser, 2)
+	five := coup.NewPlayer("Player Five", chooser, 2)
 
-	var decider coup.Decider
-	decider = coup.NewRandom()
-	one := coup.NewPlayer("Player One", &decider, 2)
-	two := coup.NewPlayer("Player Two", &decider, 2)
-	three := coup.NewPlayer("Player Three", &decider, 2)
-	four := coup.NewPlayer("Player Four", &decider, 2)
-	five := coup.NewPlayer("Player Five", &decider, 2)
-
-	board.Setup([]*coup.Player{one, two, three, four, five})
+	game = coup.NewGame([]*coup.Player{one, two, three, four, five})
 }
 
 func main() {
-	winner := board.Play()
+	game.Setup()
+	winner := game.Play()
 	fmt.Println()
 	fmt.Println(winner.Name, "wins!")
 	fmt.Println()

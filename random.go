@@ -19,8 +19,16 @@ func (r *Random) Choose(moves []Move) Move {
 	return move
 }
 
-func (r *Random) ChooseDiscard() *Card {
-	return nil
+func (r *Random) ChooseBlock(claim *Claim) bool {
+	return false
+}
+
+func (r *Random) ChooseChallenge(claim *Claim) bool {
+	return false
+}
+
+func (r *Random) ChooseDiscard() CardType {
+	return Duke
 }
 
 // func (r *Random) Dispute(claim *Claim) bool {

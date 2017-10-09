@@ -1,19 +1,19 @@
 package learner
 
 type State struct {
-	OneCoins             int
-	OneDukes             int
-	OneAssassins         int
-	OneAmbassadors       int
-	OneCaptains          int
-	OneContessas         int
-	TwoCoins             int
-	TwoCards             int
-	DiscardedDukes       int
-	DiscardedAssassins   int
-	DiscardedAmbassadors int
-	DiscardedCaptains    int
-	DiscardedContessas   int
+	OneCoins             float64
+	OneDukes             float64
+	OneAssassins         float64
+	OneAmbassadors       float64
+	OneCaptains          float64
+	OneContessas         float64
+	TwoCoins             float64
+	TwoCards             float64
+	DiscardedDukes       float64
+	DiscardedAssassins   float64
+	DiscardedAmbassadors float64
+	DiscardedCaptains    float64
+	DiscardedContessas   float64
 	SubjectOne           bool
 	SubjectTwo           bool
 	MoveForeignAid       bool

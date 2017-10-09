@@ -12,7 +12,7 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-func (r *Random) Choose(moves []Move) Move {
+func (r *Random) ChooseMove(moves []Move) Move {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	i := rand.Intn(len(moves))
 	move := moves[i]

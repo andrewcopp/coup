@@ -10,20 +10,16 @@ const (
 	Contessa            = iota
 )
 
-// type Card struct {
-// 	CardType CardType
-// }
+type Card struct {
+	CardType CardType
+}
 
-// func NewCard(c CardType) *Card {
-// 	return &Card{
-// 		CardType: c,
-// 	}
-// }
-//
-// func (c *Card) Copy() *Card {
-// 	return NewCard(c.CardType)
-// }
-//
+func NewCard(c CardType) *Card {
+	return &Card{
+		CardType: c,
+	}
+}
+
 // func (c *Card) Name() string {
 // 	switch c.CardType {
 // 	case Duke:

@@ -17,3 +17,13 @@ func (h *Hand) Size() int {
 func (h *Hand) Add(card *Card) {
 	h.Cards = append(h.Cards, card)
 }
+
+func (h *Hand) Remove(cardType CardType) *Card {
+	for i, card := range h.Cards {
+		if card.CardType == cardType {
+			h.Cards = append(h.Cards[:i], h.Cards[i+1:]...)
+			return card
+		}
+	}
+	return nil
+}

@@ -13,7 +13,7 @@ func NewTax(sub *Player) *Tax {
 func (t *Tax) Pay() {}
 
 func (t *Tax) Claim() *Claim {
-	return NewClaim(Duke, nil)
+	return NewClaim(t.Subject, Duke)
 }
 
 func (t *Tax) Counter() *func(game *Game) *Block {

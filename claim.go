@@ -1,13 +1,13 @@
 package coup
 
 type Claim struct {
+	Subject  *Player
 	Declared CardType
-	Object   *Player
 }
 
-func NewClaim(dec CardType, obj *Player) *Claim {
+func NewClaim(sub *Player, dec CardType) *Claim {
 	return &Claim{
+		Subject:  sub,
 		Declared: dec,
-		Object:   obj,
 	}
 }

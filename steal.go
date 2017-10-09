@@ -15,14 +15,14 @@ func NewSteal(sub *Player, obj *Player) *Steal {
 func (s *Steal) Pay() {}
 
 func (s *Steal) Claim() *Claim {
-	return NewClaim(Captain, s.Object)
+	return NewClaim(s.Subject, Captain)
 }
 
 func (s *Steal) Counter() *func(game *Game) *Block {
 	blockFunc := func(game *Game) *Block {
-		if block := s.Object.Block(game, NewClaim(Ambassador, nil)); block != nil {
+		if block := s.Object.Block(game, NewClaim(s.Object, Ambassador)); block != nil {
 			return block
-		} else if block := s.Object.Block(game, NewClaim(Captain, nil)); block != nil {
+		} else if block := s.Object.Block(game, NewClaim(s.Object, Captain)); block != nil {
 			return block
 		}
 		return nil

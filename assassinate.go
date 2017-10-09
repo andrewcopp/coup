@@ -17,12 +17,12 @@ func (a *Assassinate) Pay() {
 }
 
 func (a *Assassinate) Claim() *Claim {
-	return NewClaim(Assassin, a.Object)
+	return NewClaim(a.Subject, Assassin)
 }
 
 func (a *Assassinate) Counter() *func(game *Game) *Block {
 	blockFunc := func(game *Game) *Block {
-		claim := NewClaim(Contessa, nil)
+		claim := NewClaim(a.Object, Contessa)
 		return a.Object.Block(game, claim)
 	}
 	return &blockFunc

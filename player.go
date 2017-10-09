@@ -23,7 +23,7 @@ func (p *Player) Valid(game *Game) []Move {
 		moves = append(moves, NewIncome(p))
 		moves = append(moves, NewForeignAid(p))
 		moves = append(moves, NewTax(p))
-		moves = append(moves, NewExchange(p))
+		moves = append(moves, NewExchange(p, game.Board.Deck))
 	}
 
 	for _, other := range p.Opponents(game) {
@@ -67,14 +67,39 @@ func (p *Player) Draw(deck *Deck) {
 	p.Hand.Add(deck.Draw())
 }
 
+func (p *Player) Return(cardType CardType, deck *Deck) {
+	if card := p.Hand.Remove(cardType); card != nil {
+		deck.Add(card)
+	}
+}
+
+func (p *Player) Reveal(cardType CardType) *Card {
+	for _, card := range p.Hand.Cards {
+		if card.CardType == cardType {
+			return card
+		}
+	}
+	return nil
+}
+
+func (p *Player) Discard(pile *Hand) {
+	pile.Add(p.Chooser.ChooseDiscard())
+}
+
 func (p *Player) Move(game *Game) Move {
 	return p.Chooser.ChooseMove(p.Valid(game))
 }
 
 func (p *Player) Block(game *Game, claim *Claim) *Block {
+	if p.Chooser.ChooseBlock(claim) {
+		return NewBlock(p, claim)
+	}
 	return nil
 }
 
 func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
+	if p.Chooser.ChooseChallenge(claim) {
+		return NewChallenge(p)
+	}
 	return nil
 }

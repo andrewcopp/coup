@@ -39,9 +39,11 @@ func (g *Game) Play() *Player {
 		if claim := move.Claim(); claim != nil {
 			if challenge := g.Dispute(g.Players[0], claim); challenge != nil {
 				if g.Verify(claim) {
-					// challenge.Subject
+					challenge.Subject.Discard(g.Board.Discard)
+					claim.Subject.Return(claim.Declared, g.Board.Deck)
+					claim.Subject.Draw(g.Board.Deck)
 				} else {
-					// g.Players[0]
+					g.Players[0].Discard(g.Board.Discard)
 					successful = false
 				}
 			}
@@ -52,10 +54,12 @@ func (g *Game) Play() *Player {
 				if block := (*counter)(g); block != nil {
 					if challenge := g.Dispute(block.Subject, block.Claim); challenge != nil {
 						if g.Verify(block.Claim) {
-							// challenge.Subject
+							challenge.Subject.Discard(g.Board.Discard)
+							block.Claim.Subject.Return(block.Claim.Declared, g.Board.Deck)
+							block.Claim.Subject.Draw(g.Board.Deck)
 							successful = false
 						} else {
-							// block.Subject
+							block.Subject.Discard(g.Board.Discard)
 						}
 					} else {
 						successful = false
@@ -83,7 +87,7 @@ func (g *Game) Dispute(sub *Player, claim *Claim) *Challenge {
 }
 
 func (g *Game) Verify(claim *Claim) bool {
-	return true
+	return claim.Subject.Reveal(claim.Declared) != nil
 }
 
 func (g *Game) Next() bool {

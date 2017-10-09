@@ -19,6 +19,10 @@ func (r *Random) Choose(moves []Move) Move {
 	return move
 }
 
+func (r *Random) ChooseDiscard() *Card {
+	return nil
+}
+
 // func (r *Random) Dispute(claim *Claim) bool {
 // 	rand.Seed(int64(time.Now().Nanosecond()))
 // 	if rand.Intn(5) != 0 {

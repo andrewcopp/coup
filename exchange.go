@@ -2,18 +2,20 @@ package coup
 
 type Exchange struct {
 	Subject *Player
+	Deck    *Deck
 }
 
-func NewExchange(sub *Player) *Exchange {
+func NewExchange(sub *Player, deck *Deck) *Exchange {
 	return &Exchange{
 		Subject: sub,
+		Deck:    deck,
 	}
 }
 
 func (e *Exchange) Pay() {}
 
 func (e *Exchange) Claim() *Claim {
-	return NewClaim(Ambassador, nil)
+	return NewClaim(e.Subject, Ambassador)
 }
 
 func (e *Exchange) Counter() *func(game *Game) *Block {

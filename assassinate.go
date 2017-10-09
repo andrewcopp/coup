@@ -28,6 +28,10 @@ func (a *Assassinate) Counter() *func(game *Game) *Block {
 	return &blockFunc
 }
 
-func (a *Assassinate) Resolve() {
-
+func (a *Assassinate) Resolve() func(game *Game) {
+	return func(game *Game) {
+		if a.Object.Alive() {
+			game.Board.Deck.Add(a.Object.Discard(a.Object.Chooser.ChooseDiscard()))
+		}
+	}
 }

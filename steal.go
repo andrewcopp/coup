@@ -30,12 +30,14 @@ func (s *Steal) Counter() *func(game *Game) *Block {
 	return &blockFunc
 }
 
-func (s *Steal) Resolve() {
-	amt := 2
-	if s.Object.Coins < 2 {
-		amt = s.Object.Coins
-	}
+func (s *Steal) Resolve() func(game *Game) {
+	return func(game *Game) {
+		amt := 2
+		if s.Object.Coins < 2 {
+			amt = s.Object.Coins
+		}
 
-	s.Object.Coins -= amt
-	s.Subject.Coins += amt
+		s.Object.Coins -= amt
+		s.Subject.Coins += amt
+	}
 }

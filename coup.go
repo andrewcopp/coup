@@ -24,6 +24,8 @@ func (c *Coup) Counter() *func(game *Game) *Block {
 	return nil
 }
 
-func (c *Coup) Resolve() {
+func (c *Coup) Resolve() func(game *Game) {
+	return func(game *Game) {
 
+	}
 }

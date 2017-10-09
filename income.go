@@ -20,6 +20,8 @@ func (i *Income) Counter() *func(game *Game) *Block {
 	return nil
 }
 
-func (i *Income) Resolve() {
-	i.Subject.Coins++
+func (i *Income) Resolve() func(game *Game) {
+	return func(game *Game) {
+		i.Subject.Coins++
+	}
 }

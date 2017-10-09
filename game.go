@@ -54,6 +54,9 @@ func (g *Game) Play() *Player {
 			}
 		}
 
+		// object is stil alive (assassin)
+		// discard (exchange)
+
 		if successful {
 			if counter := move.Counter(); counter != nil {
 				if block := (*counter)(g); block != nil {

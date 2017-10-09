@@ -20,6 +20,8 @@ func (t *Tax) Counter() *func(game *Game) *Block {
 	return nil
 }
 
-func (t *Tax) Resolve() {
-	t.Subject.Coins += 3
+func (t *Tax) Resolve() func(game *Game) {
+	return func(game *Game) {
+		t.Subject.Coins += 3
+	}
 }

@@ -22,10 +22,12 @@ func (e *Exchange) Counter() *func(game *Game) *Block {
 	return nil
 }
 
-func (e *Exchange) Resolve() {
-	e.Subject.Draw(e.Deck)
-	e.Subject.Draw(e.Deck)
+func (e *Exchange) Resolve() func(game *Game) {
+	return func(game *Game) {
+		e.Subject.Draw(e.Deck)
+		e.Subject.Draw(e.Deck)
 
-	e.Deck.Add(e.Subject.Discard(e.Subject.Chooser.ChooseDiscard()))
-	e.Deck.Add(e.Subject.Discard(e.Subject.Chooser.ChooseDiscard()))
+		e.Deck.Add(e.Subject.Discard(e.Subject.Chooser.ChooseDiscard()))
+		e.Deck.Add(e.Subject.Discard(e.Subject.Chooser.ChooseDiscard()))
+	}
 }

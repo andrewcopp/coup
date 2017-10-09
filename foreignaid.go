@@ -29,6 +29,8 @@ func (f *ForeignAid) Counter() *func(game *Game) *Block {
 	return &blockFunc
 }
 
-func (f *ForeignAid) Resolve() {
-	f.Subject.Coins += 2
+func (f *ForeignAid) Resolve() func(game *Game) {
+	return func(game *Game) {
+		f.Subject.Coins += 2
+	}
 }

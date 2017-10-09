@@ -67,12 +67,6 @@ func (p *Player) Draw(deck *Deck) {
 	p.Hand.Add(deck.Draw())
 }
 
-func (p *Player) Return(cardType CardType, deck *Deck) {
-	if card := p.Hand.Remove(cardType); card != nil {
-		deck.Add(card)
-	}
-}
-
 func (p *Player) Reveal(cardType CardType) *Card {
 	for _, card := range p.Hand.Cards {
 		if card.CardType == cardType {
@@ -82,8 +76,8 @@ func (p *Player) Reveal(cardType CardType) *Card {
 	return nil
 }
 
-func (p *Player) Discard(pile *Hand) {
-	pile.Add(p.Chooser.ChooseDiscard())
+func (p *Player) Discard(cardType CardType) *Card {
+	return p.Hand.Remove(cardType)
 }
 
 func (p *Player) Move(game *Game) Move {

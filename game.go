@@ -39,11 +39,11 @@ func (g *Game) Play() *Player {
 		if claim := move.Claim(); claim != nil {
 			if challenge := g.Dispute(g.Players[0], claim); challenge != nil {
 				if g.Verify(claim) {
-					challenge.Subject.Discard(g.Board.Discard)
-					claim.Subject.Return(claim.Declared, g.Board.Deck)
+					g.Board.Discard.Add(challenge.Subject.Discard(challenge.Subject.Chooser.ChooseDiscard()))
+					g.Board.Deck.Add(challenge.Subject.Discard(claim.Declared))
 					claim.Subject.Draw(g.Board.Deck)
 				} else {
-					g.Players[0].Discard(g.Board.Discard)
+					g.Board.Discard.Add(g.Players[0].Discard(g.Players[0].Chooser.ChooseDiscard()))
 					successful = false
 				}
 			}
@@ -54,12 +54,12 @@ func (g *Game) Play() *Player {
 				if block := (*counter)(g); block != nil {
 					if challenge := g.Dispute(block.Subject, block.Claim); challenge != nil {
 						if g.Verify(block.Claim) {
-							challenge.Subject.Discard(g.Board.Discard)
-							block.Claim.Subject.Return(block.Claim.Declared, g.Board.Deck)
+							g.Board.Discard.Add(challenge.Subject.Discard(challenge.Subject.Chooser.ChooseDiscard()))
+							g.Board.Deck.Add(block.Claim.Subject.Discard(block.Claim.Declared))
 							block.Claim.Subject.Draw(g.Board.Deck)
 							successful = false
 						} else {
-							block.Subject.Discard(g.Board.Discard)
+							g.Board.Discard.Add(block.Subject.Discard(block.Subject.Chooser.ChooseDiscard()))
 						}
 					} else {
 						successful = false

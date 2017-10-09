@@ -23,27 +23,9 @@ func (e *Exchange) Counter() *func(game *Game) *Block {
 }
 
 func (e *Exchange) Resolve() {
+	e.Subject.Draw(e.Deck)
+	e.Subject.Draw(e.Deck)
 
+	e.Deck.Add(e.Subject.Discard(e.Subject.Chooser.ChooseDiscard()))
+	e.Deck.Add(e.Subject.Discard(e.Subject.Chooser.ChooseDiscard()))
 }
-
-// func NewExchange(sub *Player, state *State) *Move {
-// 	return NewMove(
-// 		Exchange,
-// 		sub,
-// 		fmt.Sprintf("%s exchanges.", sub.Name),
-// 		0,
-// 		NewClaim(sub, Ambassador, nil),
-// 		[]CardType{},
-// 		ExchangeFunc(sub, state),
-// 	)
-// }
-//
-// func ExchangeFunc(sub *Player, state *State) func() {
-// 	return func() {
-// 		sub.Draw(state.Deck)
-// 		sub.Draw(state.Deck)
-//
-// 		state.Deck.Add(sub.Reveal(state, nil))
-// 		state.Deck.Add(sub.Reveal(state, nil))
-// 	}
-// }

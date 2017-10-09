@@ -23,15 +23,3 @@ func (t *Tax) Counter() *func(game *Game) *Block {
 func (t *Tax) Resolve() {
 	t.Subject.Coins += 3
 }
-
-// func NewTax(sub *Player) *Move {
-// 	return NewMove(
-// 		Tax,
-// 		sub,
-// 		fmt.Sprintf("%s taxes.", sub.Name),
-// 		0,
-// 		NewClaim(sub, Duke, nil),
-// 		[]CardType{},
-// 		TaxFunc(sub),
-// 	)
-// }

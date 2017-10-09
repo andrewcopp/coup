@@ -22,7 +22,8 @@ func (a *Assassinate) Claim() *Claim {
 
 func (a *Assassinate) Counter() *func(game *Game) *Block {
 	blockFunc := func(game *Game) *Block {
-		return nil
+		claim := NewClaim(Contessa, nil)
+		return a.Object.Block(game, claim)
 	}
 	return &blockFunc
 }

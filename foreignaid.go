@@ -18,6 +18,12 @@ func (f *ForeignAid) Claim() *Claim {
 
 func (f *ForeignAid) Counter() *func(game *Game) *Block {
 	blockFunc := func(game *Game) *Block {
+		claim := NewClaim(Duke, nil)
+		for _, opponent := range f.Subject.Opponents(game) {
+			if block := opponent.Block(game, claim); block != nil {
+				return block
+			}
+		}
 		return nil
 	}
 	return &blockFunc

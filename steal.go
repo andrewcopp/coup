@@ -20,6 +20,11 @@ func (s *Steal) Claim() *Claim {
 
 func (s *Steal) Counter() *func(game *Game) *Block {
 	blockFunc := func(game *Game) *Block {
+		if block := s.Object.Block(game, NewClaim(Ambassador, nil)); block != nil {
+			return block
+		} else if block := s.Object.Block(game, NewClaim(Captain, nil)); block != nil {
+			return block
+		}
 		return nil
 	}
 	return &blockFunc
@@ -34,15 +39,3 @@ func (s *Steal) Resolve() {
 	s.Object.Coins -= amt
 	s.Subject.Coins += amt
 }
-
-// func NewSteal(sub *Player, obj *Player) *Move {
-// 	return NewMove(
-// 		Steal,
-// 		sub,
-// 		fmt.Sprintf("%s steals from %s.", sub.Name, obj.Name),
-// 		0,
-// 		NewClaim(sub, Captain, obj),
-// 		[]CardType{Ambassador, Captain},
-// 		StealFunc(sub, obj),
-// 	)
-// }

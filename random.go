@@ -1,5 +1,10 @@
 package coup
 
+import (
+	"math/rand"
+	"time"
+)
+
 type Random struct {
 }
 
@@ -7,13 +12,13 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-// func (r *Random) Decide(state *State, valid []*Move) *Move {
-// 	rand.Seed(int64(time.Now().Nanosecond()))
-// 	i := rand.Intn(len(valid))
-// 	move := valid[i]
-// 	return move
-// }
-//
+func (r *Random) Choose(moves []Move) Move {
+	rand.Seed(int64(time.Now().Nanosecond()))
+	i := rand.Intn(len(moves))
+	move := moves[i]
+	return move
+}
+
 // func (r *Random) Dispute(claim *Claim) bool {
 // 	rand.Seed(int64(time.Now().Nanosecond()))
 // 	if rand.Intn(5) != 0 {

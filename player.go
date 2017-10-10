@@ -4,7 +4,7 @@ type Player struct {
 	Name    string
 	Chooser Chooser
 	Coins   int
-	Hand    *Hand
+	Hand    *Cards
 }
 
 func NewPlayer(name string, chooser Chooser, coins int) *Player {
@@ -12,18 +12,18 @@ func NewPlayer(name string, chooser Chooser, coins int) *Player {
 		Name:    name,
 		Chooser: chooser,
 		Coins:   coins,
-		Hand:    NewHand([]*Card{}),
+		Hand:    NewCards(0, 0, 0, 0, 0),
 	}
 }
 
-func (p *Player) Valid(game *Game) []Move {
-	moves := []Move{}
+func (p *Player) Valid(game *Game) []*Move {
+	moves := []*Move{}
 
 	if game.Players[0].Coins < 10 {
 		moves = append(moves, NewIncome(p))
 		moves = append(moves, NewForeignAid(p))
 		moves = append(moves, NewTax(p))
-		moves = append(moves, NewExchange(p, game.Board.Deck))
+		moves = append(moves, NewExchange(p))
 	}
 
 	for _, other := range p.Opponents(game) {
@@ -63,21 +63,22 @@ func (p *Player) Alive() bool {
 	return p.Hand.Size() > 0
 }
 
-func (p *Player) Draw(deck *Deck) {
-	p.Hand.Add(deck.Draw())
-}
+// func (p *Player) Draw(deck *Deck) {
+// 	// p.Hand.Add(deck.Draw())
+// }
+//
+// func (p *Player) Reveal(cardType CardType) *Card {
+// 	// for _, card := range p.Hand.Cards {
+// 	// 	if card.CardType == cardType {
+// 	// 		return card
+// 	// 	}
+// 	// }
+// 	return nil
+// }
 
-func (p *Player) Reveal(cardType CardType) *Card {
-	for _, card := range p.Hand.Cards {
-		if card.CardType == cardType {
-			return card
-		}
-	}
+func (p *Player) Discard(gm *Game, amt int) []CardEnum {
+	// return p.Hand.Remove(cardType)
 	return nil
-}
-
-func (p *Player) Discard(cardType CardType) *Card {
-	return p.Hand.Remove(cardType)
 }
 
 func (p *Player) Move(game *Game) Move {

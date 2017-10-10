@@ -27,7 +27,7 @@ func (r *Random) ChooseChallenge(claim *Claim) bool {
 	return false
 }
 
-func (r *Random) ChooseDiscard() CardType {
+func (r *Random) ChooseDiscard() CardEnum {
 	return Duke
 }
 

@@ -1,24 +1,24 @@
 package coup
 
-type CardType int
+type CardEnum int
 
 const (
-	Duke       CardType = iota
+	Duke       CardEnum = iota
 	Ambassador          = iota
 	Assassin            = iota
 	Captain             = iota
 	Contessa            = iota
 )
 
-type Card struct {
-	CardType CardType
-}
-
-func NewCard(c CardType) *Card {
-	return &Card{
-		CardType: c,
-	}
-}
+// type Card struct {
+// 	CardType CardType
+// }
+//
+// func NewCard(c CardType) *Card {
+// 	return &Card{
+// 		CardType: c,
+// 	}
+// }
 
 // func (c *Card) Name() string {
 // 	switch c.CardType {

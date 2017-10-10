@@ -63,29 +63,36 @@ func (p *Player) Alive() bool {
 	return p.Hand.Size() > 0
 }
 
-// func (p *Player) Draw(deck *Deck) {
-// 	// p.Hand.Add(deck.Draw())
-// }
-//
-// func (p *Player) Reveal(cardType CardType) *Card {
-// 	// for _, card := range p.Hand.Cards {
-// 	// 	if card.CardType == cardType {
-// 	// 		return card
-// 	// 	}
-// 	// }
-// 	return nil
-// }
+func (p *Player) Draw(deck *Cards) {
+	card := deck.Peek()
+	deck.Remove(card)
+	p.Hand.Add(card)
+}
 
 func (p *Player) Discard(gm *Game, amt int) []CardEnum {
 	// return p.Hand.Remove(cardType)
 	return nil
 }
 
-func (p *Player) Move(game *Game) Move {
+func (p *Player) Move(game *Game) *Move {
 	return p.Chooser.ChooseMove(p.Valid(game))
 }
 
-func (p *Player) Block(game *Game, claim *Claim) *Block {
+func (p *Player) Block(game *Game, mv *Move) *Block {
+
+	var claim *Claim
+
+	switch mv.Case {
+	case ForeignAid:
+		claim = NewClaim(p, Duke)
+	case Assassinate:
+		claim = NewClaim(p, Contessa)
+	case Steal:
+		// TODO: Fix
+		claim = NewClaim(p, Ambassador)
+		claim = NewClaim(p, Captain)
+	}
+
 	if p.Chooser.ChooseBlock(claim) {
 		return NewBlock(p, claim)
 	}

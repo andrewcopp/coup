@@ -89,7 +89,7 @@ func (m *Move) Modify(gm *Game) {
 
 	switch m.Case {
 	case Income:
-		m.Subject.Coins += 1
+		m.Subject.Coins++
 	case ForeignAid:
 		m.Subject.Coins += 2
 	case Coup:
@@ -99,7 +99,8 @@ func (m *Move) Modify(gm *Game) {
 	case Assassinate:
 		m.Object.Discard(gm, 1)
 	case Exchange:
-		// Draw 2
+		m.Subject.Draw(gm.Deck)
+		m.Subject.Draw(gm.Deck)
 		m.Object.Discard(gm, 2)
 	case Steal:
 		amt := 2
@@ -127,13 +128,16 @@ func (m *Move) Exposed(gm *Game) bool {
 		claim = NewClaim(m.Subject, Captain)
 	}
 
-	exposed := false
+	var exposed bool
 	var challenge *Challenge
 	for _, other := range m.Subject.Opponents(gm) {
 		if challenge = other.Challenge(gm, claim); challenge != nil {
 			if claim.Verify() {
 				challenge.Subject.Discard(gm, 1)
-				//
+				m.Subject.Hand.Remove(claim.Declared)
+				card := gm.Deck.Peek()
+				gm.Deck.Remove(card)
+				m.Subject.Hand.Add(card)
 			} else {
 				m.Subject.Discard(gm, 1)
 				exposed = true
@@ -167,8 +171,11 @@ func (m *Move) Blocked(gm *Game) bool {
 		block = m.Subject.Block(gm, nil)
 	}
 
+	var blocked bool
 	if block != nil {
-
+		if !block.Exposed(gm) {
+			blocked = true
+		}
 	}
 
 	switch m.Case {
@@ -176,5 +183,5 @@ func (m *Move) Blocked(gm *Game) bool {
 		// Update
 	}
 
-	return false
+	return blocked
 }

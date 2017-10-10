@@ -12,7 +12,7 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-func (r *Random) ChooseMove(moves []Move) Move {
+func (r *Random) ChooseMove(moves []*Move) *Move {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	i := rand.Intn(len(moves))
 	move := moves[i]
@@ -30,29 +30,3 @@ func (r *Random) ChooseChallenge(claim *Claim) bool {
 func (r *Random) ChooseDiscard() CardEnum {
 	return Duke
 }
-
-// func (r *Random) Dispute(claim *Claim) bool {
-// 	rand.Seed(int64(time.Now().Nanosecond()))
-// 	if rand.Intn(5) != 0 {
-// 		return false
-// 	}
-//
-// 	return true
-// }
-//
-// func (r *Random) Impede(counter CardType) bool {
-// 	rand.Seed(int64(time.Now().Nanosecond()))
-// 	if rand.Intn(5) != 0 {
-// 		return false
-// 	}
-//
-// 	return true
-// }
-//
-// func (r *Random) Discard(state *State, player *Player) *Card {
-// 	rand.Seed(int64(time.Now().Nanosecond()))
-// 	i := rand.Intn(len(player.Hand))
-// 	card := player.Hand[i]
-// 	player.Hand = append(player.Hand[:i], player.Hand[i+1:]...)
-// 	return card
-// }

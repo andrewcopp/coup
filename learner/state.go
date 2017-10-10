@@ -21,6 +21,10 @@ type State struct {
 	MoveSteal            bool
 	ObjectOne            bool
 	ObjectTwo            bool
+	MoveChallengerOne    bool
+	MoveChallengerTwo    bool
+	BlockChallengerOne   bool
+	BlockChallengerTwo   bool
 }
 
 // type State struct {

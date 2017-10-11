@@ -143,8 +143,10 @@ func (m *Move) Modify(gm *Game) {
 	case Tax:
 		m.Subject.Coins += 3
 	case Assassinate:
-		for _, card := range m.Object.Discard(gm, 1) {
-			gm.Discard.Add(card)
+		if m.Object.Alive() {
+			for _, card := range m.Object.Discard(gm, 1) {
+				gm.Discard.Add(card)
+			}
 		}
 	case Exchange:
 		// TODO: return to here

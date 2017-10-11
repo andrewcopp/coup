@@ -204,15 +204,15 @@ func (m *Move) Blocked(gm *Game) bool {
 	switch m.Case {
 	case ForeignAid:
 		for _, other := range m.Subject.Opponents(gm) {
-			m.Block = other.Block(gm, nil)
+			m.Block = other.Block(gm, m)
 			if m.Block != nil {
 				break
 			}
 		}
 	case Assassinate:
-		m.Block = m.Subject.Block(gm, nil)
+		m.Block = m.Subject.Block(gm, m)
 	case Steal:
-		m.Block = m.Subject.Block(gm, nil)
+		m.Block = m.Subject.Block(gm, m)
 	}
 
 	var blocked bool

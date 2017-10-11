@@ -80,22 +80,22 @@ func (p *Player) Move(game *Game) *Move {
 
 func (p *Player) Block(game *Game, mv *Move) *Block {
 
-	var claim *Claim
+	claims := []*Claim{}
 
 	switch mv.Case {
 	case ForeignAid:
-		claim = NewClaim(p, Duke)
+		claims = append(claims, NewClaim(p, Duke))
 	case Assassinate:
-		claim = NewClaim(p, Contessa)
+		claims = append(claims, NewClaim(p, Contessa))
 	case Steal:
-		// TODO: Fix
-		claim = NewClaim(p, Ambassador)
-		claim = NewClaim(p, Captain)
+		claims = append(claims, NewClaim(p, Ambassador))
+		claims = append(claims, NewClaim(p, Captain))
 	}
 
-	if p.Chooser.ChooseBlock(claim) {
+	if claim := p.Chooser.ChooseBlock(claims); claim != nil {
 		return NewBlock(p, claim)
 	}
+
 	return nil
 }
 

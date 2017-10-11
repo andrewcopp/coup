@@ -14,19 +14,24 @@ func NewRandom() *Random {
 
 func (r *Random) ChooseMove(moves []*Move) *Move {
 	rand.Seed(int64(time.Now().Nanosecond()))
-	i := rand.Intn(len(moves))
-	move := moves[i]
-	return move
+	return moves[rand.Intn(len(moves))]
 }
 
-func (r *Random) ChooseBlock(claim *Claim) bool {
-	return false
+func (r *Random) ChooseBlock(claims []*Claim) *Claim {
+	for _, claim := range claims {
+		rand.Seed(int64(time.Now().Nanosecond()))
+		if rand.Intn(5) == 0 {
+			return claim
+		}
+	}
+	return nil
 }
 
 func (r *Random) ChooseChallenge(claim *Claim) bool {
-	return false
+	rand.Seed(int64(time.Now().Nanosecond()))
+	return rand.Intn(5) == 0
 }
 
-func (r *Random) ChooseDiscard() CardEnum {
-	return Duke
+func (r *Random) ChooseDiscard(hand *Cards) CardEnum {
+	return hand.Peek()
 }

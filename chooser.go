@@ -2,7 +2,7 @@ package coup
 
 type Chooser interface {
 	ChooseMove(moves []*Move) *Move
-	ChooseBlock(claim *Claim) bool
+	ChooseBlock(claims []*Claim) *Claim
 	ChooseChallenge(claim *Claim) bool
-	// ChooseDiscard() CardType
+	ChooseDiscard(hand *Cards) CardEnum
 }

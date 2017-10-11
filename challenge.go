@@ -1,8 +1,7 @@
 package coup
 
 type Challenge struct {
-	Subject  *Player
-	Revealed CardType
+	Subject *Player
 }
 
 func NewChallenge(sub *Player) *Challenge {

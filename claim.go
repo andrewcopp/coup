@@ -1,68 +1,30 @@
 package coup
 
-import "fmt"
-
 type Claim struct {
-	Subject   *Player
-	Declared  CardType
-	Object    *Player
-	Challenge *Challenge
+	Subject  *Player
+	Declared CardEnum
 }
 
-func NewClaim(sub *Player, dec CardType, obj *Player) *Claim {
+func NewClaim(sub *Player, dec CardEnum) *Claim {
 	return &Claim{
 		Subject:  sub,
 		Declared: dec,
-		Object:   obj,
 	}
 }
 
-func (c *Claim) Name() string {
+func (c *Claim) Verify() bool {
 	switch c.Declared {
 	case Duke:
-		return "Duke"
+		return c.Subject.Hand.Dukes > 0
 	case Assassin:
-		return "Assassin"
+		return c.Subject.Hand.Assassins > 0
 	case Ambassador:
-		return "Ambassador"
+		return c.Subject.Hand.Ambassadors > 0
 	case Captain:
-		return "Captain"
+		return c.Subject.Hand.Captains > 0
 	case Contessa:
-		return "Contessa"
+		return c.Subject.Hand.Contessas > 0
 	}
 
-	panic("Weird CardType")
-}
-
-func (c *Claim) Scrutinize(state *State) {
-	for _, other := range c.Subject.Opponents(state) {
-		other.Dispute(c)
-		if c.Challenge != nil {
-			c.Verify(state)
-			return
-		}
-	}
-}
-
-func (c *Claim) Verify(state *State) {
-	challenger := c.Challenge.Subject
-	fmt.Printf("%s challenges.\n", challenger.Name)
-	revealed := c.Subject.Reveal(state, &c.Declared)
-	c.Challenge.Revealed = revealed.CardType
-
-	var loser *Player
-	var discarded *Card
-	if c.Declared != c.Challenge.Revealed {
-		fmt.Printf("Challenge successful.\n")
-		loser = c.Subject
-		discarded = revealed
-	} else {
-		fmt.Printf("Challenge unsuccessful.\n")
-		loser = challenger
-		discarded = challenger.Reveal(state, nil)
-		state.Deck.Add(revealed)
-		c.Subject.Draw(state.Deck)
-	}
-
-	fmt.Printf("%s discards a %s.\n", loser.Name, discarded.Name())
+	panic("Non-Existant Card")
 }

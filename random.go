@@ -12,35 +12,57 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-func (r *Random) Decide(state *State, valid []*Move) *Move {
-	rand.Seed(int64(time.Now().Nanosecond()))
-	i := rand.Intn(len(valid))
-	move := valid[i]
-	return move
+func (r *Random) Update(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
 }
 
-func (r *Random) Dispute(claim *Claim) bool {
-	rand.Seed(int64(time.Now().Nanosecond()))
-	if rand.Intn(5) != 0 {
-		return false
+func (r *Random) ChooseMove(moves []*Move) *Move {
+	self := []*Move{}
+	other := []*Move{}
+	for _, move := range moves {
+		if move.Object != nil {
+			other = append(other, move)
+		} else {
+			self = append(self, move)
+		}
 	}
 
-	return true
-}
-
-func (r *Random) Impede(counter CardType) bool {
-	rand.Seed(int64(time.Now().Nanosecond()))
-	if rand.Intn(5) != 0 {
-		return false
+	count := 0
+	for _, move := range other {
+		if move.Case == Steal {
+			count++
+		}
 	}
 
-	return true
+	moves = other
+	for i := 0; i < count; i++ {
+		moves = append(moves, self...)
+	}
+
+	rand.Seed(int64(time.Now().Nanosecond()))
+	return moves[rand.Intn(len(moves))]
 }
 
-func (r *Random) Discard(state *State, player *Player) *Card {
+func (r *Random) ChooseBlock(claims []*Claim) *Claim {
+	for _, claim := range claims {
+		rand.Seed(int64(time.Now().Nanosecond()))
+		if rand.Intn(5) == 0 {
+			return claim
+		}
+	}
+	return nil
+}
+
+func (r *Random) ChooseChallenge(claim *Claim) bool {
 	rand.Seed(int64(time.Now().Nanosecond()))
-	i := rand.Intn(len(player.Hand))
-	card := player.Hand[i]
-	player.Hand = append(player.Hand[:i], player.Hand[i+1:]...)
-	return card
+	return rand.Intn(5) == 0
+}
+
+func (r *Random) ChooseDiscard(hand *Cards, amt int) []CardEnum {
+	cards := make([]CardEnum, amt)
+	for i := 0; i < amt; i++ {
+		card := hand.Peek()
+		hand.Remove(card)
+		cards[i] = card
+	}
+	return cards
 }

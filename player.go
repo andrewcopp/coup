@@ -1,37 +1,58 @@
 package coup
 
 type Player struct {
-	Name  string
-	Brain *Decider
-	Coins int
-	Hand  []*Card
+	Name    string
+	Chooser Chooser
+	Coins   int
+	Hand    *Cards
 }
 
-func NewPlayer(name string, brain *Decider, coins int) *Player {
+func NewPlayer(name string, chooser Chooser, coins int) *Player {
 	return &Player{
-		Name:  name,
-		Brain: brain,
-		Coins: coins,
-		Hand:  []*Card{},
+		Name:    name,
+		Chooser: chooser,
+		Coins:   coins,
+		Hand:    NewCards(0, 0, 0, 0, 0),
 	}
 }
 
-func (p *Player) Copy() *Player {
-	player := NewPlayer(p.Name, p.Brain, p.Coins)
+func (p *Player) Valid(game *Game) []*Move {
+	moves := []*Move{}
 
-	hand := make([]*Card, len(p.Hand))
-	for i, card := range p.Hand {
-		hand[i] = card.Copy()
+	if game.Players[0].Coins < 10 {
+		moves = append(moves, NewIncome(p))
+		moves = append(moves, NewForeignAid(p))
+		moves = append(moves, NewTax(p))
+		moves = append(moves, NewExchange(p))
 	}
-	player.Hand = hand
 
-	return player
+	for _, other := range p.Opponents(game) {
+		if game.Players[0].Coins >= 7 {
+			moves = append(moves, NewCoup(p, other))
+		}
+
+		if game.Players[0].Coins < 10 {
+			moves = append(moves, NewSteal(p, other))
+		}
+
+		if game.Players[0].Coins >= 3 {
+			moves = append(moves, NewAssassinate(p, other))
+		}
+	}
+
+	return moves
 }
 
-func (p *Player) Opponents(state *State) []*Player {
+func (p *Player) Opponents(game *Game) []*Player {
+	var index int
+	for i, player := range game.Players {
+		if p == player {
+			index = i
+		}
+	}
 	opponents := []*Player{}
-	for _, player := range state.Alive() {
-		if player != p {
+	for _, player := range append(game.Players[index+1:], game.Players[:index]...) {
+		if player.Alive() {
 			opponents = append(opponents, player)
 		}
 	}
@@ -39,64 +60,51 @@ func (p *Player) Opponents(state *State) []*Player {
 }
 
 func (p *Player) Alive() bool {
-	return len(p.Hand) > 0
+	return p.Hand.Size() > 0
 }
 
-func (p *Player) Draw(d *Deck) {
-	p.Hand = append(p.Hand, d.Draw())
+func (p *Player) Draw(deck *Cards) {
+	card := deck.Peek()
+	deck.Remove(card)
+	p.Hand.Add(card)
 }
 
-func (p *Player) Move(state *State) *Action {
-	valid := []*Move{}
-	self := state.Players[0]
+func (p *Player) Discard(gm *Game, amt int) []CardEnum {
+	return p.Chooser.ChooseDiscard(p.Hand, amt)
+}
 
-	for _, other := range p.Opponents(state) {
-		if state.Players[0].Coins >= 7 {
-			valid = append(valid, NewCoup(self, other, state))
-		}
+func (p *Player) Move(game *Game) *Move {
+	return p.Chooser.ChooseMove(p.Valid(game))
+}
 
-		if state.Players[0].Coins < 10 {
-			valid = append(valid, NewIncome(self))
-			valid = append(valid, NewForeignAid(self))
-			valid = append(valid, NewTax(self))
-			valid = append(valid, NewExchange(self, state))
-			valid = append(valid, NewSteal(self, other))
-		}
+func (p *Player) Block(game *Game, mv *Move) *Block {
 
-		if state.Players[0].Coins >= 3 {
-			valid = append(valid, NewAssassinate(self, other, state))
-		}
+	claims := []*Claim{}
+
+	switch mv.Case {
+	case ForeignAid:
+		claims = append(claims, NewClaim(p, Duke))
+	case Assassinate:
+		claims = append(claims, NewClaim(p, Contessa))
+	case Steal:
+		claims = append(claims, NewClaim(p, Ambassador))
+		claims = append(claims, NewClaim(p, Captain))
 	}
 
-	move := (*p.Brain).Decide(state, valid)
-	return NewAction(move)
-}
-
-func (p *Player) Reveal(state *State, t *CardType) *Card {
-	if t != nil {
-		for i, card := range p.Hand {
-			if card.CardType == *t {
-				p.Hand = append(p.Hand[:i], p.Hand[i+1:]...)
-				return card
-			}
-		}
-	}
-
-	return (*p.Brain).Discard(state, p)
-}
-
-func (p *Player) Dispute(claim *Claim) {
-	if (*p.Brain).Dispute(claim) {
-		claim.Challenge = NewChallenge(p)
-	}
-}
-
-func (p *Player) Impede(counters []CardType) *Block {
-	for _, counter := range counters {
-		if (*p.Brain).Impede(counter) {
-			return NewBlock(p, counter)
-		}
+	if claim := p.Chooser.ChooseBlock(claims); claim != nil {
+		return NewBlock(p, claim)
 	}
 
 	return nil
+}
+
+func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
+	if p.Chooser.ChooseChallenge(claim) {
+		return NewChallenge(p)
+	}
+	return nil
+}
+
+func (p *Player) Observe(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
+	p.Chooser.Update(gm, mv, mvChallenger, blocker, blkChallenger)
 }

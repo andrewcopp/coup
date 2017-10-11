@@ -1,19 +1,51 @@
 package coup
 
+import "fmt"
+
 type Block struct {
-	Claim *Claim
+	Subject   *Player
+	Claim     *Claim
+	Challenge *Challenge
 }
 
-func NewBlock(sub *Player, dec CardType) *Block {
+func NewBlock(sub *Player, claim *Claim) *Block {
 	return &Block{
-		Claim: NewClaim(sub, dec, nil),
+		Subject: sub,
+		Claim:   claim,
 	}
 }
 
-func (b *Block) Successful() bool {
-	if b.Claim.Challenge == nil {
-		return true
+func (b *Block) Exposed(gm *Game) bool {
+	exposed := false
+	for _, other := range b.Subject.Opponents(gm) {
+		if b.Challenge = other.Challenge(gm, b.Claim); b.Challenge != nil {
+			if gm.Logs {
+				fmt.Printf("%s challenges.\n", b.Challenge.Subject.Name)
+			}
+			if b.Claim.Verify() {
+				if gm.Logs {
+					fmt.Printf("Challenge unsuccessful.\n")
+				}
+				for _, card := range b.Challenge.Subject.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
+				b.Subject.Hand.Remove(b.Claim.Declared)
+				gm.Deck.Add(b.Claim.Declared)
+				card := gm.Deck.Peek()
+				gm.Deck.Remove(card)
+				b.Subject.Hand.Add(card)
+			} else {
+				if gm.Logs {
+					fmt.Printf("Challenge successful.\n")
+				}
+				for _, card := range b.Subject.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
+				exposed = true
+			}
+			break
+		}
 	}
 
-	return b.Claim.Declared == b.Claim.Challenge.Revealed
+	return exposed
 }

@@ -1,6 +1,7 @@
 package coup
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -41,8 +42,12 @@ func (g *Game) Setup() {
 
 func (g *Game) Play() *Player {
 
-	for g.Next() {
-		g.Players[0].Move(g)
+	for i := 1; g.Next(); i++ {
+		fmt.Printf("Turn %d\n", i)
+		fmt.Println("------------")
+		fmt.Println()
+		g.Players[0].Move(g).Modify(g)
+		fmt.Println()
 	}
 
 	return g.Players[0]

@@ -180,6 +180,10 @@ func (m *Move) Exposed(gm *Game) bool {
 		claim = NewClaim(m.Subject, Captain)
 	}
 
+	if claim == nil {
+		return false
+	}
+
 	var exposed bool
 	for _, other := range m.Subject.Opponents(gm) {
 		if m.Challenge = other.Challenge(gm, claim); m.Challenge != nil {

@@ -67,15 +67,15 @@ func (c *Cards) Peek() CardEnum {
 		cards = append(cards, Assassin)
 	}
 
-	for i := 0; i < c.Dukes; i++ {
+	for i := 0; i < c.Ambassadors; i++ {
 		cards = append(cards, Ambassador)
 	}
 
-	for i := 0; i < c.Dukes; i++ {
+	for i := 0; i < c.Captains; i++ {
 		cards = append(cards, Captain)
 	}
 
-	for i := 0; i < c.Dukes; i++ {
+	for i := 0; i < c.Contessas; i++ {
 		cards = append(cards, Contessa)
 	}
 

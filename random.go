@@ -32,6 +32,12 @@ func (r *Random) ChooseChallenge(claim *Claim) bool {
 	return rand.Intn(5) == 0
 }
 
-func (r *Random) ChooseDiscard(hand *Cards) CardEnum {
-	return hand.Peek()
+func (r *Random) ChooseDiscard(hand *Cards, amt int) []CardEnum {
+	cards := make([]CardEnum, amt)
+	for i := 0; i < amt; i++ {
+		card := hand.Peek()
+		hand.Remove(card)
+		cards[i] = card
+	}
+	return cards
 }

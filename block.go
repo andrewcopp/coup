@@ -18,13 +18,18 @@ func (b *Block) Exposed(gm *Game) bool {
 	for _, other := range b.Subject.Opponents(gm) {
 		if b.Challenge = other.Challenge(gm, b.Claim); b.Challenge != nil {
 			if b.Claim.Verify() {
-				b.Challenge.Subject.Discard(gm, 1)
+				for _, card := range b.Challenge.Subject.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
 				b.Subject.Hand.Remove(b.Claim.Declared)
+				gm.Deck.Add(b.Claim.Declared)
 				card := gm.Deck.Peek()
 				gm.Deck.Remove(card)
 				b.Subject.Hand.Add(card)
 			} else {
-				b.Subject.Discard(gm, 1)
+				for _, card := range b.Subject.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
 				exposed = true
 			}
 			break

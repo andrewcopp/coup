@@ -70,8 +70,7 @@ func (p *Player) Draw(deck *Cards) {
 }
 
 func (p *Player) Discard(gm *Game, amt int) []CardEnum {
-	// return p.Hand.Remove(cardType)
-	return nil
+	return p.Chooser.ChooseDiscard(p.Hand, amt)
 }
 
 func (p *Player) Move(game *Game) *Move {
@@ -107,5 +106,5 @@ func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
 }
 
 func (p *Player) Observe(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
-
+	// TODO: for agent
 }

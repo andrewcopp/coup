@@ -77,7 +77,9 @@ func (m *Move) Modify(gm *Game) {
 	// TODO: Return this
 	for _, player := range gm.Players {
 		if player.Hand.Size() > 2 {
-			player.Discard(gm, 2)
+			for _, card := range player.Discard(gm, 2) {
+				gm.Deck.Add(card)
+			}
 		}
 	}
 
@@ -135,11 +137,15 @@ func (m *Move) Modify(gm *Game) {
 	case ForeignAid:
 		m.Subject.Coins += 2
 	case Coup:
-		m.Object.Discard(gm, 1)
+		for _, card := range m.Object.Discard(gm, 1) {
+			gm.Discard.Add(card)
+		}
 	case Tax:
 		m.Subject.Coins += 3
 	case Assassinate:
-		m.Object.Discard(gm, 1)
+		for _, card := range m.Object.Discard(gm, 1) {
+			gm.Discard.Add(card)
+		}
 	case Exchange:
 		// TODO: return to here
 	case Steal:
@@ -188,13 +194,18 @@ func (m *Move) Exposed(gm *Game) bool {
 	for _, other := range m.Subject.Opponents(gm) {
 		if m.Challenge = other.Challenge(gm, claim); m.Challenge != nil {
 			if claim.Verify() {
-				m.Challenge.Subject.Discard(gm, 1)
+				for _, card := range m.Challenge.Subject.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
 				m.Subject.Hand.Remove(claim.Declared)
+				gm.Deck.Add(claim.Declared)
 				card := gm.Deck.Peek()
 				gm.Deck.Remove(card)
 				m.Subject.Hand.Add(card)
 			} else {
-				m.Subject.Discard(gm, 1)
+				for _, card := range m.Subject.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
 				exposed = true
 			}
 			break
@@ -214,9 +225,13 @@ func (m *Move) Blocked(gm *Game) bool {
 			}
 		}
 	case Assassinate:
-		m.Block = m.Subject.Block(gm, m)
+		if m.Object.Alive() {
+			m.Block = m.Object.Block(gm, m)
+		}
 	case Steal:
-		m.Block = m.Subject.Block(gm, m)
+		if m.Object.Alive() {
+			m.Block = m.Object.Block(gm, m)
+		}
 	}
 
 	var blocked bool

@@ -46,6 +46,8 @@ func (g *Game) Play() *Player {
 		fmt.Printf("Turn %d\n", i)
 		fmt.Println("------------")
 		fmt.Println()
+		fmt.Printf("Deck: %d\n", g.Deck.Size())
+		fmt.Printf("Discard: %d\n", g.Discard.Size())
 		g.Players[0].Move(g).Modify(g)
 		fmt.Println()
 	}

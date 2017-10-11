@@ -13,9 +13,11 @@ const (
 )
 
 type Move struct {
-	Case    MoveEnum
-	Subject *Player
-	Object  *Player
+	Case      MoveEnum
+	Subject   *Player
+	Object    *Player
+	Challenge *Challenge
+	Block     *Block
 }
 
 func NewIncome(sub *Player) *Move {
@@ -72,6 +74,13 @@ func NewSteal(sub *Player, obj *Player) *Move {
 
 func (m *Move) Modify(gm *Game) {
 
+	// TODO: Return this
+	for _, player := range gm.Players {
+		if player.Hand.Size() > 2 {
+			player.Discard(gm, 2)
+		}
+	}
+
 	switch m.Case {
 	case Coup:
 		m.Subject.Coins -= 7
@@ -79,11 +88,44 @@ func (m *Move) Modify(gm *Game) {
 		m.Subject.Coins -= 3
 	}
 
-	if m.Exposed(gm) {
+	exposed := m.Exposed(gm)
+
+	if !exposed && m.Case == Exchange {
+		// TODO: return this home
+		if m.Case == Exchange {
+			m.Subject.Draw(gm.Deck)
+			m.Subject.Draw(gm.Deck)
+		}
+	}
+
+	switch m.Case {
+	case Tax, Assassinate, Exchange, Steal:
+		var challenger *Player
+		if m.Challenge != nil {
+			challenger = m.Challenge.Subject
+		}
+		for _, player := range gm.Players {
+			player.Observe(gm, m, challenger, nil, nil)
+		}
+	}
+
+	if exposed {
 		return
 	}
 
 	if m.Blocked(gm) {
+		var blocker *Player
+		var challenger *Player
+		if m.Block != nil {
+			blocker = m.Block.Subject
+			if m.Block.Challenge != nil {
+				challenger = m.Block.Challenge.Subject
+			}
+		}
+		for _, player := range gm.Players {
+			player.Observe(gm, nil, nil, blocker, challenger)
+		}
+
 		return
 	}
 
@@ -99,9 +141,7 @@ func (m *Move) Modify(gm *Game) {
 	case Assassinate:
 		m.Object.Discard(gm, 1)
 	case Exchange:
-		m.Subject.Draw(gm.Deck)
-		m.Subject.Draw(gm.Deck)
-		m.Object.Discard(gm, 2)
+		// TODO: return to here
 	case Steal:
 		amt := 2
 
@@ -111,6 +151,21 @@ func (m *Move) Modify(gm *Game) {
 
 		m.Subject.Coins += amt
 		m.Object.Coins -= amt
+	}
+
+	switch m.Case {
+	case ForeignAid, Assassinate, Steal:
+		var blocker *Player
+		var challenger *Player
+		if m.Block != nil {
+			blocker = m.Block.Subject
+			if m.Block.Challenge != nil {
+				challenger = m.Block.Challenge.Subject
+			}
+		}
+		for _, player := range gm.Players {
+			player.Observe(gm, nil, nil, blocker, challenger)
+		}
 	}
 
 }
@@ -129,11 +184,10 @@ func (m *Move) Exposed(gm *Game) bool {
 	}
 
 	var exposed bool
-	var challenge *Challenge
 	for _, other := range m.Subject.Opponents(gm) {
-		if challenge = other.Challenge(gm, claim); challenge != nil {
+		if m.Challenge = other.Challenge(gm, claim); m.Challenge != nil {
 			if claim.Verify() {
-				challenge.Subject.Discard(gm, 1)
+				m.Challenge.Subject.Discard(gm, 1)
 				m.Subject.Hand.Remove(claim.Declared)
 				card := gm.Deck.Peek()
 				gm.Deck.Remove(card)
@@ -146,41 +200,29 @@ func (m *Move) Exposed(gm *Game) bool {
 		}
 	}
 
-	switch m.Case {
-	case Tax, Assassinate, Exchange, Steal:
-		// Update
-	}
-
 	return exposed
 }
 
 func (m *Move) Blocked(gm *Game) bool {
-	var block *Block
-
 	switch m.Case {
 	case ForeignAid:
 		for _, other := range m.Subject.Opponents(gm) {
-			block = other.Block(gm, nil)
-			if block != nil {
+			m.Block = other.Block(gm, nil)
+			if m.Block != nil {
 				break
 			}
 		}
 	case Assassinate:
-		block = m.Subject.Block(gm, nil)
+		m.Block = m.Subject.Block(gm, nil)
 	case Steal:
-		block = m.Subject.Block(gm, nil)
+		m.Block = m.Subject.Block(gm, nil)
 	}
 
 	var blocked bool
-	if block != nil {
-		if !block.Exposed(gm) {
+	if m.Block != nil {
+		if !m.Block.Exposed(gm) {
 			blocked = true
 		}
-	}
-
-	switch m.Case {
-	case ForeignAid, Assassinate, Steal:
-		// Update
 	}
 
 	return blocked

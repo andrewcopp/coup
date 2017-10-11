@@ -105,3 +105,7 @@ func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
 	}
 	return nil
 }
+
+func (p *Player) Observe(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
+
+}

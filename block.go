@@ -1,8 +1,9 @@
 package coup
 
 type Block struct {
-	Subject *Player
-	Claim   *Claim
+	Subject   *Player
+	Claim     *Claim
+	Challenge *Challenge
 }
 
 func NewBlock(sub *Player, claim *Claim) *Block {
@@ -14,11 +15,10 @@ func NewBlock(sub *Player, claim *Claim) *Block {
 
 func (b *Block) Exposed(gm *Game) bool {
 	exposed := false
-	var challenge *Challenge
 	for _, other := range b.Subject.Opponents(gm) {
-		if challenge = other.Challenge(gm, b.Claim); challenge != nil {
+		if b.Challenge = other.Challenge(gm, b.Claim); b.Challenge != nil {
 			if b.Claim.Verify() {
-				challenge.Subject.Discard(gm, 1)
+				b.Challenge.Subject.Discard(gm, 1)
 				b.Subject.Hand.Remove(b.Claim.Declared)
 				card := gm.Deck.Peek()
 				gm.Deck.Remove(card)

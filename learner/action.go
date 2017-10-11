@@ -111,7 +111,7 @@ type ChallengeBlock struct {
 	SubjectTwoRiskAmbassador bool
 	SubjectTwoRiskCaptain    bool
 	SubjectTwoRiskContessa   bool
-	// These could be different
+	// TODO: These could be different
 	Ambassador bool
 	Captain    bool
 }

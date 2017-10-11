@@ -1,7 +1,6 @@
 package coup
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -81,8 +80,5 @@ func (c *Cards) Peek() CardEnum {
 	}
 
 	rand.Seed(int64(time.Now().Nanosecond()))
-	fmt.Println("SAND")
-	card := cards[rand.Intn(len(cards))]
-	fmt.Println("WICH")
-	return card
+	return cards[rand.Intn(len(cards))]
 }

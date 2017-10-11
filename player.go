@@ -106,5 +106,5 @@ func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
 }
 
 func (p *Player) Observe(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
-	// TODO: for agent
+	p.Chooser.Update(gm, mv, mvChallenger, blocker, blkChallenger)
 }

@@ -12,6 +12,9 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
+func (r *Random) Update(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
+}
+
 func (r *Random) ChooseMove(moves []*Move) *Move {
 	self := []*Move{}
 	other := []*Move{}

@@ -101,19 +101,31 @@ type ChallengeMove struct {
 }
 
 type ChallengeBlock struct {
-	SubjectOneRiskDuke       bool
-	SubjectOneRiskAssassin   bool
-	SubjectOneRiskAmbassador bool
-	SubjectOneRiskCaptain    bool
-	SubjectOneRiskContessa   bool
-	SubjectTwoRiskDuke       bool
-	SubjectTwoRiskAssassin   bool
-	SubjectTwoRiskAmbassador bool
-	SubjectTwoRiskCaptain    bool
-	SubjectTwoRiskContessa   bool
-	// TODO: These could be different
-	Ambassador bool
-	Captain    bool
+	SubjectOneDukeRiskDuke       bool
+	SubjectOneDukeRiskAssassin   bool
+	SubjectOneDukeRiskAmbassador bool
+	SubjectOneDukeRiskCaptain    bool
+	SubjectOneDukeRiskContessa   bool
+	SubjectTwoDukeRiskDuke       bool
+	SubjectTwoDukeRiskAssassin   bool
+	SubjectTwoDukeRiskAmbassador bool
+	SubjectTwoDukeRiskCaptain    bool
+	SubjectTwoDukeRiskContessa   bool
+	AmbassadorRiskDuke           bool
+	AmbassadorRiskAssassin       bool
+	AmbassadorRiskAmbassador     bool
+	AmbassadorRiskCaptain        bool
+	AmbassadorRiskContessa       bool
+	CaptainRiskDuke              bool
+	CaptainRiskAssassin          bool
+	CaptainRiskAmbassador        bool
+	CaptainRiskCaptain           bool
+	CaptainRiskContessa          bool
+	ContessaRiskDuke             bool
+	ContessaRiskAssassin         bool
+	ContessaRiskAmbassador       bool
+	ContessaRiskCaptain          bool
+	ContessaRiskContessa         bool
 }
 
 type Discard struct {

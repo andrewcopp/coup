@@ -153,19 +153,16 @@ func (m *Move) Modify(gm *Game) {
 		m.Object.Coins -= amt
 	}
 
-	switch m.Case {
-	case ForeignAid, Assassinate, Steal:
-		var blocker *Player
-		var challenger *Player
-		if m.Block != nil {
-			blocker = m.Block.Subject
-			if m.Block.Challenge != nil {
-				challenger = m.Block.Challenge.Subject
-			}
+	var blocker *Player
+	var challenger *Player
+	if m.Block != nil {
+		blocker = m.Block.Subject
+		if m.Block.Challenge != nil {
+			challenger = m.Block.Challenge.Subject
 		}
-		for _, player := range gm.Players {
-			player.Observe(gm, nil, nil, blocker, challenger)
-		}
+	}
+	for _, player := range gm.Players {
+		player.Observe(gm, nil, nil, blocker, challenger)
 	}
 
 }

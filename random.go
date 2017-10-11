@@ -13,6 +13,28 @@ func NewRandom() *Random {
 }
 
 func (r *Random) ChooseMove(moves []*Move) *Move {
+	self := []*Move{}
+	other := []*Move{}
+	for _, move := range moves {
+		if move.Object != nil {
+			other = append(other, move)
+		} else {
+			self = append(self, move)
+		}
+	}
+
+	count := 0
+	for _, move := range other {
+		if move.Case == Steal {
+			count++
+		}
+	}
+
+	moves = other
+	for i := 0; i < count; i++ {
+		moves = append(moves, self...)
+	}
+
 	rand.Seed(int64(time.Now().Nanosecond()))
 	return moves[rand.Intn(len(moves))]
 }

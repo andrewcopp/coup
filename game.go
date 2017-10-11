@@ -7,6 +7,7 @@ import (
 )
 
 type Game struct {
+	Logs    bool
 	Deck    *Cards
 	Discard *Cards
 	Players []*Player
@@ -14,6 +15,7 @@ type Game struct {
 
 func NewGame(players []*Player) *Game {
 	return &Game{
+		Logs:    false,
 		Deck:    NewCards(3, 3, 3, 3, 3),
 		Discard: NewCards(0, 0, 0, 0, 0),
 		Players: players,
@@ -43,13 +45,13 @@ func (g *Game) Setup() {
 func (g *Game) Play() *Player {
 
 	for i := 1; g.Next(); i++ {
-		fmt.Printf("Turn %d\n", i)
-		fmt.Println("------------")
-		fmt.Println()
-		fmt.Printf("Deck: %d\n", g.Deck.Size())
-		fmt.Printf("Discard: %d\n", g.Discard.Size())
+		if g.Logs {
+			fmt.Println()
+			fmt.Printf("Turn %d\n", i)
+			fmt.Println("------------")
+			fmt.Println()
+		}
 		g.Players[0].Move(g).Modify(g)
-		fmt.Println()
 	}
 
 	return g.Players[0]

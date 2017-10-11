@@ -1,5 +1,7 @@
 package coup
 
+import "fmt"
+
 type MoveEnum int
 
 const (
@@ -90,6 +92,25 @@ func (m *Move) Modify(gm *Game) {
 		m.Subject.Coins -= 3
 	}
 
+	if gm.Logs {
+		switch m.Case {
+		case Income:
+			fmt.Printf("%s takes income.\n", m.Subject.Name)
+		case ForeignAid:
+			fmt.Printf("%s takes foreign aid.\n", m.Subject.Name)
+		case Coup:
+			fmt.Printf("%s coups %s.\n", m.Subject.Name, m.Object.Name)
+		case Tax:
+			fmt.Printf("%s taxes.\n", m.Subject.Name)
+		case Assassinate:
+			fmt.Printf("%s assassinates %s.\n", m.Subject.Name, m.Object.Name)
+		case Exchange:
+			fmt.Printf("%s exchanges.\n", m.Subject.Name)
+		case Steal:
+			fmt.Printf("%s steals from %s.\n", m.Subject.Name, m.Object.Name)
+		}
+	}
+
 	exposed := m.Exposed(gm)
 
 	if !exposed && m.Case == Exchange {
@@ -161,6 +182,26 @@ func (m *Move) Modify(gm *Game) {
 		m.Object.Coins -= amt
 	}
 
+	if gm.Logs {
+		switch m.Case {
+		case Income:
+			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+		case ForeignAid:
+			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+		case Coup:
+			fmt.Printf("%s discards.\n", m.Object.Name)
+		case Tax:
+			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+		case Assassinate:
+			fmt.Printf("%s potentially discards.\n", m.Object.Name)
+		case Exchange:
+			fmt.Printf("%s draws two cards.\n", m.Subject.Name)
+		case Steal:
+			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+			fmt.Printf("%s has %d coins.\n", m.Object.Name, m.Object.Coins)
+		}
+	}
+
 	var blocker *Player
 	var challenger *Player
 	if m.Block != nil {
@@ -195,7 +236,13 @@ func (m *Move) Exposed(gm *Game) bool {
 	var exposed bool
 	for _, other := range m.Subject.Opponents(gm) {
 		if m.Challenge = other.Challenge(gm, claim); m.Challenge != nil {
+			if gm.Logs {
+				fmt.Printf("%s challenges.\n", m.Challenge.Subject.Name)
+			}
 			if claim.Verify() {
+				if gm.Logs {
+					fmt.Printf("Challenge unsuccessful.\n")
+				}
 				for _, card := range m.Challenge.Subject.Discard(gm, 1) {
 					gm.Discard.Add(card)
 				}
@@ -205,6 +252,9 @@ func (m *Move) Exposed(gm *Game) bool {
 				gm.Deck.Remove(card)
 				m.Subject.Hand.Add(card)
 			} else {
+				if gm.Logs {
+					fmt.Printf("Challenge successful.\n")
+				}
 				for _, card := range m.Subject.Discard(gm, 1) {
 					gm.Discard.Add(card)
 				}
@@ -238,6 +288,9 @@ func (m *Move) Blocked(gm *Game) bool {
 
 	var blocked bool
 	if m.Block != nil {
+		if gm.Logs {
+			fmt.Printf("%s blocks.\n", m.Block.Subject.Name)
+		}
 		if !m.Block.Exposed(gm) {
 			blocked = true
 		}

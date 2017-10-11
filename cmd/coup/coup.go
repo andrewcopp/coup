@@ -18,12 +18,15 @@ func init() {
 	five := coup.NewPlayer("Player Five", chooser, 2)
 
 	game = coup.NewGame([]*coup.Player{one, two, three, four, five})
+	// game = coup.NewGame([]*coup.Player{one, two})
 }
 
 func main() {
 	game.Setup()
 	winner := game.Play()
-	fmt.Println()
-	fmt.Println(winner.Name, "wins!")
-	fmt.Println()
+	if game.Logs {
+		fmt.Println()
+		fmt.Println(winner.Name, "wins!")
+		fmt.Println()
+	}
 }

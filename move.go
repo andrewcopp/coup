@@ -123,12 +123,8 @@ func (m *Move) Modify(gm *Game) {
 
 	switch m.Case {
 	case Tax, Assassinate, Exchange, Steal:
-		var challenger *Player
-		if m.Challenge != nil {
-			challenger = m.Challenge.Subject
-		}
 		for _, player := range gm.Players {
-			player.Observe(gm, m, challenger, nil, nil)
+			player.Observe(gm, m, nil, true)
 		}
 	}
 
@@ -136,82 +132,62 @@ func (m *Move) Modify(gm *Game) {
 		return
 	}
 
-	if m.Blocked(gm) {
-		var blocker *Player
-		var challenger *Player
-		if m.Block != nil {
-			blocker = m.Block.Subject
-			if m.Block.Challenge != nil {
-				challenger = m.Block.Challenge.Subject
-			}
-		}
-		for _, player := range gm.Players {
-			player.Observe(gm, nil, nil, blocker, challenger)
-		}
+	blocked := m.Blocked(gm)
 
-		return
-	}
-
-	switch m.Case {
-	case Income:
-		m.Subject.Coins++
-	case ForeignAid:
-		m.Subject.Coins += 2
-	case Coup:
-		for _, card := range m.Object.Discard(gm, 1) {
-			gm.Discard.Add(card)
-		}
-	case Tax:
-		m.Subject.Coins += 3
-	case Assassinate:
-		if m.Object.Alive() {
+	if !blocked {
+		switch m.Case {
+		case Income:
+			m.Subject.Coins++
+		case ForeignAid:
+			m.Subject.Coins += 2
+		case Coup:
 			for _, card := range m.Object.Discard(gm, 1) {
 				gm.Discard.Add(card)
 			}
-		}
-	case Exchange:
-		// TODO: return to here
-	case Steal:
-		amt := 2
-
-		if m.Object.Coins < 2 {
-			amt = m.Object.Coins
-		}
-
-		m.Subject.Coins += amt
-		m.Object.Coins -= amt
-	}
-
-	if gm.Logs {
-		switch m.Case {
-		case Income:
-			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
-		case ForeignAid:
-			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
-		case Coup:
-			fmt.Printf("%s discards.\n", m.Object.Name)
 		case Tax:
-			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+			m.Subject.Coins += 3
 		case Assassinate:
-			fmt.Printf("%s potentially discards.\n", m.Object.Name)
+			if m.Object.Alive() {
+				for _, card := range m.Object.Discard(gm, 1) {
+					gm.Discard.Add(card)
+				}
+			}
 		case Exchange:
-			fmt.Printf("%s draws two cards.\n", m.Subject.Name)
+			// TODO: return to here
 		case Steal:
-			fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
-			fmt.Printf("%s has %d coins.\n", m.Object.Name, m.Object.Coins)
+			amt := 2
+
+			if m.Object.Coins < 2 {
+				amt = m.Object.Coins
+			}
+
+			m.Subject.Coins += amt
+			m.Object.Coins -= amt
+		}
+
+		if gm.Logs {
+			switch m.Case {
+			case Income:
+				fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+			case ForeignAid:
+				fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+			case Coup:
+				fmt.Printf("%s discards.\n", m.Object.Name)
+			case Tax:
+				fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+			case Assassinate:
+				fmt.Printf("%s potentially discards.\n", m.Object.Name)
+			case Exchange:
+				fmt.Printf("%s draws two cards.\n", m.Subject.Name)
+			case Steal:
+				fmt.Printf("%s has %d coins.\n", m.Subject.Name, m.Subject.Coins)
+				fmt.Printf("%s has %d coins.\n", m.Object.Name, m.Object.Coins)
+			}
 		}
 	}
 
-	var blocker *Player
-	var challenger *Player
-	if m.Block != nil {
-		blocker = m.Block.Subject
-		if m.Block.Challenge != nil {
-			challenger = m.Block.Challenge.Subject
-		}
-	}
 	for _, player := range gm.Players {
-		player.Observe(gm, nil, nil, blocker, challenger)
+		player.Observe(gm, nil, m.Block, false)
 	}
 
 }

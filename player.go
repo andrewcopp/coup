@@ -105,6 +105,6 @@ func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
 	return nil
 }
 
-func (p *Player) Observe(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
-	p.Chooser.Update(gm, mv, mvChallenger, blocker, blkChallenger)
+func (p *Player) Observe(gm *Game, mv *Move, blk *Block, second bool) {
+	p.Chooser.Update(p, gm, mv, blk, second)
 }

@@ -12,7 +12,7 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
-func (r *Random) Update(gm *Game, mv *Move, mvChallenger *Player, blocker *Player, blkChallenger *Player) {
+func (r *Random) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {
 }
 
 func (r *Random) ChooseMove(moves []*Move) *Move {

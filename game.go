@@ -44,6 +44,10 @@ func (g *Game) Setup() {
 
 func (g *Game) Play() *Player {
 
+	for _, player := range g.Players {
+		player.Observe(g, nil, nil, false)
+	}
+
 	for i := 1; g.Next(); i++ {
 		if g.Logs {
 			fmt.Println()

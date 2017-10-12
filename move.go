@@ -186,8 +186,11 @@ func (m *Move) Modify(gm *Game) {
 		}
 	}
 
-	for _, player := range gm.Players {
-		player.Observe(gm, nil, m.Block, false)
+	switch m.Case {
+	case Income, ForeignAid, Coup, Assassinate, Steal:
+		for _, player := range gm.Players {
+			player.Observe(gm, nil, m.Block, false)
+		}
 	}
 
 }

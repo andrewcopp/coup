@@ -38,11 +38,19 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 		Bridge:               &Bridge{},
 	}
 
+	cap := len(gm.Players)
+
+	one := index
+	two := index + 1
+	if two >= cap {
+		two -= cap
+	}
+
 	if mv != nil {
 		switch mv.Subject {
-		case gm.Players[0]:
+		case gm.Players[one]:
 			state.Bridge.SubjectOne = true
-		case gm.Players[1]:
+		case gm.Players[two]:
 			state.Bridge.SubjectTwo = true
 		}
 
@@ -61,18 +69,18 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 		if mv.Object != nil {
 			switch mv.Object {
-			case gm.Players[0]:
+			case gm.Players[one]:
 				state.Bridge.ObjectOne = true
-			case gm.Players[1]:
+			case gm.Players[two]:
 				state.Bridge.ObjectTwo = true
 			}
 		}
 
 		if mv.Challenge != nil {
 			switch mv.Challenge.Subject {
-			case gm.Players[0]:
+			case gm.Players[one]:
 				state.Bridge.MoveChallengeSubjectOne = true
-			case gm.Players[1]:
+			case gm.Players[two]:
 				state.Bridge.MoveChallengeSubjectTwo = true
 			}
 		}
@@ -80,9 +88,9 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	if blk != nil {
 		switch blk.Subject {
-		case gm.Players[0]:
+		case gm.Players[one]:
 			state.Bridge.BlockSubjectOne = true
-		case gm.Players[1]:
+		case gm.Players[two]:
 			state.Bridge.BlockSubjectTwo = true
 		}
 
@@ -95,50 +103,48 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 		if blk.Challenge != nil {
 			switch blk.Challenge.Subject {
-			case gm.Players[0]:
+			case gm.Players[one]:
 				state.Bridge.BlockChallengeSubjectOne = true
-			case gm.Players[1]:
+			case gm.Players[two]:
 				state.Bridge.BlockChallengeSubjectTwo = true
 			}
 		}
 	}
 
 	fmt.Println(state)
-
-	next := 0
-	for i, player := range gm.Players[1:] {
-		if player.Alive() {
-			next = i
-			break
-		}
-	}
-
-	valid := []MoveEnum{}
-	if gm.Players[next].Coins < 10 {
-		valid = append(valid, Income)
-		valid = append(valid, ForeignAid)
-		valid = append(valid, Tax)
-		valid = append(valid, Steal)
-		valid = append(valid, Exchange)
-	}
-
-	if gm.Players[next].Coins >= 7 {
-		valid = append(valid, Coup)
-	}
-
-	if gm.Players[next].Coins >= 3 {
-		valid = append(valid, Assassinate)
-	}
+	fmt.Println(state.Bridge)
 
 	if !second {
+		next := 0
+		for i, player := range gm.Players[1:] {
+			if player.Alive() {
+				next = i
+				break
+			}
+		}
+
+		valid := []MoveEnum{}
+		if gm.Players[next].Coins < 10 {
+			valid = append(valid, Income)
+			valid = append(valid, ForeignAid)
+			valid = append(valid, Tax)
+			valid = append(valid, Steal)
+			valid = append(valid, Exchange)
+		}
+
+		if gm.Players[next].Coins >= 7 {
+			valid = append(valid, Coup)
+		}
+
+		if gm.Players[next].Coins >= 3 {
+			valid = append(valid, Assassinate)
+		}
+
 		if self == gm.Players[next] {
 			// mover
 		} else {
 			// challenger
 		}
-
-		// is challenger
-
 	} else {
 		// is blocker
 

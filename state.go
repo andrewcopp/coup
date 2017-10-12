@@ -9,6 +9,12 @@ type State struct {
 	OneContessas         float64
 	TwoCoins             float64
 	TwoCards             float64
+	ThreeCoins           float64
+	ThreeCards           float64
+	FourCoins            float64
+	FourCards            float64
+	FiveCoins            float64
+	FiveCards            float64
 	DiscardedDukes       float64
 	DiscardedAssassins   float64
 	DiscardedAmbassadors float64
@@ -18,23 +24,38 @@ type State struct {
 }
 
 type Bridge struct {
-	SubjectOne               bool
-	SubjectTwo               bool
-	MoveForeignAid           bool
-	MoveTax                  bool
-	MoveAssassinate          bool
-	MoveExchange             bool
-	MoveSteal                bool
-	ObjectOne                bool
-	ObjectTwo                bool
-	MoveChallengeSubjectOne  bool
-	MoveChallengeSubjectTwo  bool
-	BlockSubjectOne          bool
-	BlockSubjectTwo          bool
-	BlockAmbassador          bool
-	BlockCaptain             bool
-	BlockChallengeSubjectOne bool
-	BlockChallengeSubjectTwo bool
+	SubjectOne                 bool
+	SubjectTwo                 bool
+	SubjectThree               bool
+	SubjectFour                bool
+	SubjectFive                bool
+	MoveForeignAid             bool
+	MoveTax                    bool
+	MoveAssassinate            bool
+	MoveExchange               bool
+	MoveSteal                  bool
+	ObjectOne                  bool
+	ObjectTwo                  bool
+	ObjectThree                bool
+	ObjectFour                 bool
+	ObjectFive                 bool
+	MoveChallengeSubjectOne    bool
+	MoveChallengeSubjectTwo    bool
+	MoveChallengeSubjectThree  bool
+	MoveChallengeSubjectFour   bool
+	MoveChallengeSubjectFive   bool
+	BlockSubjectOne            bool
+	BlockSubjectTwo            bool
+	BlockSubjectThree          bool
+	BlockSubjectFour           bool
+	BlockSubjectFive           bool
+	BlockAmbassador            bool
+	BlockCaptain               bool
+	BlockChallengeSubjectOne   bool
+	BlockChallengeSubjectTwo   bool
+	BlockChallengeSubjectThree bool
+	BlockChallengeSubjectFour  bool
+	BlockChallengeSubjectFive  bool
 }
 
 func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
@@ -55,6 +76,12 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 		OneContessas:         float64(players[0].Hand.Contessas) / 3.0,
 		TwoCoins:             float64(players[1].Coins) / 12.0,
 		TwoCards:             float64(players[1].Hand.Size()) / 4.0,
+		ThreeCoins:           float64(players[2].Coins) / 12.0,
+		ThreeCards:           float64(players[2].Hand.Size()) / 4.0,
+		FourCoins:            float64(players[3].Coins) / 12.0,
+		FourCards:            float64(players[3].Hand.Size()) / 4.0,
+		FiveCoins:            float64(players[4].Coins) / 12.0,
+		FiveCards:            float64(players[4].Hand.Size()) / 4.0,
 		DiscardedDukes:       float64(gm.Discard.Dukes) / 3.0,
 		DiscardedAssassins:   float64(gm.Discard.Assassins) / 3.0,
 		DiscardedAmbassadors: float64(gm.Discard.Ambassadors) / 3.0,
@@ -69,6 +96,12 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 			state.Bridge.SubjectOne = true
 		case players[1]:
 			state.Bridge.SubjectTwo = true
+		case players[2]:
+			state.Bridge.SubjectThree = true
+		case players[3]:
+			state.Bridge.SubjectFour = true
+		case players[4]:
+			state.Bridge.SubjectFive = true
 		}
 
 		switch mv.Case {
@@ -90,6 +123,12 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 				state.Bridge.ObjectOne = true
 			case players[1]:
 				state.Bridge.ObjectTwo = true
+			case players[2]:
+				state.Bridge.ObjectThree = true
+			case players[3]:
+				state.Bridge.ObjectFour = true
+			case players[4]:
+				state.Bridge.ObjectFive = true
 			}
 		}
 
@@ -99,6 +138,12 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 				state.Bridge.MoveChallengeSubjectOne = true
 			case players[1]:
 				state.Bridge.MoveChallengeSubjectTwo = true
+			case players[2]:
+				state.Bridge.MoveChallengeSubjectThree = true
+			case players[3]:
+				state.Bridge.MoveChallengeSubjectFour = true
+			case players[4]:
+				state.Bridge.MoveChallengeSubjectFive = true
 			}
 		}
 	}
@@ -109,6 +154,12 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 			state.Bridge.BlockSubjectOne = true
 		case players[1]:
 			state.Bridge.BlockSubjectTwo = true
+		case players[2]:
+			state.Bridge.BlockSubjectThree = true
+		case players[3]:
+			state.Bridge.BlockSubjectFour = true
+		case players[4]:
+			state.Bridge.BlockSubjectFive = true
 		}
 
 		switch blk.Claim.Declared {
@@ -124,6 +175,12 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 				state.Bridge.BlockChallengeSubjectOne = true
 			case players[1]:
 				state.Bridge.BlockChallengeSubjectTwo = true
+			case players[2]:
+				state.Bridge.BlockChallengeSubjectThree = true
+			case players[3]:
+				state.Bridge.BlockChallengeSubjectFour = true
+			case players[4]:
+				state.Bridge.BlockChallengeSubjectFive = true
 			}
 		}
 	}

@@ -3,8 +3,8 @@ package coup
 import "fmt"
 
 type Agent struct {
-	States []State
-	Action Action
+	States []*State
+	Action *Action
 }
 
 func NewAgent() *Agent {
@@ -12,6 +12,14 @@ func NewAgent() *Agent {
 }
 
 func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {
+
+	state := NewState(self, gm, mv, blk)
+	a.States = append(a.States, state)
+
+	fmt.Printf("%+v\n", state)
+	fmt.Printf("%+v\n", state.Bridge)
+
+	actions := []*Action{}
 
 	index := 0
 	for i, player := range gm.Players {
@@ -21,98 +29,6 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	}
 
 	players := append(gm.Players[index:], gm.Players[:index]...)
-	state := State{
-		OneCoins:             float64(players[0].Coins) / 12.0,
-		OneDukes:             float64(players[0].Hand.Dukes) / 3.0,
-		OneAssassins:         float64(players[0].Hand.Assassins) / 3.0,
-		OneAmbassadors:       float64(players[0].Hand.Ambassadors) / 3.0,
-		OneCaptains:          float64(players[0].Hand.Captains) / 3.0,
-		OneContessas:         float64(players[0].Hand.Contessas) / 3.0,
-		TwoCoins:             float64(players[1].Coins) / 12.0,
-		TwoCards:             float64(players[1].Hand.Size()) / 4.0,
-		DiscardedDukes:       float64(gm.Discard.Dukes) / 3.0,
-		DiscardedAssassins:   float64(gm.Discard.Assassins) / 3.0,
-		DiscardedAmbassadors: float64(gm.Discard.Ambassadors) / 3.0,
-		DiscardedCaptains:    float64(gm.Discard.Captains) / 3.0,
-		DiscardedContessas:   float64(gm.Discard.Contessas) / 3.0,
-		Bridge:               &Bridge{},
-	}
-
-	cap := len(gm.Players)
-
-	one := index
-	two := index + 1
-	if two >= cap {
-		two -= cap
-	}
-
-	if mv != nil {
-		switch mv.Subject {
-		case gm.Players[one]:
-			state.Bridge.SubjectOne = true
-		case gm.Players[two]:
-			state.Bridge.SubjectTwo = true
-		}
-
-		switch mv.Case {
-		case ForeignAid:
-			state.Bridge.MoveForeignAid = true
-		case Tax:
-			state.Bridge.MoveTax = true
-		case Assassinate:
-			state.Bridge.MoveAssassinate = true
-		case Exchange:
-			state.Bridge.MoveExchange = true
-		case Steal:
-			state.Bridge.MoveSteal = true
-		}
-
-		if mv.Object != nil {
-			switch mv.Object {
-			case gm.Players[one]:
-				state.Bridge.ObjectOne = true
-			case gm.Players[two]:
-				state.Bridge.ObjectTwo = true
-			}
-		}
-
-		if mv.Challenge != nil {
-			switch mv.Challenge.Subject {
-			case gm.Players[one]:
-				state.Bridge.MoveChallengeSubjectOne = true
-			case gm.Players[two]:
-				state.Bridge.MoveChallengeSubjectTwo = true
-			}
-		}
-	}
-
-	if blk != nil {
-		switch blk.Subject {
-		case gm.Players[one]:
-			state.Bridge.BlockSubjectOne = true
-		case gm.Players[two]:
-			state.Bridge.BlockSubjectTwo = true
-		}
-
-		switch blk.Claim.Declared {
-		case Ambassador:
-			state.Bridge.BlockAmbassador = true
-		case Captain:
-			state.Bridge.BlockCaptain = true
-		}
-
-		if blk.Challenge != nil {
-			switch blk.Challenge.Subject {
-			case gm.Players[one]:
-				state.Bridge.BlockChallengeSubjectOne = true
-			case gm.Players[two]:
-				state.Bridge.BlockChallengeSubjectTwo = true
-			}
-		}
-	}
-
-	fmt.Println(state)
-	fmt.Println(state.Bridge)
 
 	if !second {
 		next := 0
@@ -123,8 +39,13 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 			}
 		}
 
+		subject := next - index
+		if subject < len(players) {
+			subject += len(players)
+		}
+
 		valid := []MoveEnum{}
-		if gm.Players[next].Coins < 10 {
+		if players[subject].Coins < 10 {
 			valid = append(valid, Income)
 			valid = append(valid, ForeignAid)
 			valid = append(valid, Tax)
@@ -132,18 +53,110 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 			valid = append(valid, Exchange)
 		}
 
-		if gm.Players[next].Coins >= 7 {
+		if players[subject].Coins >= 7 {
 			valid = append(valid, Coup)
 		}
 
-		if gm.Players[next].Coins >= 3 {
+		if players[subject].Coins >= 3 {
 			valid = append(valid, Assassinate)
 		}
 
-		if self == gm.Players[next] {
-			// mover
-		} else {
+		objects := []int{}
+		for i, player := range players {
+			if player.Alive() && i != subject {
+				objects = append(objects, i)
+			}
+		}
+
+		if subject != 0 {
 			// challenger
+		} else {
+			for _, move := range valid {
+				switch move {
+				case Income:
+					action := &Action{
+						Move: &ActionMove{
+							Income: true,
+						},
+					}
+					actions = append(actions, action)
+				case ForeignAid:
+					action := &Action{
+						Move: &ActionMove{
+							ForeignAid: true,
+						},
+					}
+					actions = append(actions, action)
+				case Coup:
+					for _, object := range objects {
+						action := &Action{
+							Move: &ActionMove{
+								Coup: true,
+							},
+						}
+						switch object {
+						case 0:
+							action.Move.ObjectOne = true
+						case 1:
+							action.Move.ObjectTwo = true
+						}
+						actions = append(actions, action)
+					}
+				case Tax:
+					for _, challengeable := range NewChallengeables(objects) {
+						action := &Action{
+							Move: &ActionMove{
+								Tax: challengeable,
+							},
+						}
+						actions = append(actions, action)
+					}
+				case Assassinate:
+					for _, object := range objects {
+						for _, challengeable := range NewChallengeables(objects) {
+							action := &Action{
+								Move: &ActionMove{
+									Assassinate: challengeable,
+								},
+							}
+							switch object {
+							case 0:
+								action.Move.ObjectOne = true
+							case 1:
+								action.Move.ObjectTwo = true
+							}
+							actions = append(actions, action)
+						}
+					}
+				case Exchange:
+					for _, challengeable := range NewChallengeables(objects) {
+						action := &Action{
+							Move: &ActionMove{
+								Exchange: challengeable,
+							},
+						}
+						actions = append(actions, action)
+					}
+				case Steal:
+					for _, object := range objects {
+						for _, challengeable := range NewChallengeables(objects) {
+							action := &Action{
+								Move: &ActionMove{
+									Steal: challengeable,
+								},
+							}
+							switch object {
+							case 0:
+								action.Move.ObjectOne = true
+							case 1:
+								action.Move.ObjectTwo = true
+							}
+							actions = append(actions, action)
+						}
+					}
+				}
+			}
+			// mover
 		}
 	} else {
 		// is blocker
@@ -152,7 +165,6 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	}
 
-	a.States = append(a.States, state)
 }
 
 func Score(state *State, action *Action) float64 {

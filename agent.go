@@ -99,13 +99,13 @@ func MoveAndChallenges(self *Player, gm *Game) []*Action {
 	}
 
 	if subject != 0 {
-		return MoveChallenges()
+		return MoveChallenges(self, subject, valid, objects)
 	} else {
-		return Moves(valid, objects)
+		return Moves(self, valid, objects)
 	}
 }
 
-func Moves(valid []MoveEnum, objects []int) []*Action {
+func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 	actions := []*Action{}
 	for _, move := range valid {
 		switch move {
@@ -145,7 +145,7 @@ func Moves(valid []MoveEnum, objects []int) []*Action {
 				actions = append(actions, action)
 			}
 		case Tax:
-			for _, challengeable := range NewChallengeables(objects) {
+			for _, challengeable := range NewChallengeables(objects, self.Hand) {
 				action := &Action{
 					Move: &ActionMove{
 						Tax: challengeable,
@@ -155,7 +155,7 @@ func Moves(valid []MoveEnum, objects []int) []*Action {
 			}
 		case Assassinate:
 			for _, object := range objects {
-				for _, challengeable := range NewChallengeables(objects) {
+				for _, challengeable := range NewChallengeables(objects, self.Hand) {
 					action := &Action{
 						Move: &ActionMove{
 							Assassinate: challengeable,
@@ -177,7 +177,7 @@ func Moves(valid []MoveEnum, objects []int) []*Action {
 				}
 			}
 		case Exchange:
-			for _, challengeable := range NewChallengeables(objects) {
+			for _, challengeable := range NewChallengeables(objects, self.Hand) {
 				action := &Action{
 					Move: &ActionMove{
 						Exchange: challengeable,
@@ -187,7 +187,7 @@ func Moves(valid []MoveEnum, objects []int) []*Action {
 			}
 		case Steal:
 			for _, object := range objects {
-				for _, challengeable := range NewChallengeables(objects) {
+				for _, challengeable := range NewChallengeables(objects, self.Hand) {
 					action := &Action{
 						Move: &ActionMove{
 							Steal: challengeable,
@@ -214,8 +214,159 @@ func Moves(valid []MoveEnum, objects []int) []*Action {
 	return actions
 }
 
-func MoveChallenges() []*Action {
-	return []*Action{}
+func MoveChallenges(self *Player, sub int, valid []MoveEnum, objects []int) []*Action {
+	action := &Action{
+		ChallengeMove: &ActionMoveChallenge{},
+	}
+	switch sub {
+	case 0:
+		action.ChallengeMove.SubjectOne = true
+	case 1:
+		action.ChallengeMove.SubjectTwo = true
+	case 2:
+		action.ChallengeMove.SubjectThree = true
+	case 3:
+		action.ChallengeMove.SubjectFour = true
+	case 4:
+		action.ChallengeMove.SubjectFive = true
+	}
+
+	actions := []*Action{action}
+	for _, move := range valid {
+		switch move {
+		case Tax:
+			temp := actions
+			for _, action := range actions {
+				for _, reveal := range NewReveals(self.Hand) {
+					c := action.ChallengeMove.Copy()
+					c.Tax = reveal
+					temp = append(temp, &Action{ChallengeMove: c})
+				}
+			}
+			actions = temp
+		case Assassinate:
+			for _, object := range objects {
+				switch object {
+				case 0:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.AssassinateObjectOne = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 1:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.AssassinateObjectTwo = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 2:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.AssassinateObjectThree = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 3:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.AssassinateObjectFour = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 4:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.AssassinateObjectFive = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				}
+			}
+		case Exchange:
+			temp := actions
+			for _, action := range actions {
+				for _, reveal := range NewReveals(self.Hand) {
+					c := action.ChallengeMove.Copy()
+					c.Exchange = reveal
+					temp = append(temp, &Action{ChallengeMove: c})
+				}
+			}
+			actions = temp
+		case Steal:
+			for _, object := range objects {
+				switch object {
+				case 0:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.StealObjectOne = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 1:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.StealObjectTwo = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 2:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.StealObjectThree = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 3:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.StealObjectFour = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				case 4:
+					temp := actions
+					for _, action := range actions {
+						for _, reveal := range NewReveals(self.Hand) {
+							c := action.ChallengeMove.Copy()
+							c.StealObjectFive = reveal
+							temp = append(temp, &Action{ChallengeMove: c})
+						}
+					}
+					actions = temp
+				}
+			}
+		}
+	}
+	return actions
 }
 
 func BlockAndChallenges() []*Action {
@@ -234,8 +385,85 @@ func Score(state *State, action *Action) float64 {
 	return 0.0
 }
 
-func (a *Agent) ChooseMove(moves []*Move) *Move {
-	return NewRandom().ChooseMove(moves)
+func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
+	for _, move := range moves {
+		switch move.Case {
+		case Income:
+			if a.Action.Move.Income {
+				return move
+			}
+		case ForeignAid:
+			if a.Action.Move.ForeignAid {
+				return move
+			}
+		case Coup:
+			if a.Action.Move.Coup {
+				if a.Action.Move.ObjectOne && (gm.Players[0] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectTwo && (gm.Players[2] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectThree && (gm.Players[3] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectFour && (gm.Players[4] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectFive && (gm.Players[5] == move.Object) {
+					return move
+				}
+			}
+		case Tax:
+			if a.Action.Move.Tax.Selected() {
+				return move
+			}
+		case Assassinate:
+			if a.Action.Move.Assassinate.Selected() {
+				if a.Action.Move.ObjectOne && (gm.Players[0] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectTwo && (gm.Players[2] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectThree && (gm.Players[3] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectFour && (gm.Players[4] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectFive && (gm.Players[5] == move.Object) {
+					return move
+				}
+			}
+		case Exchange:
+			if a.Action.Move.Exchange.Selected() {
+				return move
+			}
+		case Steal:
+			if a.Action.Move.Steal.Selected() {
+				if a.Action.Move.ObjectOne && (gm.Players[0] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectTwo && (gm.Players[2] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectThree && (gm.Players[3] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectFour && (gm.Players[4] == move.Object) {
+					return move
+				}
+				if a.Action.Move.ObjectFive && (gm.Players[5] == move.Object) {
+					return move
+				}
+			}
+		}
+	}
+
+	panic("All moves should have been explored.")
+
+	// return NewRandom().ChooseMove(moves)
 }
 
 func (a *Agent) ChooseBlock(claims []*Claim) *Claim {

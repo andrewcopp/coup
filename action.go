@@ -44,19 +44,37 @@ func (r *Reveal) Copy() *Reveal {
 	}
 }
 
-func NewReveals() []*Reveal {
-	duke := CardEnum(Duke)
-	assassin := CardEnum(Assassin)
-	ambassador := CardEnum(Ambassador)
-	captain := CardEnum(Captain)
-	contessa := CardEnum(Contessa)
-	return []*Reveal{
-		NewReveal(&duke),
-		NewReveal(&assassin),
-		NewReveal(&ambassador),
-		NewReveal(&captain),
-		NewReveal(&contessa),
+func NewReveals(hand *Cards) []*Reveal {
+	reveals := []*Reveal{}
+	if hand.Dukes > 0 {
+		duke := CardEnum(Duke)
+		reveals = append(reveals, NewReveal(&duke))
 	}
+	if hand.Assassins > 0 {
+		assassin := CardEnum(Assassin)
+		reveals = append(reveals, NewReveal(&assassin))
+	}
+	if hand.Ambassadors > 0 {
+		ambassador := CardEnum(Ambassador)
+		reveals = append(reveals, NewReveal(&ambassador))
+	}
+	if hand.Captains > 0 {
+		captain := CardEnum(Captain)
+		reveals = append(reveals, NewReveal(&captain))
+	}
+	if hand.Contessas > 0 {
+		contessa := CardEnum(Contessa)
+		reveals = append(reveals, NewReveal(&contessa))
+	}
+	return reveals
+}
+
+func (r *Reveal) Selected() bool {
+	if r.Duke || r.Assassin || r.Ambassador || r.Captain || r.Contessa {
+		return true
+	}
+
+	return false
 }
 
 type Challengeable struct {
@@ -132,14 +150,14 @@ func (c *Challengeable) Copy() *Challengeable {
 	}
 }
 
-func NewChallengeables(subs []int) []*Challengeable {
+func NewChallengeables(subs []int, hand *Cards) []*Challengeable {
 	challengeables := []*Challengeable{NewChallengeable(nil, nil, nil, nil, nil)}
 	for _, sub := range subs {
 		switch sub {
 		case 0:
 			temp := []*Challengeable{}
 			for _, challengeable := range challengeables {
-				for _, reveal := range NewReveals() {
+				for _, reveal := range NewReveals(hand) {
 					c := challengeable.Copy()
 					c.One = reveal
 					temp = append(temp, c)
@@ -149,7 +167,7 @@ func NewChallengeables(subs []int) []*Challengeable {
 		case 1:
 			temp := []*Challengeable{}
 			for _, challengeable := range challengeables {
-				for _, reveal := range NewReveals() {
+				for _, reveal := range NewReveals(hand) {
 					c := challengeable.Copy()
 					c.Two = reveal
 					temp = append(temp, c)
@@ -159,7 +177,7 @@ func NewChallengeables(subs []int) []*Challengeable {
 		case 2:
 			temp := []*Challengeable{}
 			for _, challengeable := range challengeables {
-				for _, reveal := range NewReveals() {
+				for _, reveal := range NewReveals(hand) {
 					c := challengeable.Copy()
 					c.Three = reveal
 					temp = append(temp, c)
@@ -169,7 +187,7 @@ func NewChallengeables(subs []int) []*Challengeable {
 		case 3:
 			temp := []*Challengeable{}
 			for _, challengeable := range challengeables {
-				for _, reveal := range NewReveals() {
+				for _, reveal := range NewReveals(hand) {
 					c := challengeable.Copy()
 					c.Four = reveal
 					temp = append(temp, c)
@@ -179,7 +197,7 @@ func NewChallengeables(subs []int) []*Challengeable {
 		case 4:
 			temp := []*Challengeable{}
 			for _, challengeable := range challengeables {
-				for _, reveal := range NewReveals() {
+				for _, reveal := range NewReveals(hand) {
 					c := challengeable.Copy()
 					c.Five = reveal
 					temp = append(temp, c)
@@ -189,6 +207,14 @@ func NewChallengeables(subs []int) []*Challengeable {
 		}
 	}
 	return challengeables
+}
+
+func (c *Challengeable) Selected() bool {
+	if c.One.Selected() || c.Two.Selected() || c.Three.Selected() || c.Four.Selected() || c.Five.Selected() {
+		return true
+	}
+
+	return false
 }
 
 type ActionMove struct {
@@ -230,6 +256,28 @@ type ActionMoveChallenge struct {
 	StealObjectThree       *Reveal
 	StealObjectFour        *Reveal
 	StealObjectFive        *Reveal
+}
+
+func (c *ActionMoveChallenge) Copy() *ActionMoveChallenge {
+	return &ActionMoveChallenge{
+		SubjectOne:             c.SubjectOne,
+		SubjectTwo:             c.SubjectTwo,
+		SubjectThree:           c.SubjectThree,
+		SubjectFour:            c.SubjectFour,
+		SubjectFive:            c.SubjectFive,
+		Tax:                    c.Tax.Copy(),
+		AssassinateObjectOne:   c.AssassinateObjectOne.Copy(),
+		AssassinateObjectTwo:   c.AssassinateObjectTwo.Copy(),
+		AssassinateObjectThree: c.AssassinateObjectThree.Copy(),
+		AssassinateObjectFour:  c.AssassinateObjectFour.Copy(),
+		AssassinateObjectFive:  c.AssassinateObjectFive.Copy(),
+		Exchange:               c.Exchange.Copy(),
+		StealObjectOne:         c.StealObjectOne.Copy(),
+		StealObjectTwo:         c.StealObjectTwo.Copy(),
+		StealObjectThree:       c.StealObjectThree.Copy(),
+		StealObjectFour:        c.StealObjectFour.Copy(),
+		StealObjectFive:        c.StealObjectFive.Copy(),
+	}
 }
 
 type ActionBlockChallenge struct {

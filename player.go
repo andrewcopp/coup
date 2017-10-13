@@ -74,7 +74,7 @@ func (p *Player) Discard(gm *Game, amt int) []CardEnum {
 }
 
 func (p *Player) Move(game *Game) *Move {
-	return p.Chooser.ChooseMove(p.Valid(game))
+	return p.Chooser.ChooseMove(game, p.Valid(game))
 }
 
 func (p *Player) Block(game *Game, mv *Move) *Block {

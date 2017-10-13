@@ -1,6 +1,7 @@
 package coup
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -64,7 +65,7 @@ func MoveAndChallenges(self *Player, gm *Game) []*Action {
 	next := 0
 	for i, player := range gm.Players[1:] {
 		if player.Alive() {
-			next = i
+			next = i + 1
 			break
 		}
 	}
@@ -110,25 +111,25 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 	for _, move := range valid {
 		switch move {
 		case Income:
+			move := NewActionMove()
+			move.Income = true
 			action := &Action{
-				Move: &ActionMove{
-					Income: true,
-				},
+				Move: move,
 			}
 			actions = append(actions, action)
 		case ForeignAid:
+			move := NewActionMove()
+			move.ForeignAid = true
 			action := &Action{
-				Move: &ActionMove{
-					ForeignAid: true,
-				},
+				Move: move,
 			}
 			actions = append(actions, action)
 		case Coup:
 			for _, object := range objects {
+				move := NewActionMove()
+				move.Coup = true
 				action := &Action{
-					Move: &ActionMove{
-						Coup: true,
-					},
+					Move: move,
 				}
 				switch object {
 				case 0:
@@ -146,20 +147,20 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 			}
 		case Tax:
 			for _, challengeable := range NewChallengeables(objects, self.Hand) {
+				move := NewActionMove()
+				move.Tax = challengeable
 				action := &Action{
-					Move: &ActionMove{
-						Tax: challengeable,
-					},
+					Move: move,
 				}
 				actions = append(actions, action)
 			}
 		case Assassinate:
 			for _, object := range objects {
 				for _, challengeable := range NewChallengeables(objects, self.Hand) {
+					move := NewActionMove()
+					move.Assassinate = challengeable
 					action := &Action{
-						Move: &ActionMove{
-							Assassinate: challengeable,
-						},
+						Move: move,
 					}
 					switch object {
 					case 0:
@@ -178,20 +179,20 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 			}
 		case Exchange:
 			for _, challengeable := range NewChallengeables(objects, self.Hand) {
+				move := NewActionMove()
+				move.Exchange = challengeable
 				action := &Action{
-					Move: &ActionMove{
-						Exchange: challengeable,
-					},
+					Move: move,
 				}
 				actions = append(actions, action)
 			}
 		case Steal:
 			for _, object := range objects {
 				for _, challengeable := range NewChallengeables(objects, self.Hand) {
+					move := NewActionMove()
+					move.Steal = challengeable
 					action := &Action{
-						Move: &ActionMove{
-							Steal: challengeable,
-						},
+						Move: move,
 					}
 					switch object {
 					case 0:
@@ -216,7 +217,7 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 
 func MoveChallenges(self *Player, sub int, valid []MoveEnum, objects []int) []*Action {
 	action := &Action{
-		ChallengeMove: &ActionMoveChallenge{},
+		ChallengeMove: NewActionMoveChallenge(),
 	}
 	switch sub {
 	case 0:
@@ -366,6 +367,7 @@ func MoveChallenges(self *Player, sub int, valid []MoveEnum, objects []int) []*A
 			}
 		}
 	}
+
 	return actions
 }
 
@@ -401,16 +403,16 @@ func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
 				if a.Action.Move.ObjectOne && (gm.Players[0] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectTwo && (gm.Players[2] == move.Object) {
+				if a.Action.Move.ObjectTwo && (gm.Players[1] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectThree && (gm.Players[3] == move.Object) {
+				if a.Action.Move.ObjectThree && (gm.Players[2] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectFour && (gm.Players[4] == move.Object) {
+				if a.Action.Move.ObjectFour && (gm.Players[3] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectFive && (gm.Players[5] == move.Object) {
+				if a.Action.Move.ObjectFive && (gm.Players[4] == move.Object) {
 					return move
 				}
 			}
@@ -423,16 +425,16 @@ func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
 				if a.Action.Move.ObjectOne && (gm.Players[0] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectTwo && (gm.Players[2] == move.Object) {
+				if a.Action.Move.ObjectTwo && (gm.Players[1] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectThree && (gm.Players[3] == move.Object) {
+				if a.Action.Move.ObjectThree && (gm.Players[2] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectFour && (gm.Players[4] == move.Object) {
+				if a.Action.Move.ObjectFour && (gm.Players[3] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectFive && (gm.Players[5] == move.Object) {
+				if a.Action.Move.ObjectFive && (gm.Players[4] == move.Object) {
 					return move
 				}
 			}
@@ -445,22 +447,23 @@ func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
 				if a.Action.Move.ObjectOne && (gm.Players[0] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectTwo && (gm.Players[2] == move.Object) {
+				if a.Action.Move.ObjectTwo && (gm.Players[1] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectThree && (gm.Players[3] == move.Object) {
+				if a.Action.Move.ObjectThree && (gm.Players[2] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectFour && (gm.Players[4] == move.Object) {
+				if a.Action.Move.ObjectFour && (gm.Players[3] == move.Object) {
 					return move
 				}
-				if a.Action.Move.ObjectFive && (gm.Players[5] == move.Object) {
+				if a.Action.Move.ObjectFive && (gm.Players[4] == move.Object) {
 					return move
 				}
 			}
 		}
 	}
 
+	fmt.Println(a.Action.Move)
 	panic("All moves should have been explored.")
 
 	// return NewRandom().ChooseMove(moves)

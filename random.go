@@ -15,7 +15,7 @@ func NewRandom() *Random {
 func (r *Random) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {
 }
 
-func (r *Random) ChooseMove(moves []*Move) *Move {
+func (r *Random) ChooseMove(gm *Game, moves []*Move) *Move {
 	self := []*Move{}
 	other := []*Move{}
 	for _, move := range moves {

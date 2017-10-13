@@ -121,15 +121,18 @@ func (m *Move) Modify(gm *Game) {
 		}
 	}
 
+	if exposed {
+		for _, player := range gm.Players {
+			player.Observe(gm, m, nil, false)
+		}
+		return
+	}
+
 	switch m.Case {
-	case Tax, Assassinate, Exchange, Steal:
+	case ForeignAid, Assassinate, Steal:
 		for _, player := range gm.Players {
 			player.Observe(gm, m, nil, true)
 		}
-	}
-
-	if exposed {
-		return
 	}
 
 	blocked := m.Blocked(gm)
@@ -186,11 +189,8 @@ func (m *Move) Modify(gm *Game) {
 		}
 	}
 
-	switch m.Case {
-	case Income, ForeignAid, Coup, Assassinate, Steal:
-		for _, player := range gm.Players {
-			player.Observe(gm, nil, m.Block, false)
-		}
+	for _, player := range gm.Players {
+		player.Observe(gm, nil, m.Block, false)
 	}
 
 }

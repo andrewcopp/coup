@@ -232,6 +232,15 @@ type ActionMove struct {
 	ObjectFive  bool
 }
 
+func NewActionMove() *ActionMove {
+	return &ActionMove{
+		Tax:         NewChallengeable(nil, nil, nil, nil, nil),
+		Assassinate: NewChallengeable(nil, nil, nil, nil, nil),
+		Exchange:    NewChallengeable(nil, nil, nil, nil, nil),
+		Steal:       NewChallengeable(nil, nil, nil, nil, nil),
+	}
+}
+
 type ActionBlock struct {
 	Challengeable *Challengeable
 	Ambassador    bool
@@ -256,6 +265,23 @@ type ActionMoveChallenge struct {
 	StealObjectThree       *Reveal
 	StealObjectFour        *Reveal
 	StealObjectFive        *Reveal
+}
+
+func NewActionMoveChallenge() *ActionMoveChallenge {
+	return &ActionMoveChallenge{
+		Tax:                    NewReveal(nil),
+		AssassinateObjectOne:   NewReveal(nil),
+		AssassinateObjectTwo:   NewReveal(nil),
+		AssassinateObjectThree: NewReveal(nil),
+		AssassinateObjectFour:  NewReveal(nil),
+		AssassinateObjectFive:  NewReveal(nil),
+		Exchange:               NewReveal(nil),
+		StealObjectOne:         NewReveal(nil),
+		StealObjectTwo:         NewReveal(nil),
+		StealObjectThree:       NewReveal(nil),
+		StealObjectFour:        NewReveal(nil),
+		StealObjectFive:        NewReveal(nil),
+	}
 }
 
 func (c *ActionMoveChallenge) Copy() *ActionMoveChallenge {

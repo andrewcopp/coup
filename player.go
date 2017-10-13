@@ -98,8 +98,15 @@ func (p *Player) Block(game *Game, mv *Move) *Block {
 	return nil
 }
 
-func (p *Player) Challenge(game *Game, claim *Claim) *Challenge {
-	if p.Chooser.ChooseChallenge(claim) {
+func (p *Player) ChallengeMove(game *Game, claim *Claim, object *Player) *Challenge {
+	if p.Chooser.ChooseChallengeMove(game, p, claim, object) {
+		return NewChallenge(p)
+	}
+	return nil
+}
+
+func (p *Player) ChallengeBlock(game *Game, claim *Claim, object *Player) *Challenge {
+	if p.Chooser.ChooseChallengeBlock(game, p, claim, object) {
 		return NewChallenge(p)
 	}
 	return nil

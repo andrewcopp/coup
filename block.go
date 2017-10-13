@@ -18,7 +18,7 @@ func NewBlock(sub *Player, claim *Claim) *Block {
 func (b *Block) Exposed(gm *Game) bool {
 	exposed := false
 	for _, other := range b.Subject.Opponents(gm) {
-		if b.Challenge = other.Challenge(gm, b.Claim); b.Challenge != nil {
+		if b.Challenge = other.ChallengeBlock(gm, b.Claim, nil); b.Challenge != nil {
 			if gm.Logs {
 				fmt.Printf("%s challenges.\n", b.Challenge.Subject.Name)
 			}

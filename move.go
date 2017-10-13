@@ -214,7 +214,7 @@ func (m *Move) Exposed(gm *Game) bool {
 
 	var exposed bool
 	for _, other := range m.Subject.Opponents(gm) {
-		if m.Challenge = other.Challenge(gm, claim); m.Challenge != nil {
+		if m.Challenge = other.ChallengeMove(gm, claim, m.Object); m.Challenge != nil {
 			if gm.Logs {
 				fmt.Printf("%s challenges.\n", m.Challenge.Subject.Name)
 			}

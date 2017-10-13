@@ -52,7 +52,12 @@ func (r *Random) ChooseBlock(claims []*Claim) *Claim {
 	return nil
 }
 
-func (r *Random) ChooseChallenge(claim *Claim) bool {
+func (r *Random) ChooseChallengeMove(gm *Game, self *Player, claim *Claim, object *Player) bool {
+	rand.Seed(int64(time.Now().Nanosecond()))
+	return rand.Intn(5) == 0
+}
+
+func (r *Random) ChooseChallengeBlock(gm *Game, self *Player, claim *Claim, object *Player) bool {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	return rand.Intn(5) == 0
 }

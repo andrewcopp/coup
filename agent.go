@@ -465,16 +465,80 @@ func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
 
 	fmt.Println(a.Action.Move)
 	panic("All moves should have been explored.")
-
-	// return NewRandom().ChooseMove(moves)
 }
 
 func (a *Agent) ChooseBlock(claims []*Claim) *Claim {
 	return NewRandom().ChooseBlock(claims)
 }
 
-func (a *Agent) ChooseChallenge(claim *Claim) bool {
-	return NewRandom().ChooseChallenge(claim)
+func (a *Agent) ChooseChallengeMove(gm *Game, self *Player, claim *Claim, object *Player) bool {
+	index := 0
+	for i, player := range gm.Players {
+		if self == player {
+			index = i
+		}
+	}
+
+	players := append(gm.Players[index:], gm.Players[:index]...)
+
+	switch claim.Declared {
+	case Duke:
+		return a.Action.ChallengeMove.Tax.Selected()
+	case Ambassador:
+		return a.Action.ChallengeMove.Exchange.Selected()
+	}
+
+	obj := 0
+	for i, player := range players {
+		if object == player {
+			obj = i
+		}
+	}
+
+	switch claim.Declared {
+	case Assassin:
+		switch obj {
+		case 0:
+			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectOne)
+			return a.Action.ChallengeMove.AssassinateObjectOne.Selected()
+		case 1:
+			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectTwo)
+			return a.Action.ChallengeMove.AssassinateObjectTwo.Selected()
+		case 2:
+			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectThree)
+			return a.Action.ChallengeMove.AssassinateObjectThree.Selected()
+		case 3:
+			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectFour)
+			return a.Action.ChallengeMove.AssassinateObjectFour.Selected()
+		case 4:
+			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectFive)
+			return a.Action.ChallengeMove.AssassinateObjectFive.Selected()
+		}
+	case Captain:
+		switch obj {
+		case 0:
+			fmt.Println(*a.Action.ChallengeMove.StealObjectOne)
+			return a.Action.ChallengeMove.StealObjectOne.Selected()
+		case 1:
+			fmt.Println(*a.Action.ChallengeMove.StealObjectTwo)
+			return a.Action.ChallengeMove.StealObjectTwo.Selected()
+		case 2:
+			fmt.Println(*a.Action.ChallengeMove.StealObjectThree)
+			return a.Action.ChallengeMove.StealObjectThree.Selected()
+		case 3:
+			fmt.Println(*a.Action.ChallengeMove.StealObjectFour)
+			return a.Action.ChallengeMove.StealObjectFour.Selected()
+		case 4:
+			fmt.Println(*a.Action.ChallengeMove.StealObjectFive)
+			return a.Action.ChallengeMove.StealObjectFive.Selected()
+		}
+	}
+
+	panic("Challenge Not Found")
+}
+
+func (a *Agent) ChooseChallengeBlock(gm *Game, self *Player, claim *Claim, object *Player) bool {
+	return false
 }
 
 func (a *Agent) ChooseDiscard(hand *Cards, amt int) []CardEnum {

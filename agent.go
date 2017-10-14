@@ -28,7 +28,7 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	if !second {
 		actions = MoveAndChallenges(self, gm)
 	} else {
-		actions = BlockAndChallenges()
+		actions = BlockAndChallenges(gm, mv, self)
 	}
 
 	// for _, action := range actions {
@@ -371,16 +371,193 @@ func MoveChallenges(self *Player, sub int, valid []MoveEnum, objects []int) []*A
 	return actions
 }
 
-func BlockAndChallenges() []*Action {
-	return []*Action{}
+func BlockAndChallenges(gm *Game, mv *Move, self *Player) []*Action {
+
+	index := 0
+	for i, player := range gm.Players {
+		if self == player {
+			index = i
+		}
+	}
+
+	players := append(gm.Players[index:], gm.Players[:index]...)
+
+	next := 0
+	for i, player := range gm.Players[1:] {
+		if player.Alive() {
+			next = i + 1
+			break
+		}
+	}
+
+	subject := next - index
+	if subject < 0 {
+		subject += len(players)
+	}
+
+	objects := []int{}
+	for i, player := range players {
+		if player.Alive() && i != subject {
+			objects = append(objects, i)
+		}
+	}
+
+	actions := []*Action{&Action{
+		Block:          NewActionBlock(),
+		ChallengeBlock: NewActionBlockChallenge(),
+	}}
+	switch mv.Case {
+	case ForeignAid:
+		if mv.Subject != self {
+			actions = append(actions, Blocks(gm, mv, self, objects)...)
+		}
+
+		actions = append(actions, BlockChallenges(gm, mv, self, objects)...)
+	case Assassinate:
+		if mv.Object != self {
+			actions = append(actions, BlockChallenges(gm, mv, self, objects)...)
+		} else {
+			actions = append(actions, Blocks(gm, mv, self, objects)...)
+		}
+	case Steal:
+		if mv.Object != self {
+			actions = append(actions, BlockChallenges(gm, mv, self, objects)...)
+		} else {
+			actions = append(actions, Blocks(gm, mv, self, objects)...)
+		}
+	}
+	return actions
 }
 
-func Blocks() []*Action {
-	return []*Action{}
+func Blocks(gm *Game, mv *Move, self *Player, objects []int) []*Action {
+	actions := []*Action{&Action{
+		Block: NewActionBlock(),
+	}}
+	switch mv.Case {
+	case ForeignAid:
+		for _, challengeable := range NewChallengeables(objects, self.Hand) {
+			block := NewActionBlock()
+			block.Challengeable = challengeable
+			action := &Action{
+				Block: block,
+			}
+			actions = append(actions, action)
+		}
+	case Assassinate:
+		if self == mv.Object {
+			for _, challengeable := range NewChallengeables(objects, self.Hand) {
+				block := NewActionBlock()
+				block.Challengeable = challengeable
+				action := &Action{
+					Block: block,
+				}
+				actions = append(actions, action)
+			}
+		}
+	case Steal:
+		if self == mv.Object {
+			for _, challengeable := range NewChallengeables(objects, self.Hand) {
+				block := NewActionBlock()
+				block.Challengeable = challengeable
+				block.Ambassador = true
+				action := &Action{
+					Block: block,
+				}
+				actions = append(actions, action)
+			}
+			for _, challengeable := range NewChallengeables(objects, self.Hand) {
+				block := NewActionBlock()
+				block.Challengeable = challengeable
+				block.Captain = true
+				action := &Action{
+					Block: block,
+				}
+				actions = append(actions, action)
+			}
+		}
+	}
+	return actions
 }
 
-func BlockChallenges() []*Action {
-	return []*Action{}
+func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action {
+	actions := []*Action{&Action{
+		ChallengeBlock: NewActionBlockChallenge(),
+	}}
+	switch mv.Case {
+	case ForeignAid:
+		for i := range objects {
+			switch i {
+			case 1:
+				temp := actions
+				for _, action := range actions {
+					for _, reveal := range NewReveals(self.Hand) {
+						c := action.ChallengeBlock.Copy()
+						c.SubjectTwoDuke = reveal
+						temp = append(temp, &Action{ChallengeBlock: c})
+					}
+				}
+				actions = temp
+			case 2:
+				temp := actions
+				for _, action := range actions {
+					for _, reveal := range NewReveals(self.Hand) {
+						c := action.ChallengeBlock.Copy()
+						c.SubjectThreeDuke = reveal
+						temp = append(temp, &Action{ChallengeBlock: c})
+					}
+				}
+				actions = temp
+			case 3:
+				temp := actions
+				for _, action := range actions {
+					for _, reveal := range NewReveals(self.Hand) {
+						c := action.ChallengeBlock.Copy()
+						c.SubjectFourDuke = reveal
+						temp = append(temp, &Action{ChallengeBlock: c})
+					}
+				}
+				actions = temp
+			case 4:
+				temp := actions
+				for _, action := range actions {
+					for _, reveal := range NewReveals(self.Hand) {
+						c := action.ChallengeBlock.Copy()
+						c.SubjectFiveDuke = reveal
+						temp = append(temp, &Action{ChallengeBlock: c})
+					}
+				}
+				actions = temp
+			}
+		}
+	case Assassinate:
+		temp := actions
+		for _, action := range actions {
+			for _, reveal := range NewReveals(self.Hand) {
+				c := action.ChallengeBlock.Copy()
+				c.Contessa = reveal
+				temp = append(temp, &Action{ChallengeBlock: c})
+			}
+		}
+		actions = temp
+	case Steal:
+		temp := actions
+		for _, action := range actions {
+			for _, reveal := range NewReveals(self.Hand) {
+				c := action.ChallengeBlock.Copy()
+				c.Ambassador = reveal
+				temp = append(temp, &Action{ChallengeBlock: c})
+			}
+		}
+		for _, action := range actions {
+			for _, reveal := range NewReveals(self.Hand) {
+				c := action.ChallengeBlock.Copy()
+				c.Captain = reveal
+				temp = append(temp, &Action{ChallengeBlock: c})
+			}
+		}
+		actions = temp
+	}
+	return actions
 }
 
 func Score(state *State, action *Action) float64 {
@@ -468,7 +645,27 @@ func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
 }
 
 func (a *Agent) ChooseBlock(claims []*Claim) *Claim {
-	return NewRandom().ChooseBlock(claims)
+	for _, claim := range claims {
+		switch claim.Declared {
+		case Duke:
+			if a.Action.Block.Challengeable.Selected() {
+				return claim
+			}
+		case Ambassador:
+			if a.Action.Block.Challengeable.Selected() && a.Action.Block.Ambassador {
+				return claim
+			}
+		case Captain:
+			if a.Action.Block.Challengeable.Selected() && a.Action.Block.Captain {
+				return claim
+			}
+		case Contessa:
+			if a.Action.Block.Challengeable.Selected() {
+				return claim
+			}
+		}
+	}
+	return nil
 }
 
 func (a *Agent) ChooseChallengeMove(gm *Game, self *Player, claim *Claim, object *Player) bool {
@@ -499,37 +696,27 @@ func (a *Agent) ChooseChallengeMove(gm *Game, self *Player, claim *Claim, object
 	case Assassin:
 		switch obj {
 		case 0:
-			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectOne)
 			return a.Action.ChallengeMove.AssassinateObjectOne.Selected()
 		case 1:
-			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectTwo)
 			return a.Action.ChallengeMove.AssassinateObjectTwo.Selected()
 		case 2:
-			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectThree)
 			return a.Action.ChallengeMove.AssassinateObjectThree.Selected()
 		case 3:
-			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectFour)
 			return a.Action.ChallengeMove.AssassinateObjectFour.Selected()
 		case 4:
-			fmt.Println(*a.Action.ChallengeMove.AssassinateObjectFive)
 			return a.Action.ChallengeMove.AssassinateObjectFive.Selected()
 		}
 	case Captain:
 		switch obj {
 		case 0:
-			fmt.Println(*a.Action.ChallengeMove.StealObjectOne)
 			return a.Action.ChallengeMove.StealObjectOne.Selected()
 		case 1:
-			fmt.Println(*a.Action.ChallengeMove.StealObjectTwo)
 			return a.Action.ChallengeMove.StealObjectTwo.Selected()
 		case 2:
-			fmt.Println(*a.Action.ChallengeMove.StealObjectThree)
 			return a.Action.ChallengeMove.StealObjectThree.Selected()
 		case 3:
-			fmt.Println(*a.Action.ChallengeMove.StealObjectFour)
 			return a.Action.ChallengeMove.StealObjectFour.Selected()
 		case 4:
-			fmt.Println(*a.Action.ChallengeMove.StealObjectFive)
 			return a.Action.ChallengeMove.StealObjectFive.Selected()
 		}
 	}
@@ -538,6 +725,59 @@ func (a *Agent) ChooseChallengeMove(gm *Game, self *Player, claim *Claim, object
 }
 
 func (a *Agent) ChooseChallengeBlock(gm *Game, self *Player, claim *Claim, object *Player) bool {
+	index := 0
+	for i, player := range gm.Players {
+		if self == player {
+			index = i
+		}
+	}
+
+	players := append(gm.Players[index:], gm.Players[:index]...)
+
+	obj := 0
+	for i, player := range players {
+		if claim.Subject == player {
+			obj = i
+		}
+	}
+
+	switch claim.Declared {
+	case Duke:
+		switch obj {
+		case 0:
+			if a.Action.ChallengeBlock.SubjectOneDuke.Selected() {
+				return true
+			}
+		case 1:
+			if a.Action.ChallengeBlock.SubjectTwoDuke.Selected() {
+				return true
+			}
+		case 2:
+			if a.Action.ChallengeBlock.SubjectThreeDuke.Selected() {
+				return true
+			}
+		case 3:
+			if a.Action.ChallengeBlock.SubjectFourDuke.Selected() {
+				return true
+			}
+		case 4:
+			if a.Action.ChallengeBlock.SubjectFiveDuke.Selected() {
+				return true
+			}
+		}
+	case Ambassador:
+		if a.Action.ChallengeBlock.Ambassador.Selected() {
+			return true
+		}
+	case Captain:
+		if a.Action.ChallengeBlock.Captain.Selected() {
+			return true
+		}
+	case Contessa:
+		if a.Action.ChallengeBlock.Contessa.Selected() {
+			return true
+		}
+	}
 	return false
 }
 

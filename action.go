@@ -247,6 +247,18 @@ type ActionBlock struct {
 	Captain       bool
 }
 
+func NewActionBlock() *ActionBlock {
+	return &ActionBlock{
+		Challengeable: NewChallengeable(
+			NewReveal(nil),
+			NewReveal(nil),
+			NewReveal(nil),
+			NewReveal(nil),
+			NewReveal(nil),
+		),
+	}
+}
+
 type ActionMoveChallenge struct {
 	SubjectOne             bool
 	SubjectTwo             bool
@@ -315,6 +327,32 @@ type ActionBlockChallenge struct {
 	Ambassador       *Reveal
 	Captain          *Reveal
 	Contessa         *Reveal
+}
+
+func NewActionBlockChallenge() *ActionBlockChallenge {
+	return &ActionBlockChallenge{
+		SubjectOneDuke:   NewReveal(nil),
+		SubjectTwoDuke:   NewReveal(nil),
+		SubjectThreeDuke: NewReveal(nil),
+		SubjectFourDuke:  NewReveal(nil),
+		SubjectFiveDuke:  NewReveal(nil),
+		Ambassador:       NewReveal(nil),
+		Captain:          NewReveal(nil),
+		Contessa:         NewReveal(nil),
+	}
+}
+
+func (c *ActionBlockChallenge) Copy() *ActionBlockChallenge {
+	return &ActionBlockChallenge{
+		SubjectOneDuke:   c.SubjectOneDuke,
+		SubjectTwoDuke:   c.SubjectTwoDuke,
+		SubjectThreeDuke: c.SubjectThreeDuke,
+		SubjectFourDuke:  c.SubjectFourDuke,
+		SubjectFiveDuke:  c.SubjectFiveDuke,
+		Ambassador:       c.Ambassador,
+		Captain:          c.Captain,
+		Contessa:         c.Contessa,
+	}
 }
 
 type Discard struct {

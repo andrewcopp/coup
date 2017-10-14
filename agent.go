@@ -406,83 +406,78 @@ func BlockAndChallenges(gm *Game, mv *Move, self *Player) []*Action {
 		Block:          NewActionBlock(),
 		ChallengeBlock: NewActionBlockChallenge(),
 	}}
+
 	switch mv.Case {
 	case ForeignAid:
 		if mv.Subject != self {
-			actions = append(actions, Blocks(gm, mv, self, objects)...)
+			actions = append(actions, Blocks(gm, mv, self, objects, actions)...)
 		}
 
-		actions = append(actions, BlockChallenges(gm, mv, self, objects)...)
+		actions = append(actions, BlockChallenges(gm, mv, self, objects, actions)...)
 	case Assassinate:
 		if mv.Object != self {
-			actions = append(actions, BlockChallenges(gm, mv, self, objects)...)
+			actions = append(actions, BlockChallenges(gm, mv, self, objects, actions)...)
 		} else {
-			actions = append(actions, Blocks(gm, mv, self, objects)...)
+			actions = append(actions, Blocks(gm, mv, self, objects, actions)...)
 		}
 	case Steal:
 		if mv.Object != self {
-			actions = append(actions, BlockChallenges(gm, mv, self, objects)...)
+			actions = append(actions, BlockChallenges(gm, mv, self, objects, actions)...)
 		} else {
-			actions = append(actions, Blocks(gm, mv, self, objects)...)
+			actions = append(actions, Blocks(gm, mv, self, objects, actions)...)
 		}
 	}
 	return actions
 }
 
-func Blocks(gm *Game, mv *Move, self *Player, objects []int) []*Action {
-	actions := []*Action{&Action{
-		Block: NewActionBlock(),
-	}}
-	switch mv.Case {
-	case ForeignAid:
-		for _, challengeable := range NewChallengeables(objects, self.Hand) {
-			block := NewActionBlock()
-			block.Challengeable = challengeable
-			action := &Action{
-				Block: block,
-			}
-			actions = append(actions, action)
-		}
-	case Assassinate:
-		if self == mv.Object {
+func Blocks(gm *Game, mv *Move, self *Player, objects []int, actions []*Action) []*Action {
+	temp := actions
+	for _, a := range temp {
+		switch mv.Case {
+		case ForeignAid:
 			for _, challengeable := range NewChallengeables(objects, self.Hand) {
+				action := a.Copy()
 				block := NewActionBlock()
 				block.Challengeable = challengeable
-				action := &Action{
-					Block: block,
-				}
+				action.Block = block
 				actions = append(actions, action)
 			}
-		}
-	case Steal:
-		if self == mv.Object {
-			for _, challengeable := range NewChallengeables(objects, self.Hand) {
-				block := NewActionBlock()
-				block.Challengeable = challengeable
-				block.Ambassador = true
-				action := &Action{
-					Block: block,
+		case Assassinate:
+			if self == mv.Object {
+				for _, challengeable := range NewChallengeables(objects, self.Hand) {
+					action := a.Copy()
+					block := NewActionBlock()
+					block.Challengeable = challengeable
+					action.Block = block
+					actions = append(actions, action)
 				}
-				actions = append(actions, action)
 			}
-			for _, challengeable := range NewChallengeables(objects, self.Hand) {
-				block := NewActionBlock()
-				block.Challengeable = challengeable
-				block.Captain = true
-				action := &Action{
-					Block: block,
+		case Steal:
+			if self == mv.Object {
+				for _, challengeable := range NewChallengeables(objects, self.Hand) {
+					action := a.Copy()
+					block := NewActionBlock()
+					block.Challengeable = challengeable
+					block.Ambassador = true
+					action.Block = block
+					actions = append(actions, action)
 				}
-				actions = append(actions, action)
+				for _, challengeable := range NewChallengeables(objects, self.Hand) {
+					action := a.Copy()
+					block := NewActionBlock()
+					block.Challengeable = challengeable
+					block.Captain = true
+					action.Block = block
+					actions = append(actions, action)
+				}
 			}
 		}
 	}
+
 	return actions
 }
 
-func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action {
-	actions := []*Action{&Action{
-		ChallengeBlock: NewActionBlockChallenge(),
-	}}
+func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int, actions []*Action) []*Action {
 	switch mv.Case {
 	case ForeignAid:
 		for i := range objects {
@@ -491,9 +486,9 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action 
 				temp := actions
 				for _, action := range actions {
 					for _, reveal := range NewReveals(self.Hand) {
-						c := action.ChallengeBlock.Copy()
-						c.SubjectTwoDuke = reveal
-						temp = append(temp, &Action{ChallengeBlock: c})
+						a := action.Copy()
+						a.ChallengeBlock.SubjectTwoDuke = reveal
+						temp = append(temp, a)
 					}
 				}
 				actions = temp
@@ -501,9 +496,9 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action 
 				temp := actions
 				for _, action := range actions {
 					for _, reveal := range NewReveals(self.Hand) {
-						c := action.ChallengeBlock.Copy()
-						c.SubjectThreeDuke = reveal
-						temp = append(temp, &Action{ChallengeBlock: c})
+						a := action.Copy()
+						a.ChallengeBlock.SubjectThreeDuke = reveal
+						temp = append(temp, a)
 					}
 				}
 				actions = temp
@@ -511,9 +506,9 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action 
 				temp := actions
 				for _, action := range actions {
 					for _, reveal := range NewReveals(self.Hand) {
-						c := action.ChallengeBlock.Copy()
-						c.SubjectFourDuke = reveal
-						temp = append(temp, &Action{ChallengeBlock: c})
+						a := action.Copy()
+						a.ChallengeBlock.SubjectFourDuke = reveal
+						temp = append(temp, a)
 					}
 				}
 				actions = temp
@@ -521,9 +516,9 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action 
 				temp := actions
 				for _, action := range actions {
 					for _, reveal := range NewReveals(self.Hand) {
-						c := action.ChallengeBlock.Copy()
-						c.SubjectFiveDuke = reveal
-						temp = append(temp, &Action{ChallengeBlock: c})
+						a := action.Copy()
+						a.ChallengeBlock.SubjectFiveDuke = reveal
+						temp = append(temp, a)
 					}
 				}
 				actions = temp
@@ -533,9 +528,9 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action 
 		temp := actions
 		for _, action := range actions {
 			for _, reveal := range NewReveals(self.Hand) {
-				c := action.ChallengeBlock.Copy()
-				c.Contessa = reveal
-				temp = append(temp, &Action{ChallengeBlock: c})
+				a := action.Copy()
+				a.ChallengeBlock.Contessa = reveal
+				temp = append(temp, a)
 			}
 		}
 		actions = temp
@@ -543,16 +538,16 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int) []*Action 
 		temp := actions
 		for _, action := range actions {
 			for _, reveal := range NewReveals(self.Hand) {
-				c := action.ChallengeBlock.Copy()
-				c.Ambassador = reveal
-				temp = append(temp, &Action{ChallengeBlock: c})
+				a := action.Copy()
+				a.ChallengeBlock.Ambassador = reveal
+				temp = append(temp, a)
 			}
 		}
 		for _, action := range actions {
 			for _, reveal := range NewReveals(self.Hand) {
-				c := action.ChallengeBlock.Copy()
-				c.Captain = reveal
-				temp = append(temp, &Action{ChallengeBlock: c})
+				a := action.Copy()
+				a.ChallengeBlock.Captain = reveal
+				temp = append(temp, a)
 			}
 		}
 		actions = temp

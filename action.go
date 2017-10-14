@@ -7,6 +7,15 @@ type Action struct {
 	ChallengeBlock *ActionBlockChallenge
 }
 
+func (a *Action) Copy() *Action {
+	return &Action{
+		Move:           NewActionMove(),
+		ChallengeMove:  NewActionMoveChallenge(),
+		Block:          NewActionBlock(),
+		ChallengeBlock: NewActionBlockChallenge(),
+	}
+}
+
 type Reveal struct {
 	Duke       bool
 	Assassin   bool

@@ -23,6 +23,16 @@ func NewCards(dukes int, assassins int, ambassadors int, captains int, contessas
 	}
 }
 
+func (c *Cards) Copy() *Cards {
+	return &Cards{
+		Dukes:       c.Dukes,
+		Assassins:   c.Assassins,
+		Ambassadors: c.Ambassadors,
+		Captains:    c.Captains,
+		Contessas:   c.Contessas,
+	}
+}
+
 func (c *Cards) Size() int {
 	return c.Dukes + c.Assassins + c.Ambassadors + c.Captains + c.Contessas
 }

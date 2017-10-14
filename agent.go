@@ -25,34 +25,10 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	actions := []*Action{}
 
-	if !second {
-		actions = MoveAndChallenges(self, gm)
-	} else {
-		actions = BlockAndChallenges(gm, mv, self)
+	if self.Hand.Size() > 2 {
+
 	}
 
-	// for _, action := range actions {
-	// 	fmt.Printf("%+v\n", action.Move)
-	// }
-
-	bestScore := -1.0
-	bestActions := []*Action{&Action{}}
-	for _, action := range actions {
-		score := Score(state, action)
-		if score > bestScore {
-			bestScore = score
-			bestActions = []*Action{action}
-		} else if score == bestScore {
-			bestActions = append(bestActions, action)
-		}
-	}
-
-	rand.Seed(int64(time.Now().Nanosecond()))
-	a.Action = bestActions[rand.Intn(len(bestActions))]
-
-}
-
-func MoveAndChallenges(self *Player, gm *Game) []*Action {
 	index := 0
 	for i, player := range gm.Players {
 		if self == player {
@@ -75,23 +51,6 @@ func MoveAndChallenges(self *Player, gm *Game) []*Action {
 		subject += len(players)
 	}
 
-	valid := []MoveEnum{}
-	if players[subject].Coins < 10 {
-		valid = append(valid, Income)
-		valid = append(valid, ForeignAid)
-		valid = append(valid, Tax)
-		valid = append(valid, Steal)
-		valid = append(valid, Exchange)
-	}
-
-	if players[subject].Coins >= 7 {
-		valid = append(valid, Coup)
-	}
-
-	if players[subject].Coins >= 3 {
-		valid = append(valid, Assassinate)
-	}
-
 	objects := []int{}
 	for i, player := range players {
 		if player.Alive() && i != subject {
@@ -99,38 +58,76 @@ func MoveAndChallenges(self *Player, gm *Game) []*Action {
 		}
 	}
 
-	if subject != 0 {
-		return MoveChallenges(self, subject, valid, objects)
+	if !second {
+		actions = DiscardsMoveAndChallenges(players, subject, objects)
 	} else {
-		return Moves(self, valid, objects)
+		actions = BlockAndChallenges(gm, mv, self)
 	}
+
+	// for _, action := range actions {
+	// 	fmt.Printf("%+v\n", action.Move)
+	// }
+
+	bestScore := -1.0
+	bestActions := []*Action{NewAction()}
+	for _, action := range actions {
+		score := Score(state, action)
+		if score > bestScore {
+			bestScore = score
+			bestActions = []*Action{action}
+		} else if score == bestScore {
+			bestActions = append(bestActions, action)
+		}
+	}
+
+	rand.Seed(int64(time.Now().Nanosecond()))
+	a.Action = bestActions[rand.Intn(len(bestActions))]
+
 }
 
-func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
+func DiscardsMoveAndChallenges(players []*Player, sub int, objs []int) []*Action {
+	valid := []MoveEnum{}
+	if players[sub].Coins < 10 {
+		valid = append(valid, Income)
+		valid = append(valid, ForeignAid)
+		valid = append(valid, Tax)
+		valid = append(valid, Steal)
+		valid = append(valid, Exchange)
+	}
+
+	if players[sub].Coins >= 7 {
+		valid = append(valid, Coup)
+	}
+
+	if players[sub].Coins >= 3 {
+		valid = append(valid, Assassinate)
+	}
+
+	hand := players[0].Hand
+
+	if sub != 0 {
+		return MoveChallenges(hand, sub, valid, objs)
+	}
+
+	return Moves(hand, valid, objs)
+}
+
+func Moves(hand *Cards, valid []MoveEnum, objects []int) []*Action {
 	actions := []*Action{}
 	for _, move := range valid {
 		switch move {
 		case Income:
-			move := NewActionMove()
-			move.Income = true
-			action := &Action{
-				Move: move,
-			}
+			action := NewAction()
+			action.Move.Income = true
 			actions = append(actions, action)
 		case ForeignAid:
-			move := NewActionMove()
-			move.ForeignAid = true
-			action := &Action{
-				Move: move,
-			}
+			action := NewAction()
+			action.Move.ForeignAid = true
 			actions = append(actions, action)
 		case Coup:
 			for _, object := range objects {
-				move := NewActionMove()
-				move.Coup = true
-				action := &Action{
-					Move: move,
-				}
+				action := NewAction()
+				action.Move.Coup = true
 				switch object {
 				case 0:
 					action.Move.ObjectOne = true
@@ -146,22 +143,16 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 				actions = append(actions, action)
 			}
 		case Tax:
-			for _, challengeable := range NewChallengeables(objects, self.Hand) {
-				move := NewActionMove()
-				move.Tax = challengeable
-				action := &Action{
-					Move: move,
-				}
+			for _, challengeable := range NewChallengeables(objects, hand) {
+				action := NewAction()
+				action.Move.Tax = challengeable
 				actions = append(actions, action)
 			}
 		case Assassinate:
 			for _, object := range objects {
-				for _, challengeable := range NewChallengeables(objects, self.Hand) {
-					move := NewActionMove()
-					move.Assassinate = challengeable
-					action := &Action{
-						Move: move,
-					}
+				for _, challengeable := range NewChallengeables(objects, hand) {
+					action := NewAction()
+					action.Move.Assassinate = challengeable
 					switch object {
 					case 0:
 						action.Move.ObjectOne = true
@@ -178,22 +169,16 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 				}
 			}
 		case Exchange:
-			for _, challengeable := range NewChallengeables(objects, self.Hand) {
-				move := NewActionMove()
-				move.Exchange = challengeable
-				action := &Action{
-					Move: move,
-				}
+			for _, challengeable := range NewChallengeables(objects, hand) {
+				action := NewAction()
+				action.Move.Exchange = challengeable
 				actions = append(actions, action)
 			}
 		case Steal:
 			for _, object := range objects {
-				for _, challengeable := range NewChallengeables(objects, self.Hand) {
-					move := NewActionMove()
-					move.Steal = challengeable
-					action := &Action{
-						Move: move,
-					}
+				for _, challengeable := range NewChallengeables(objects, hand) {
+					action := NewAction()
+					action.Move.Steal = challengeable
 					switch object {
 					case 0:
 						action.Move.ObjectOne = true
@@ -215,160 +200,165 @@ func Moves(self *Player, valid []MoveEnum, objects []int) []*Action {
 	return actions
 }
 
-func MoveChallenges(self *Player, sub int, valid []MoveEnum, objects []int) []*Action {
-	action := &Action{
-		ChallengeMove: NewActionMoveChallenge(),
-	}
-	switch sub {
-	case 0:
-		action.ChallengeMove.SubjectOne = true
-	case 1:
-		action.ChallengeMove.SubjectTwo = true
-	case 2:
-		action.ChallengeMove.SubjectThree = true
-	case 3:
-		action.ChallengeMove.SubjectFour = true
-	case 4:
-		action.ChallengeMove.SubjectFive = true
-	}
+func MoveChallenges(hand *Cards, sub int, valid []MoveEnum, objects []int) []*Action {
 
-	actions := []*Action{action}
-	for _, move := range valid {
-		switch move {
-		case Tax:
-			temp := actions
-			for _, action := range actions {
-				for _, reveal := range NewReveals(self.Hand) {
-					c := action.ChallengeMove.Copy()
-					c.Tax = reveal
-					temp = append(temp, &Action{ChallengeMove: c})
+	result := []*Action{}
+
+	for _, action := range Discards(hand) {
+		action.ChallengeMove = NewActionMoveChallenge()
+		switch sub {
+		case 0:
+			action.ChallengeMove.SubjectOne = true
+		case 1:
+			action.ChallengeMove.SubjectTwo = true
+		case 2:
+			action.ChallengeMove.SubjectThree = true
+		case 3:
+			action.ChallengeMove.SubjectFour = true
+		case 4:
+			action.ChallengeMove.SubjectFive = true
+		}
+
+		actions := []*Action{action}
+		for _, move := range valid {
+			switch move {
+			case Tax:
+				temp := actions
+				for _, action := range actions {
+					for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+						act := action.Copy()
+						act.ChallengeMove.Tax = reveal
+						temp = append(temp, act)
+					}
 				}
-			}
-			actions = temp
-		case Assassinate:
-			for _, object := range objects {
-				switch object {
-				case 0:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.AssassinateObjectOne = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+				actions = temp
+			case Assassinate:
+				for _, object := range objects {
+					switch object {
+					case 0:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.AssassinateObjectOne = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 1:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.AssassinateObjectTwo = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 1:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.AssassinateObjectTwo = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 2:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.AssassinateObjectThree = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 2:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.AssassinateObjectThree = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 3:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.AssassinateObjectFour = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 3:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.AssassinateObjectFour = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 4:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.AssassinateObjectFive = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 4:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.AssassinateObjectFive = reveal
+								temp = append(temp, act)
+							}
 						}
+						actions = temp
 					}
-					actions = temp
 				}
-			}
-		case Exchange:
-			temp := actions
-			for _, action := range actions {
-				for _, reveal := range NewReveals(self.Hand) {
-					c := action.ChallengeMove.Copy()
-					c.Exchange = reveal
-					temp = append(temp, &Action{ChallengeMove: c})
+			case Exchange:
+				temp := actions
+				for _, action := range actions {
+					for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+						act := action.Copy()
+						act.ChallengeMove.Exchange = reveal
+						temp = append(temp, act)
+					}
 				}
-			}
-			actions = temp
-		case Steal:
-			for _, object := range objects {
-				switch object {
-				case 0:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.StealObjectOne = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+				actions = temp
+			case Steal:
+				for _, object := range objects {
+					switch object {
+					case 0:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.StealObjectOne = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 1:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.StealObjectTwo = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 1:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.StealObjectTwo = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 2:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.StealObjectThree = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 2:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.StealObjectThree = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 3:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.StealObjectFour = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 3:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.StealObjectFour = reveal
+								temp = append(temp, act)
+							}
 						}
-					}
-					actions = temp
-				case 4:
-					temp := actions
-					for _, action := range actions {
-						for _, reveal := range NewReveals(self.Hand) {
-							c := action.ChallengeMove.Copy()
-							c.StealObjectFive = reveal
-							temp = append(temp, &Action{ChallengeMove: c})
+						actions = temp
+					case 4:
+						temp := actions
+						for _, action := range actions {
+							for _, reveal := range NewReveals(Hand(hand, action.Discard)) {
+								act := action.Copy()
+								act.ChallengeMove.StealObjectFive = reveal
+								temp = append(temp, act)
+							}
 						}
+						actions = temp
 					}
-					actions = temp
 				}
 			}
 		}
+
+		result = append(result, actions...)
 	}
 
-	return actions
+	return result
 }
 
 func BlockAndChallenges(gm *Game, mv *Move, self *Player) []*Action {
@@ -402,10 +392,7 @@ func BlockAndChallenges(gm *Game, mv *Move, self *Player) []*Action {
 		}
 	}
 
-	actions := []*Action{&Action{
-		Block:          NewActionBlock(),
-		ChallengeBlock: NewActionBlockChallenge(),
-	}}
+	actions := []*Action{NewAction()}
 
 	switch mv.Case {
 	case ForeignAid:
@@ -427,6 +414,7 @@ func BlockAndChallenges(gm *Game, mv *Move, self *Player) []*Action {
 			actions = append(actions, Blocks(gm, mv, self, objects, actions)...)
 		}
 	}
+
 	return actions
 }
 
@@ -553,6 +541,167 @@ func BlockChallenges(gm *Game, mv *Move, self *Player, objects []int, actions []
 		actions = temp
 	}
 	return actions
+}
+
+func Discards(hand *Cards) []*Action {
+	if hand.Size() > 2 {
+		actions := []*Action{}
+
+		if hand.Dukes > 1 {
+			action := NewAction()
+			action.Discard.TwoDukes = true
+			actions = append(actions, action)
+		}
+
+		if hand.Assassins > 1 {
+			action := NewAction()
+			action.Discard.TwoAssassins = true
+			actions = append(actions, action)
+		}
+
+		if hand.Ambassadors > 1 {
+			action := NewAction()
+			action.Discard.TwoAmbassadors = true
+			actions = append(actions, action)
+		}
+
+		if hand.Captains > 1 {
+			action := NewAction()
+			action.Discard.TwoCaptains = true
+			actions = append(actions, action)
+		}
+
+		if hand.Contessas > 1 {
+			action := NewAction()
+			action.Discard.TwoContessas = true
+			actions = append(actions, action)
+		}
+
+		if hand.Dukes > 0 && hand.Assassins > 0 {
+			action := NewAction()
+			action.Discard.OneDuke = true
+			action.Discard.OneAssassin = true
+			actions = append(actions, action)
+		}
+
+		if hand.Dukes > 0 && hand.Ambassadors > 0 {
+			action := NewAction()
+			action.Discard.OneDuke = true
+			action.Discard.OneAmbassador = true
+			actions = append(actions, action)
+		}
+
+		if hand.Dukes > 0 && hand.Captains > 0 {
+			action := NewAction()
+			action.Discard.OneDuke = true
+			action.Discard.OneCaptain = true
+			actions = append(actions, action)
+		}
+
+		if hand.Dukes > 0 && hand.Contessas > 0 {
+			action := NewAction()
+			action.Discard.OneDuke = true
+			action.Discard.OneContessa = true
+			actions = append(actions, action)
+		}
+
+		if hand.Assassins > 0 && hand.Ambassadors > 0 {
+			action := NewAction()
+			action.Discard.OneAssassin = true
+			action.Discard.OneAmbassador = true
+			actions = append(actions, action)
+		}
+
+		if hand.Assassins > 0 && hand.Captains > 0 {
+			action := NewAction()
+			action.Discard.OneAssassin = true
+			action.Discard.OneCaptain = true
+			actions = append(actions, action)
+		}
+
+		if hand.Assassins > 0 && hand.Contessas > 0 {
+			action := NewAction()
+			action.Discard.OneAssassin = true
+			action.Discard.OneContessa = true
+			actions = append(actions, action)
+		}
+
+		if hand.Ambassadors > 0 && hand.Captains > 0 {
+			action := NewAction()
+			action.Discard.OneAmbassador = true
+			action.Discard.OneCaptain = true
+			actions = append(actions, action)
+		}
+
+		if hand.Ambassadors > 0 && hand.Contessas > 0 {
+			action := NewAction()
+			action.Discard.OneAmbassador = true
+			action.Discard.OneContessa = true
+			actions = append(actions, action)
+		}
+
+		if hand.Captains > 0 && hand.Contessas > 0 {
+			action := NewAction()
+			action.Discard.OneCaptain = true
+			action.Discard.OneContessa = true
+			actions = append(actions, action)
+		}
+
+		return actions
+	}
+
+	return []*Action{NewAction()}
+}
+
+func Hand(hand *Cards, discard *Discard) *Cards {
+	hand = hand.Copy()
+
+	if discard.OneDuke {
+		hand.Remove(Duke)
+	}
+
+	if discard.TwoDukes {
+		hand.Remove(Duke)
+		hand.Remove(Duke)
+	}
+
+	if discard.OneAssassin {
+		hand.Remove(Assassin)
+	}
+
+	if discard.TwoAssassins {
+		hand.Remove(Assassin)
+		hand.Remove(Assassin)
+	}
+
+	if discard.OneAmbassador {
+		hand.Remove(Ambassador)
+	}
+
+	if discard.TwoAmbassadors {
+		hand.Remove(Ambassador)
+		hand.Remove(Ambassador)
+	}
+
+	if discard.OneCaptain {
+		hand.Remove(Captain)
+	}
+
+	if discard.TwoCaptains {
+		hand.Remove(Captain)
+		hand.Remove(Captain)
+	}
+
+	if discard.OneContessa {
+		hand.Remove(Contessa)
+	}
+
+	if discard.TwoContessas {
+		hand.Remove(Contessa)
+		hand.Remove(Contessa)
+	}
+
+	return hand
 }
 
 func Score(state *State, action *Action) float64 {
@@ -777,5 +926,56 @@ func (a *Agent) ChooseChallengeBlock(gm *Game, self *Player, claim *Claim, objec
 }
 
 func (a *Agent) ChooseDiscard(hand *Cards, amt int) []CardEnum {
-	return NewRandom().ChooseDiscard(hand, amt)
+	cards := []CardEnum{}
+
+	if a.Action.Discard.OneDuke {
+		cards = append(cards, Duke)
+	}
+
+	if a.Action.Discard.TwoDukes {
+		cards = append(cards, Duke)
+		cards = append(cards, Duke)
+	}
+
+	if a.Action.Discard.OneAssassin {
+		cards = append(cards, Assassin)
+	}
+
+	if a.Action.Discard.TwoAssassins {
+		cards = append(cards, Assassin)
+		cards = append(cards, Assassin)
+	}
+
+	if a.Action.Discard.OneAmbassador {
+		cards = append(cards, Ambassador)
+	}
+
+	if a.Action.Discard.TwoAmbassadors {
+		cards = append(cards, Ambassador)
+		cards = append(cards, Ambassador)
+	}
+
+	if a.Action.Discard.OneCaptain {
+		cards = append(cards, Captain)
+	}
+
+	if a.Action.Discard.TwoCaptains {
+		cards = append(cards, Captain)
+		cards = append(cards, Captain)
+	}
+
+	if a.Action.Discard.OneAmbassador {
+		cards = append(cards, Contessa)
+	}
+
+	if a.Action.Discard.TwoAmbassadors {
+		cards = append(cards, Contessa)
+		cards = append(cards, Contessa)
+	}
+
+	if len(cards) != amt {
+		return NewRandom().ChooseDiscard(hand, amt)
+	}
+
+	return cards
 }

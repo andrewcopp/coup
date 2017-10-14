@@ -1,18 +1,30 @@
 package coup
 
 type Action struct {
+	Discard        *Discard
 	Move           *ActionMove
 	ChallengeMove  *ActionMoveChallenge
 	Block          *ActionBlock
 	ChallengeBlock *ActionBlockChallenge
 }
 
-func (a *Action) Copy() *Action {
+func NewAction() *Action {
 	return &Action{
+		Discard:        NewDiscard(),
 		Move:           NewActionMove(),
 		ChallengeMove:  NewActionMoveChallenge(),
 		Block:          NewActionBlock(),
 		ChallengeBlock: NewActionBlockChallenge(),
+	}
+}
+
+func (a *Action) Copy() *Action {
+	return &Action{
+		Discard:        a.Discard.Copy(),
+		Move:           a.Move.Copy(),
+		ChallengeMove:  a.ChallengeMove.Copy(),
+		Block:          a.Block.Copy(),
+		ChallengeBlock: a.ChallengeBlock.Copy(),
 	}
 }
 
@@ -241,6 +253,23 @@ type ActionMove struct {
 	ObjectFive  bool
 }
 
+func (m *ActionMove) Copy() *ActionMove {
+	return &ActionMove{
+		Income:      m.Income,
+		ForeignAid:  m.ForeignAid,
+		Coup:        m.Coup,
+		Tax:         m.Tax.Copy(),
+		Assassinate: m.Assassinate.Copy(),
+		Exchange:    m.Exchange.Copy(),
+		Steal:       m.Steal.Copy(),
+		ObjectOne:   m.ObjectOne,
+		ObjectTwo:   m.ObjectTwo,
+		ObjectThree: m.ObjectThree,
+		ObjectFour:  m.ObjectFour,
+		ObjectFive:  m.ObjectFive,
+	}
+}
+
 func NewActionMove() *ActionMove {
 	return &ActionMove{
 		Tax:         NewChallengeable(nil, nil, nil, nil, nil),
@@ -265,6 +294,14 @@ func NewActionBlock() *ActionBlock {
 			NewReveal(nil),
 			NewReveal(nil),
 		),
+	}
+}
+
+func (b *ActionBlock) Copy() *ActionBlock {
+	return &ActionBlock{
+		Challengeable: b.Challengeable.Copy(),
+		Ambassador:    b.Ambassador,
+		Captain:       b.Captain,
 	}
 }
 
@@ -375,4 +412,23 @@ type Discard struct {
 	TwoCaptains    bool
 	OneContessa    bool
 	TwoContessas   bool
+}
+
+func NewDiscard() *Discard {
+	return &Discard{}
+}
+
+func (d *Discard) Copy() *Discard {
+	return &Discard{
+		OneDuke:        d.OneDuke,
+		TwoDukes:       d.TwoDukes,
+		OneAssassin:    d.OneAssassin,
+		TwoAssassins:   d.TwoAssassins,
+		OneAmbassador:  d.OneAmbassador,
+		TwoAmbassadors: d.TwoAmbassadors,
+		OneCaptain:     d.OneCaptain,
+		TwoCaptains:    d.TwoCaptains,
+		OneContessa:    d.OneContessa,
+		TwoContessas:   d.TwoContessas,
+	}
 }

@@ -15,7 +15,7 @@ type Game struct {
 
 func NewGame(players []*Player) *Game {
 	return &Game{
-		Logs:    true,
+		Logs:    false,
 		Deck:    NewCards(3, 3, 3, 3, 3),
 		Discard: NewCards(0, 0, 0, 0, 0),
 		Players: players,
@@ -30,14 +30,18 @@ func (g *Game) Setup() {
 	}
 
 	for _, player := range g.Players {
-		player.Coins = 2
+		if !player.Placeholder {
+			player.Coins = 2
+		}
 	}
 
 	for i := 0; i < 2; i++ {
 		for _, player := range append(g.Players[1:], g.Players[0]) {
-			card := g.Deck.Peek()
-			g.Deck.Remove(card)
-			player.Hand.Add(card)
+			if !player.Placeholder {
+				card := g.Deck.Peek()
+				g.Deck.Remove(card)
+				player.Hand.Add(card)
+			}
 		}
 	}
 }

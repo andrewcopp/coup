@@ -26,7 +26,7 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	actions := []*Action{}
 
 	if self.Hand.Size() > 2 {
-
+		// TODO: Choose Discard
 	}
 
 	index := 0

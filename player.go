@@ -1,18 +1,20 @@
 package coup
 
 type Player struct {
-	Name    string
-	Chooser Chooser
-	Coins   int
-	Hand    *Cards
+	Name        string
+	Chooser     Chooser
+	Coins       int
+	Hand        *Cards
+	Placeholder bool
 }
 
-func NewPlayer(name string, chooser Chooser, coins int) *Player {
+func NewPlayer(name string, chooser Chooser, placeholer bool) *Player {
 	return &Player{
-		Name:    name,
-		Chooser: chooser,
-		Coins:   coins,
-		Hand:    NewCards(0, 0, 0, 0, 0),
+		Name:        name,
+		Chooser:     chooser,
+		Coins:       0,
+		Hand:        NewCards(0, 0, 0, 0, 0),
+		Placeholder: placeholer,
 	}
 }
 

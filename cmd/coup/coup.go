@@ -10,7 +10,7 @@ var game *coup.Game
 
 func init() {
 	var chooser coup.Chooser
-	chooser = coup.NewAgent()
+	chooser = coup.NewAgent(0, 0.0)
 	one := coup.NewPlayer("Player One", chooser, false)
 	chooser = coup.NewRandom()
 	two := coup.NewPlayer("Player Two", chooser, false)

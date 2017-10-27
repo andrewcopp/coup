@@ -7,12 +7,17 @@ import (
 )
 
 type Agent struct {
-	States []*State
-	Action *Action
+	Version int
+	Epsilon float64
+	States  []*State
+	Action  *Action
 }
 
-func NewAgent() *Agent {
-	return &Agent{}
+func NewAgent(ver int, e float64) *Agent {
+	return &Agent{
+		Version: ver,
+		Epsilon: e,
+	}
 }
 
 func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {
@@ -68,20 +73,31 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	// 	fmt.Printf("%+v\n", action.Move)
 	// }
 
-	bestScore := -1.0
-	bestActions := []*Action{NewAction()}
-	for _, action := range actions {
-		score := Score(state, action)
-		if score > bestScore {
-			bestScore = score
-			bestActions = []*Action{action}
-		} else if score == bestScore {
-			bestActions = append(bestActions, action)
+	rand.Seed(time.Now().UnixNano())
+	if 1.0-a.Epsilon > rand.Float64() {
+		bestScore := -1.0
+		bestActions := []*Action{NewAction()}
+		for _, action := range actions {
+			score := Score(state, action)
+			if score > bestScore {
+				bestScore = score
+				bestActions = []*Action{action}
+			} else if score == bestScore {
+				bestActions = append(bestActions, action)
+			}
+		}
+
+		rand.Seed(time.Now().UnixNano())
+		a.Action = bestActions[rand.Intn(len(bestActions))]
+	} else {
+		// TODO: Why need this?!
+		if len(actions) != 0 {
+			rand.Seed(time.Now().UnixNano())
+			a.Action = actions[rand.Intn(len(actions))]
+		} else {
+			a.Action = NewAction()
 		}
 	}
-
-	rand.Seed(int64(time.Now().Nanosecond()))
-	a.Action = bestActions[rand.Intn(len(bestActions))]
 
 }
 

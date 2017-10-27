@@ -12,13 +12,12 @@ func init() {
 
 func main() {
 
-	var chooser coup.Chooser
-	chooser = coup.NewAgent()
-	one := coup.NewPlayer("Player One", chooser, false)
-
 	wins := 0
 	losses := 0
 	for i := 0; i < 1; i++ {
+		var chooser coup.Chooser
+		chooser = coup.NewAgent(i, 0.8)
+		one := coup.NewPlayer("Player One", chooser, false)
 		for j := 0; j < 2000; j++ {
 			chooser = coup.NewRandom()
 			two := coup.NewPlayer("Player Two", chooser, false)

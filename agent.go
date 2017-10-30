@@ -3,6 +3,8 @@ package coup
 import (
 	"fmt"
 	"math/rand"
+	"os/exec"
+	"strconv"
 	"time"
 )
 
@@ -77,6 +79,7 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	if 1.0-a.Epsilon > rand.Float64() {
 		bestScore := -1.0
 		bestActions := []*Action{NewAction()}
+		fmt.Println(len(actions))
 		for _, action := range actions {
 			score := Score(state, action)
 			if score > bestScore {
@@ -721,7 +724,18 @@ func Hand(hand *Cards, discard *Discard) *Cards {
 }
 
 func Score(state *State, action *Action) float64 {
-	return 0.0
+	fmt.Println(time.Now())
+	bytes, err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/fit.py", "./cmd/trainer/models/model_1.cptk", "4.0,3.0").CombinedOutput()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	float, err := strconv.ParseFloat(string(bytes), 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return float
 }
 
 func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {

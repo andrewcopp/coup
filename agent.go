@@ -63,7 +63,7 @@ func (a *Agent) Record(win bool) {
 			}
 		}
 
-		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, features, labels).Run(); err != nil {
+		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", outfile, outfile, features, labels).Run(); err != nil {
 			fmt.Println(err)
 		}
 	}

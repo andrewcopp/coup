@@ -32,10 +32,10 @@ func main() {
 
 		wins := 0
 		losses := 0
-		var chooser coup.Chooser
-		chooser = coup.NewAgent(i, 1.0/float64(i))
-		one := coup.NewPlayer("Player One", chooser, false)
 		for j := 0; j < 1000; j++ {
+			var chooser coup.Chooser
+			chooser = coup.NewAgent(i, 1.0/float64(i))
+			one := coup.NewPlayer("Player One", chooser, false)
 			rand.Seed(time.Now().UnixNano())
 			if i > 0 {
 				chooser = coup.NewAgent(rand.Intn(i), 0.0)

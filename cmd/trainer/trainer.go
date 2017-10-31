@@ -33,45 +33,42 @@ func main() {
 		wins := 0
 		losses := 0
 
-		bump := make(chan struct{}, 1000)
+		// bump := make(chan struct{}, 1000)
 
-		for j := 0; j < 1; j++ {
-			go func() {
-				var chooser coup.Chooser
-				chooser = coup.NewAgent(i, 1.0/float64(i))
-				one := coup.NewPlayer("Player One", chooser, false)
+		for j := 0; j < 10; j++ {
+			var chooser coup.Chooser
+			chooser = coup.NewAgent(i, 1.0/float64(i))
+			one := coup.NewPlayer("Player One", chooser, false)
 
-				rand.Seed(time.Now().UnixNano())
-				if i > 0 {
-					chooser = coup.NewAgent(rand.Intn(i), 0.0)
-				} else {
-					chooser = coup.NewRandom()
-				}
-				two := coup.NewPlayer("Player Two", chooser, false)
+			rand.Seed(time.Now().UnixNano())
+			if i > 0 {
+				chooser = coup.NewAgent(rand.Intn(i), 0.0)
+			} else {
 				chooser = coup.NewRandom()
-				three := coup.NewPlayer("Player Three", chooser, true)
-				four := coup.NewPlayer("Player Four", chooser, true)
-				five := coup.NewPlayer("Player Five", chooser, true)
+			}
+			two := coup.NewPlayer("Player Two", chooser, false)
+			chooser = coup.NewRandom()
+			three := coup.NewPlayer("Player Three", chooser, true)
+			four := coup.NewPlayer("Player Four", chooser, true)
+			five := coup.NewPlayer("Player Five", chooser, true)
 
-				game := coup.NewGame([]*coup.Player{one, two, three, four, five})
+			game := coup.NewGame([]*coup.Player{one, two, three, four, five})
 
-				game.Setup()
-				winner := game.Play()
-				if winner == one {
-					one.Chooser.Record(true)
-					wins++
-				} else {
-					one.Chooser.Record(false)
-					losses++
-				}
-				bump <- struct{}{}
-			}()
-		}
-
-		for j := 0; j < 1; j++ {
-			<-bump
+			game.Setup()
+			winner := game.Play()
+			if winner == one {
+				one.Chooser.Record(true)
+				wins++
+			} else {
+				one.Chooser.Record(false)
+				losses++
+			}
 			fmt.Printf("Agent %d completed game %d.\n", i, j)
 		}
+
+		// for j := 0; j < 1; j++ {
+		// 	<-bump
+		// }
 
 		fmt.Println(float64(wins)/float64((wins+losses))*100.0, "%")
 	}

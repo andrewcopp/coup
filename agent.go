@@ -787,6 +787,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 		tensor := append(states[i].Tensor(), actions[i].Tensor()...)
 		tensors = append(tensors, tensor)
 	}
+	fmt.Println(len(tensors))
 	strs := make([][]string, len(tensors))
 	for i, tensor := range tensors {
 		str := make([]string, len(tensor))
@@ -806,7 +807,6 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
 	if err != nil {
-		fmt.Println(input)
 		fmt.Println(err)
 	}
 

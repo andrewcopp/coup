@@ -904,6 +904,7 @@ func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {
 			alive++
 		}
 	}
+	fmt.Println("Possible: ", len(moves))
 	fmt.Println("Alive: ", alive)
 	fmt.Println(a.Action.Move)
 	panic("All moves should have been explored.")

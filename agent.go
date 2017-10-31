@@ -35,7 +35,7 @@ func (a *Agent) Record(win bool) {
 		str := strings.Join(strs, ",")
 		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", infile, outfile, str, "1.0").Run(); err != nil {
+		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, str, "1.0").Run(); err != nil {
 			fmt.Println(err)
 		}
 	} else {
@@ -47,7 +47,7 @@ func (a *Agent) Record(win bool) {
 		str := strings.Join(strs, ",")
 		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", infile, outfile, str, "0.0").Run(); err != nil {
+		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, str, "0.0").Run(); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -783,7 +783,7 @@ func (a *Agent) Score(state *State, action *Action) float64 {
 	}
 	str := strings.Join(strs, ",")
 	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-	bytes, err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/fit.py", infile, str).CombinedOutput()
+	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, str).CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
 	}

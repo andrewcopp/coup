@@ -798,7 +798,6 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 			if max > len(tensors) {
 				max = len(tensors)
 			}
-			fmt.Println("Avoiding an error")
 			subtensors = tensors[64*i : max]
 		} else {
 			subtensors = tensors[64*i:]

@@ -35,7 +35,7 @@ func main() {
 
 		// bump := make(chan struct{}, 1000)
 
-		for j := 0; j < 10; j++ {
+		for j := 0; j < 1; j++ {
 			var chooser coup.Chooser
 			chooser = coup.NewAgent(i, 1.0/float64(i))
 			one := coup.NewPlayer("Player One", chooser, false)

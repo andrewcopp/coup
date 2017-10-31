@@ -35,7 +35,7 @@ func main() {
 
 		bump := make(chan struct{}, 1000)
 
-		for j := 0; j < 4; j++ {
+		for j := 0; j < 1; j++ {
 			go func() {
 				var chooser coup.Chooser
 				chooser = coup.NewAgent(i, 1.0/float64(i))
@@ -68,7 +68,7 @@ func main() {
 			}()
 		}
 
-		for j := 0; j < 1000; j++ {
+		for j := 0; j < 1; j++ {
 			<-bump
 			fmt.Printf("Agent %d completed game %d.\n", i, j)
 		}

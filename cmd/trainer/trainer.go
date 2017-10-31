@@ -32,7 +32,7 @@ func main() {
 
 		wins := 0
 		losses := 0
-		for j := 0; j < 1000; j++ {
+		for j := 0; j < 10; j++ {
 			var chooser coup.Chooser
 			chooser = coup.NewAgent(i, 1.0/float64(i))
 			one := coup.NewPlayer("Player One", chooser, false)

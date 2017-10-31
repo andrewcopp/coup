@@ -39,7 +39,6 @@ func main() {
 		bump := make(chan struct{}, 1000)
 
 		for j := 0; j < 1000; j++ {
-			bump <- struct{}{}
 			go func() {
 				rand.Seed(time.Now().UnixNano())
 				if i > 0 {
@@ -64,6 +63,7 @@ func main() {
 					one.Chooser.Record(false)
 					losses++
 				}
+				bump <- struct{}{}
 			}()
 		}
 

@@ -26,32 +26,6 @@ func NewAgent(ver int, e float64) *Agent {
 
 func (a *Agent) Record(win bool) {
 
-	if win {
-		tensor := append(a.States[len(a.States)-2].Tensor(), a.Actions[len(a.Actions)-2].Tensor()...)
-		strs := make([]string, len(tensor))
-		for i, t := range tensor {
-			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
-		}
-		str := strings.Join(strs, ",")
-		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, str, "1.0").Run(); err != nil {
-			fmt.Println(err)
-		}
-	} else {
-		tensor := append(a.States[len(a.States)-2].Tensor(), a.Actions[len(a.Actions)-2].Tensor()...)
-		strs := make([]string, len(tensor))
-		for i, t := range tensor {
-			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
-		}
-		str := strings.Join(strs, ",")
-		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, str, "0.0").Run(); err != nil {
-			fmt.Println(err)
-		}
-	}
-
 	for i := len(a.States) - 2; i >= 0; i-- {
 		tensor := append(a.States[i].Tensor(), a.Actions[i].Tensor()...)
 		strs := make([]string, len(tensor))
@@ -59,7 +33,7 @@ func (a *Agent) Record(win bool) {
 			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
 		}
 		features := strings.Join(strs, ",")
-		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version)
 		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 
 		var labels string
@@ -80,12 +54,12 @@ func (a *Agent) Record(win bool) {
 				fmt.Println(err)
 			}
 
-			labels = strconv.FormatFloat(float, 'f', 5, 64)
+			labels = strconv.FormatFloat(0.9*float, 'f', 5, 64)
 		} else {
 			if win {
 				labels = "0.9"
 			} else {
-				labels = "0.0"
+				labels = "-0.9"
 			}
 		}
 
@@ -808,7 +782,7 @@ func (a *Agent) Score(state *State, action *Action) float64 {
 		strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
 	}
 	str := strings.Join(strs, ",")
-	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version)
 	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, str).CombinedOutput()
 	if err != nil {
 		fmt.Println(err)

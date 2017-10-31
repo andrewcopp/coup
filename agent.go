@@ -803,7 +803,9 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 			subtensors = tensors[64*i : max]
 			fmt.Println("WICH")
 		} else {
+			fmt.Println("SAND2")
 			subtensors = tensors[64*i:]
+			fmt.Println("WICH2")
 		}
 
 		strs := make([][]string, len(subtensors))

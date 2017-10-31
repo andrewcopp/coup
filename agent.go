@@ -788,36 +788,47 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 		tensors = append(tensors, tensor)
 	}
 
-	strs := make([][]string, len(tensors))
-	for i, tensor := range tensors {
-		str := make([]string, len(tensor))
-		for j, t := range tensor {
-			str[j] = strconv.FormatFloat(t, 'f', 3, 64)
-		}
-		strs[i] = str
-	}
-
-	inputs := make([]string, len(strs))
-	for i, str := range strs {
-		inputs[i] = strings.Join(str, ",")
-	}
-
-	input := strings.Join(inputs, "_")
-
-	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
-	if err != nil {
-		fmt.Println(len(tensors))
-		fmt.Println(err)
-	}
-
+	batches := len(tensors) / 64
 	floats := []float64{}
-	for _, str := range strings.Split(string(bytes), ",") {
-		float, err := strconv.ParseFloat(str, 64)
+
+	for i := 0; i <= batches; i++ {
+		var subtensors [][]float64
+		if i != batches {
+			subtensors = tensors[64*i : 64*(i+1)]
+		} else {
+			subtensors = tensors[64*i:]
+		}
+
+		strs := make([][]string, len(subtensors))
+		for i, tensor := range tensors {
+			str := make([]string, len(subtensors))
+			for j, t := range tensor {
+				str[j] = strconv.FormatFloat(t, 'f', 3, 64)
+			}
+			strs[i] = str
+		}
+
+		inputs := make([]string, len(strs))
+		for i, str := range strs {
+			inputs[i] = strings.Join(str, ",")
+		}
+
+		input := strings.Join(inputs, "_")
+
+		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
 		if err != nil {
+			fmt.Println(len(tensors))
 			fmt.Println(err)
 		}
-		floats = append(floats, float)
+
+		for _, str := range strings.Split(string(bytes), ",") {
+			float, err := strconv.ParseFloat(str, 64)
+			if err != nil {
+				fmt.Println(err)
+			}
+			floats = append(floats, float)
+		}
 	}
 
 	return floats

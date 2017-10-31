@@ -152,13 +152,19 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	if 1.0-a.Epsilon > rand.Float64() {
 		bestScore := -1.0
 		bestActions := []*Action{NewAction()}
-		for _, action := range actions {
-			score := a.Score(state, action)
+
+		states := make([]*State, len(actions))
+		for i := range actions {
+			states[i] = state
+		}
+
+		scores := a.Score(states, actions)
+		for i, score := range scores {
 			if score > bestScore {
 				bestScore = score
-				bestActions = []*Action{action}
+				bestActions = []*Action{actions[i]}
 			} else if score == bestScore {
-				bestActions = append(bestActions, action)
+				bestActions = append(bestActions, actions[i])
 			}
 		}
 
@@ -801,25 +807,44 @@ func Hand(hand *Cards, discard *Discard) *Cards {
 	return hand
 }
 
-func (a *Agent) Score(state *State, action *Action) float64 {
-	tensor := append(state.Tensor(), action.Tensor()...)
-	strs := make([]string, len(tensor))
-	for i, t := range tensor {
-		strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+func (a *Agent) Score(states []*State, actions []*Action) []float64 {
+	tensors := [][]float64{}
+	for i := range states {
+		tensor := append(states[i].Tensor(), actions[i].Tensor()...)
+		tensors = append(tensors, tensor)
 	}
-	str := strings.Join(strs, ",")
+	strs := make([][]string, len(tensors))
+	for i, tensor := range tensors {
+		str := make([]string, len(tensor))
+		for j, t := range tensor {
+			str[j] = strconv.FormatFloat(t, 'f', 5, 64)
+		}
+		strs[i] = str
+	}
+
+	inputs := make([]string, len(strs))
+	for i, str := range strs {
+		inputs[i] = strings.Join(str, ",")
+	}
+
+	input := strings.Join(inputs, ";")
+
 	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, str).CombinedOutput()
+	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	float, err := strconv.ParseFloat(string(bytes), 64)
-	if err != nil {
-		fmt.Println(err)
+	floats := []float64{}
+	for _, str := range strings.Split(string(bytes), ",") {
+		float, err := strconv.ParseFloat(str, 64)
+		if err != nil {
+			fmt.Println(err)
+		}
+		floats = append(floats, float)
 	}
 
-	return float
+	return floats
 }
 
 func (a *Agent) ChooseMove(gm *Game, moves []*Move) *Move {

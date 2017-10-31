@@ -42,7 +42,7 @@ func (a *Agent) Record(win bool) {
 	for i, tensor := range tensors {
 		str := make([]string, len(tensor))
 		for j, t := range tensor {
-			str[j] = strconv.FormatFloat(t, 'f', 5, 64)
+			str[j] = strconv.FormatFloat(t, 'f', 3, 64)
 		}
 		strs[i] = str
 	}
@@ -56,7 +56,7 @@ func (a *Agent) Record(win bool) {
 
 	labels := make([]string, len(scores))
 	for i, score := range scores {
-		labels[i] = strconv.FormatFloat(score, 'f', 5, 64)
+		labels[i] = strconv.FormatFloat(score, 'f', 3, 64)
 	}
 
 	label := strings.Join(labels, "_")

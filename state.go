@@ -187,3 +187,68 @@ func NewState(self *Player, gm *Game, mv *Move, blk *Block) *State {
 
 	return state
 }
+
+func (s *State) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, s.OneCoins)
+	tensor = append(tensor, s.OneDukes)
+	tensor = append(tensor, s.OneAssassins)
+	tensor = append(tensor, s.OneAmbassadors)
+	tensor = append(tensor, s.OneCaptains)
+	tensor = append(tensor, s.OneContessas)
+	tensor = append(tensor, s.TwoCoins)
+	tensor = append(tensor, s.TwoCards)
+	tensor = append(tensor, s.ThreeCoins)
+	tensor = append(tensor, s.ThreeCards)
+	tensor = append(tensor, s.FourCoins)
+	tensor = append(tensor, s.FourCards)
+	tensor = append(tensor, s.FiveCoins)
+	tensor = append(tensor, s.FiveCards)
+	tensor = append(tensor, s.DiscardedDukes)
+	tensor = append(tensor, s.DiscardedAssassins)
+	tensor = append(tensor, s.DiscardedAmbassadors)
+	tensor = append(tensor, s.DiscardedCaptains)
+	tensor = append(tensor, s.DiscardedContessas)
+	tensor = append(tensor, s.boolToFloat(s.Bridge.SubjectOne))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.SubjectTwo))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.SubjectThree))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.SubjectFour))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.SubjectFive))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveForeignAid))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveTax))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveAssassinate))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveExchange))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveSteal))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.ObjectOne))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.ObjectTwo))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.ObjectThree))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.ObjectFour))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.ObjectFive))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveChallengeSubjectOne))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveChallengeSubjectTwo))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveChallengeSubjectThree))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveChallengeSubjectFour))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.MoveChallengeSubjectFive))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockSubjectOne))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockSubjectTwo))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockSubjectThree))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockSubjectFour))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockSubjectFive))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockAmbassador))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockCaptain))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockChallengeSubjectOne))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockChallengeSubjectTwo))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockChallengeSubjectThree))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockChallengeSubjectFour))
+	tensor = append(tensor, s.boolToFloat(s.Bridge.BlockChallengeSubjectFive))
+	return tensor
+
+}
+
+func (s *State) boolToFloat(prop bool) float64 {
+	if prop {
+		return 1.0
+	}
+
+	return 0.0
+}

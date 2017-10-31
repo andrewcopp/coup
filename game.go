@@ -15,7 +15,7 @@ type Game struct {
 
 func NewGame(players []*Player) *Game {
 	return &Game{
-		Logs:    true,
+		Logs:    false,
 		Deck:    NewCards(3, 3, 3, 3, 3),
 		Discard: NewCards(0, 0, 0, 0, 0),
 		Players: players,

@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type Agent struct {
 	Version int
 	Epsilon float64
 	States  []*State
+	Actions []*Action
 	Action  *Action
 }
 
@@ -20,6 +22,51 @@ func NewAgent(ver int, e float64) *Agent {
 		Version: ver,
 		Epsilon: e,
 	}
+}
+
+func (a *Agent) Record(win bool) {
+
+	if win {
+		tensor := append(a.States[len(a.States)-2].Tensor(), a.Actions[len(a.Actions)-2].Tensor()...)
+		strs := make([]string, len(tensor))
+		for i, t := range tensor {
+			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+		}
+		str := strings.Join(strs, ",")
+		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", infile, outfile, str, "1.0").Run(); err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		tensor := append(a.States[len(a.States)-2].Tensor(), a.Actions[len(a.Actions)-2].Tensor()...)
+		strs := make([]string, len(tensor))
+		for i, t := range tensor {
+			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+		}
+		str := strings.Join(strs, ",")
+		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", infile, outfile, str, "0.0").Run(); err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	for i := len(a.States) - 2; i >= 0; i-- {
+
+	}
+
+	// if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", "./cmd/trainer/models/model_1.cptk", "./cmd/trainer/models/model_1.cptk", "4.0,2.0", "10.0").Run(); err != nil {
+	// 	fmt.Println(err)
+	// }
+	//
+	// if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", "./cmd/trainer/models/model_1.cptk", "./cmd/trainer/models/model_1.cptk", "1.0,3.0", "5.0").Run(); err != nil {
+	// 	fmt.Println(err)
+	// }
+	//
+	// if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", "./cmd/trainer/models/model_1.cptk", "./cmd/trainer/models/model_1.cptk", "2.0,3.0", "7.0").Run(); err != nil {
+	// 	fmt.Println(err)
+	// }
 }
 
 func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {
@@ -79,9 +126,8 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	if 1.0-a.Epsilon > rand.Float64() {
 		bestScore := -1.0
 		bestActions := []*Action{NewAction()}
-		fmt.Println(len(actions))
 		for _, action := range actions {
-			score := Score(state, action)
+			score := a.Score(state, action)
 			if score > bestScore {
 				bestScore = score
 				bestActions = []*Action{action}
@@ -91,14 +137,20 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 		}
 
 		rand.Seed(time.Now().UnixNano())
-		a.Action = bestActions[rand.Intn(len(bestActions))]
+		action := bestActions[rand.Intn(len(bestActions))]
+		a.Action = action
+		a.Actions = append(a.Actions, action)
 	} else {
 		// TODO: Why need this?!
 		if len(actions) != 0 {
 			rand.Seed(time.Now().UnixNano())
-			a.Action = actions[rand.Intn(len(actions))]
+			action := actions[rand.Intn(len(actions))]
+			a.Action = action
+			a.Actions = append(a.Actions, action)
 		} else {
-			a.Action = NewAction()
+			action := NewAction()
+			a.Action = action
+			a.Actions = append(a.Actions, action)
 		}
 	}
 
@@ -723,9 +775,15 @@ func Hand(hand *Cards, discard *Discard) *Cards {
 	return hand
 }
 
-func Score(state *State, action *Action) float64 {
-	fmt.Println(time.Now())
-	bytes, err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/fit.py", "./cmd/trainer/models/model_1.cptk", "4.0,3.0").CombinedOutput()
+func (a *Agent) Score(state *State, action *Action) float64 {
+	tensor := append(state.Tensor(), action.Tensor()...)
+	strs := make([]string, len(tensor))
+	for i, t := range tensor {
+		strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+	}
+	str := strings.Join(strs, ",")
+	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+	bytes, err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/fit.py", infile, str).CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
 	}

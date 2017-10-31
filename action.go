@@ -28,12 +28,40 @@ func (a *Action) Copy() *Action {
 	}
 }
 
+func (a *Action) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, a.Move.Tensor()...)
+	tensor = append(tensor, a.ChallengeMove.Tensor()...)
+	tensor = append(tensor, a.Block.Tensor()...)
+	tensor = append(tensor, a.ChallengeBlock.Tensor()...)
+	tensor = append(tensor, a.Discard.Tensor()...)
+	return tensor
+}
+
 type Reveal struct {
 	Duke       bool
 	Assassin   bool
 	Ambassador bool
 	Captain    bool
 	Contessa   bool
+}
+
+func boolToFloat(prop bool) float64 {
+	if prop {
+		return 1.0
+	}
+
+	return 0.0
+}
+
+func (r *Reveal) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, boolToFloat(r.Duke))
+	tensor = append(tensor, boolToFloat(r.Assassin))
+	tensor = append(tensor, boolToFloat(r.Ambassador))
+	tensor = append(tensor, boolToFloat(r.Captain))
+	tensor = append(tensor, boolToFloat(r.Contessa))
+	return tensor
 }
 
 func NewReveal(card *CardEnum) *Reveal {
@@ -104,6 +132,16 @@ type Challengeable struct {
 	Three *Reveal
 	Four  *Reveal
 	Five  *Reveal
+}
+
+func (c *Challengeable) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, c.One.Tensor()...)
+	tensor = append(tensor, c.Two.Tensor()...)
+	tensor = append(tensor, c.Three.Tensor()...)
+	tensor = append(tensor, c.Four.Tensor()...)
+	tensor = append(tensor, c.Five.Tensor()...)
+	return tensor
 }
 
 func NewChallengeable(one *Reveal, two *Reveal, three *Reveal, four *Reveal, five *Reveal) *Challengeable {
@@ -253,6 +291,23 @@ type ActionMove struct {
 	ObjectFive  bool
 }
 
+func (m *ActionMove) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, boolToFloat(m.Income))
+	tensor = append(tensor, boolToFloat(m.ForeignAid))
+	tensor = append(tensor, boolToFloat(m.Coup))
+	tensor = append(tensor, m.Tax.Tensor()...)
+	tensor = append(tensor, m.Assassinate.Tensor()...)
+	tensor = append(tensor, m.Exchange.Tensor()...)
+	tensor = append(tensor, m.Steal.Tensor()...)
+	tensor = append(tensor, boolToFloat(m.ObjectOne))
+	tensor = append(tensor, boolToFloat(m.ObjectTwo))
+	tensor = append(tensor, boolToFloat(m.ObjectThree))
+	tensor = append(tensor, boolToFloat(m.ObjectFour))
+	tensor = append(tensor, boolToFloat(m.ObjectFive))
+	return tensor
+}
+
 func (m *ActionMove) Copy() *ActionMove {
 	return &ActionMove{
 		Income:      m.Income,
@@ -283,6 +338,14 @@ type ActionBlock struct {
 	Challengeable *Challengeable
 	Ambassador    bool
 	Captain       bool
+}
+
+func (b *ActionBlock) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, b.Challengeable.Tensor()...)
+	tensor = append(tensor, boolToFloat(b.Ambassador))
+	tensor = append(tensor, boolToFloat(b.Captain))
+	return tensor
 }
 
 func NewActionBlock() *ActionBlock {
@@ -323,6 +386,28 @@ type ActionMoveChallenge struct {
 	StealObjectThree       *Reveal
 	StealObjectFour        *Reveal
 	StealObjectFive        *Reveal
+}
+
+func (c *ActionMoveChallenge) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, boolToFloat(c.SubjectOne))
+	tensor = append(tensor, boolToFloat(c.SubjectTwo))
+	tensor = append(tensor, boolToFloat(c.SubjectThree))
+	tensor = append(tensor, boolToFloat(c.SubjectFour))
+	tensor = append(tensor, boolToFloat(c.SubjectFive))
+	tensor = append(tensor, c.Tax.Tensor()...)
+	tensor = append(tensor, c.AssassinateObjectOne.Tensor()...)
+	tensor = append(tensor, c.AssassinateObjectTwo.Tensor()...)
+	tensor = append(tensor, c.AssassinateObjectThree.Tensor()...)
+	tensor = append(tensor, c.AssassinateObjectFour.Tensor()...)
+	tensor = append(tensor, c.AssassinateObjectFive.Tensor()...)
+	tensor = append(tensor, c.Exchange.Tensor()...)
+	tensor = append(tensor, c.StealObjectOne.Tensor()...)
+	tensor = append(tensor, c.StealObjectTwo.Tensor()...)
+	tensor = append(tensor, c.StealObjectThree.Tensor()...)
+	tensor = append(tensor, c.StealObjectFour.Tensor()...)
+	tensor = append(tensor, c.StealObjectFive.Tensor()...)
+	return tensor
 }
 
 func NewActionMoveChallenge() *ActionMoveChallenge {
@@ -375,6 +460,19 @@ type ActionBlockChallenge struct {
 	Contessa         *Reveal
 }
 
+func (c *ActionBlockChallenge) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, c.SubjectOneDuke.Tensor()...)
+	tensor = append(tensor, c.SubjectTwoDuke.Tensor()...)
+	tensor = append(tensor, c.SubjectThreeDuke.Tensor()...)
+	tensor = append(tensor, c.SubjectFourDuke.Tensor()...)
+	tensor = append(tensor, c.SubjectFiveDuke.Tensor()...)
+	tensor = append(tensor, c.Ambassador.Tensor()...)
+	tensor = append(tensor, c.Captain.Tensor()...)
+	tensor = append(tensor, c.Contessa.Tensor()...)
+	return tensor
+}
+
 func NewActionBlockChallenge() *ActionBlockChallenge {
 	return &ActionBlockChallenge{
 		SubjectOneDuke:   NewReveal(nil),
@@ -412,6 +510,21 @@ type Discard struct {
 	TwoCaptains    bool
 	OneContessa    bool
 	TwoContessas   bool
+}
+
+func (d *Discard) Tensor() []float64 {
+	tensor := []float64{}
+	tensor = append(tensor, boolToFloat(d.OneDuke))
+	tensor = append(tensor, boolToFloat(d.TwoDukes))
+	tensor = append(tensor, boolToFloat(d.OneAssassin))
+	tensor = append(tensor, boolToFloat(d.TwoAssassins))
+	tensor = append(tensor, boolToFloat(d.OneAmbassador))
+	tensor = append(tensor, boolToFloat(d.TwoAmbassadors))
+	tensor = append(tensor, boolToFloat(d.OneCaptain))
+	tensor = append(tensor, boolToFloat(d.TwoCaptains))
+	tensor = append(tensor, boolToFloat(d.OneContessa))
+	tensor = append(tensor, boolToFloat(d.TwoContessas))
+	return tensor
 }
 
 func NewDiscard() *Discard {

@@ -12,6 +12,9 @@ func NewRandom() *Random {
 	return &Random{}
 }
 
+func (r *Random) Record(win bool) {
+}
+
 func (r *Random) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {
 }
 

@@ -1,6 +1,7 @@
 package coup
 
 type Chooser interface {
+	Record(win bool)
 	Update(self *Player, gm *Game, mv *Move, blk *Block, second bool)
 	ChooseMove(gm *Game, moves []*Move) *Move
 	ChooseBlock(claims []*Claim) *Claim

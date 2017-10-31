@@ -26,72 +26,46 @@ func NewAgent(ver int, e float64) *Agent {
 
 func (a *Agent) Record(win bool) {
 
+	scores := a.Score(a.States[:len(a.States)-2], a.Actions[:len(a.Actions)-2])
 	if win {
-		tensor := append(a.States[len(a.States)-2].Tensor(), a.Actions[len(a.Actions)-2].Tensor()...)
-		strs := make([]string, len(tensor))
-		for i, t := range tensor {
-			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
-		}
-		str := strings.Join(strs, ",")
-		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, str, "1.0").Run(); err != nil {
-			fmt.Println(err)
-		}
+		scores = append(scores, 0.9)
 	} else {
-		tensor := append(a.States[len(a.States)-2].Tensor(), a.Actions[len(a.Actions)-2].Tensor()...)
-		strs := make([]string, len(tensor))
-		for i, t := range tensor {
-			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
-		}
-		str := strings.Join(strs, ",")
-		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, str, "0.0").Run(); err != nil {
-			fmt.Println(err)
-		}
+		scores = append(scores, -0.9)
 	}
 
-	for i := len(a.States) - 2; i >= 0; i-- {
+	tensors := [][]float64{}
+	for i := range a.States[:len(a.States)-1] {
 		tensor := append(a.States[i].Tensor(), a.Actions[i].Tensor()...)
-		strs := make([]string, len(tensor))
-		for i, t := range tensor {
-			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+		tensors = append(tensors, tensor)
+	}
+	strs := make([][]string, len(tensors))
+	for i, tensor := range tensors {
+		str := make([]string, len(tensor))
+		for j, t := range tensor {
+			str[j] = strconv.FormatFloat(t, 'f', 5, 64)
 		}
-		features := strings.Join(strs, ",")
-		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
-		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		strs[i] = str
+	}
 
-		var labels string
-		if i != len(a.States)-2 {
-			tensor := append(a.States[i+1].Tensor(), a.Actions[i+1].Tensor()...)
-			strs := make([]string, len(tensor))
-			for i, t := range tensor {
-				strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
-			}
-			str := strings.Join(strs, ",")
-			bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, str).CombinedOutput()
-			if err != nil {
-				fmt.Println(err)
-			}
+	features := make([]string, len(strs))
+	for i, str := range strs {
+		features[i] = strings.Join(str, ",")
+	}
 
-			float, err := strconv.ParseFloat(string(bytes), 64)
-			if err != nil {
-				fmt.Println(err)
-			}
+	feature := strings.Join(features, "-")
 
-			labels = strconv.FormatFloat(float, 'f', 5, 64)
-		} else {
-			if win {
-				labels = "0.9"
-			} else {
-				labels = "0.0"
-			}
-		}
+	labels := make([]string, len(scores))
+	for i, score := range scores {
+		labels[i] = strconv.FormatFloat(score, 'f', 5, 64)
+	}
 
-		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, features, labels).Run(); err != nil {
-			fmt.Println(err)
-		}
+	label := strings.Join(labels, "-")
+
+	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+	outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+
+	if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, feature, label).Run(); err != nil {
+		fmt.Println(err)
 	}
 }
 

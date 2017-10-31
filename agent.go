@@ -114,8 +114,14 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	if !second {
 		actions = DiscardsMoveAndChallenges(players, subject, objects)
+		if len(actions) == 0 {
+			fmt.Println("No moves")
+		}
 	} else {
 		actions = BlockAndChallenges(gm, mv, self)
+		if len(actions) == 0 {
+			fmt.Println("No challenges")
+		}
 	}
 
 	// for _, action := range actions {
@@ -125,7 +131,7 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	rand.Seed(time.Now().UnixNano())
 	if 1.0-a.Epsilon > rand.Float64() {
 		bestScore := -1.0
-		bestActions := []*Action{NewAction()}
+		bestActions := []*Action{}
 
 		states := make([]*State, len(actions))
 		for i := range actions {

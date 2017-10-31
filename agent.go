@@ -795,7 +795,11 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 		fmt.Println(i)
 		var subtensors [][]float64
 		if i != batches {
-			subtensors = tensors[64*i : 64*(i+1)]
+			max := 64 * (i + 1)
+			if max > len(tensors) {
+				max = len(tensors)
+			}
+			subtensors = tensors[64*i : max]
 		} else {
 			subtensors = tensors[64*i:]
 		}

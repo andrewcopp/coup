@@ -52,14 +52,14 @@ func (a *Agent) Record(win bool) {
 		features[i] = strings.Join(str, ",")
 	}
 
-	feature := strings.Join(features, "-")
+	feature := strings.Join(features, "_")
 
 	labels := make([]string, len(scores))
 	for i, score := range scores {
 		labels[i] = strconv.FormatFloat(score, 'f', 5, 64)
 	}
 
-	label := strings.Join(labels, "-")
+	label := strings.Join(labels, "_")
 
 	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 	outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
@@ -801,7 +801,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 		inputs[i] = strings.Join(str, ",")
 	}
 
-	input := strings.Join(inputs, "-")
+	input := strings.Join(inputs, "_")
 
 	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()

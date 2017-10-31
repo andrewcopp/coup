@@ -792,20 +792,16 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 	floats := []float64{}
 
 	for i := 0; i <= batches; i++ {
-		fmt.Println("HERE")
 		var subtensors [][]float64
 		if i != batches {
 			max := 64 * (i + 1)
 			if max > len(tensors) {
 				max = len(tensors)
 			}
-			fmt.Println("SAND1")
+			fmt.Println("Avoiding an error")
 			subtensors = tensors[64*i : max]
-			fmt.Println("WICH1")
 		} else {
-			fmt.Println("SAND2")
 			subtensors = tensors[64*i:]
-			fmt.Println("WICH2")
 		}
 
 		strs := make([][]string, len(subtensors))

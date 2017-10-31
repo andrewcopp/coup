@@ -54,12 +54,12 @@ func (a *Agent) Record(win bool) {
 				fmt.Println(err)
 			}
 
-			labels = strconv.FormatFloat(0.9*float, 'f', 5, 64)
+			labels = strconv.FormatFloat(0.95*float, 'f', 5, 64)
 		} else {
 			if win {
-				labels = "0.9"
+				labels = "0.95"
 			} else {
-				labels = "-0.9"
+				labels = "0.00"
 			}
 		}
 

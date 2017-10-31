@@ -32,14 +32,15 @@ func main() {
 
 		wins := 0
 		losses := 0
-		var chooser coup.Chooser
-		chooser = coup.NewAgent(i, 1.0/float64(i))
-		one := coup.NewPlayer("Player One", chooser, false)
 
 		bump := make(chan struct{}, 1000)
 
 		for j := 0; j < 1000; j++ {
 			go func() {
+				var chooser coup.Chooser
+				chooser = coup.NewAgent(i, 1.0/float64(i))
+				one := coup.NewPlayer("Player One", chooser, false)
+
 				rand.Seed(time.Now().UnixNano())
 				if i > 0 {
 					chooser = coup.NewAgent(rand.Intn(i), 0.0)

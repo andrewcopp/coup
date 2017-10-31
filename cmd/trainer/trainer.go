@@ -59,6 +59,8 @@ func main() {
 				one.Chooser.Record(false)
 				losses++
 			}
+
+			fmt.Printf("Agent %d completed game %d.\n", i, j)
 		}
 		fmt.Println(float64(wins)/float64((wins+losses))*100.0, "%")
 	}

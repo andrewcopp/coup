@@ -114,10 +114,8 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	if !second {
 		actions = DiscardsMoveAndChallenges(players, subject, objects)
-		fmt.Println("Discards, Moves, and Challenges: ", len(actions))
 	} else {
 		actions = BlockAndChallenges(gm, mv, self)
-		fmt.Println("Blocks and Challenges: ", len(actions))
 	}
 
 	// for _, action := range actions {
@@ -810,6 +808,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
+		fmt.Println(input)
 	}
 
 	floats := []float64{}

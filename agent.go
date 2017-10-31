@@ -810,7 +810,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 
 		strs := make([][]string, len(subtensors))
 		for i, tensor := range subtensors {
-			str := make([]string, len(subtensors))
+			str := make([]string, len(tensor))
 			for j, t := range tensor {
 				str[j] = strconv.FormatFloat(t, 'f', 3, 64)
 			}

@@ -792,7 +792,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 	for i, tensor := range tensors {
 		str := make([]string, len(tensor))
 		for j, t := range tensor {
-			str[j] = strconv.FormatFloat(t, 'f', 5, 64)
+			str[j] = strconv.FormatFloat(t, 'f', 3, 64)
 		}
 		strs[i] = str
 	}
@@ -808,7 +808,6 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println(input)
 	}
 
 	floats := []float64{}

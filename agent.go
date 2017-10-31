@@ -807,6 +807,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 	infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 	bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, input).CombinedOutput()
 	if err != nil {
+		fmt.Println(len(tensors))
 		fmt.Println(err)
 	}
 

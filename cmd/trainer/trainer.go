@@ -18,11 +18,11 @@ func main() {
 	for i := 0; i < 10; i++ {
 
 		if i != 0 {
-			infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i-1)
-			outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i)
-			if err := exec.Command("python3", "/home/ubuntu/reinforcement/transfer.py", infile, outfile).Run(); err != nil {
-				fmt.Println(err)
-			}
+			// infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i-1)
+			// outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i)
+			// if err := exec.Command("python3", "/home/ubuntu/reinforcement/transfer.py", infile, outfile).Run(); err != nil {
+			// 	fmt.Println(err)
+			// }
 		} else {
 			outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i)
 			if err := exec.Command("python3", "/home/ubuntu/reinforcement/initialize.py", outfile).Run(); err != nil {

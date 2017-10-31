@@ -53,20 +53,46 @@ func (a *Agent) Record(win bool) {
 	}
 
 	for i := len(a.States) - 2; i >= 0; i-- {
+		tensor := append(a.States[i].Tensor(), a.Actions[i].Tensor()...)
+		strs := make([]string, len(tensor))
+		for i, t := range tensor {
+			strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+		}
+		features := strings.Join(strs, ",")
+		infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
+		outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", a.Version+1)
 
+		var labels string
+		if i != len(a.States)-2 {
+			tensor := append(a.States[i+1].Tensor(), a.Actions[i+1].Tensor()...)
+			strs := make([]string, len(tensor))
+			for i, t := range tensor {
+				strs[i] = strconv.FormatFloat(t, 'f', 5, 64)
+			}
+			str := strings.Join(strs, ",")
+			bytes, err := exec.Command("python3", "/home/ubuntu/reinforcement/fit.py", infile, str).CombinedOutput()
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			float, err := strconv.ParseFloat(string(bytes), 64)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			labels = strconv.FormatFloat(float, 'f', 5, 64)
+		} else {
+			if win {
+				labels = "0.9"
+			} else {
+				labels = "0.0"
+			}
+		}
+
+		if err := exec.Command("python3", "/home/ubuntu/reinforcement/train.py", infile, outfile, features, labels).Run(); err != nil {
+			fmt.Println(err)
+		}
 	}
-
-	// if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", "./cmd/trainer/models/model_1.cptk", "./cmd/trainer/models/model_1.cptk", "4.0,2.0", "10.0").Run(); err != nil {
-	// 	fmt.Println(err)
-	// }
-	//
-	// if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", "./cmd/trainer/models/model_1.cptk", "./cmd/trainer/models/model_1.cptk", "1.0,3.0", "5.0").Run(); err != nil {
-	// 	fmt.Println(err)
-	// }
-	//
-	// if err := exec.Command("python3", "/Users/andrewcopp/Developer/Coup/train.py", "./cmd/trainer/models/model_1.cptk", "./cmd/trainer/models/model_1.cptk", "2.0,3.0", "7.0").Run(); err != nil {
-	// 	fmt.Println(err)
-	// }
 }
 
 func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool) {

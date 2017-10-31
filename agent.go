@@ -798,9 +798,13 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 			if max > len(tensors) {
 				max = len(tensors)
 			}
+			fmt.Println("SAND1")
 			subtensors = tensors[64*i : max]
+			fmt.Println("WICH1")
 		} else {
+			fmt.Println("SAND2")
 			subtensors = tensors[64*i:]
+			fmt.Println("WICH2")
 		}
 
 		strs := make([][]string, len(subtensors))

@@ -114,8 +114,10 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	if !second {
 		actions = DiscardsMoveAndChallenges(players, subject, objects)
+		fmt.Println("Discards, Moves, and Challenges: ", len(actions))
 	} else {
 		actions = BlockAndChallenges(gm, mv, self)
+		fmt.Println("Blocks and Challenges: ", len(actions))
 	}
 
 	// for _, action := range actions {
@@ -787,7 +789,7 @@ func (a *Agent) Score(states []*State, actions []*Action) []float64 {
 		tensor := append(states[i].Tensor(), actions[i].Tensor()...)
 		tensors = append(tensors, tensor)
 	}
-	fmt.Println(len(tensors))
+
 	strs := make([][]string, len(tensors))
 	for i, tensor := range tensors {
 		str := make([]string, len(tensor))

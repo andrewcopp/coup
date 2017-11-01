@@ -2,6 +2,7 @@ package coup
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"os/exec"
 	"strconv"
@@ -124,8 +125,8 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	rand.Seed(time.Now().UnixNano())
 	if 1.0-a.Epsilon > rand.Float64() {
-		bestScore := -1.0
-		bestActions := []*Action{NewAction()}
+		bestScore := math.Inf(-1)
+		bestActions := []*Action{}
 
 		states := make([]*State, len(actions))
 		for i := range actions {

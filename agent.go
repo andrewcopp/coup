@@ -441,6 +441,11 @@ func MoveChallenges(hand *Cards, sub int, valid []MoveEnum, objects []int) []*Ac
 		result = append(result, actions...)
 	}
 
+	if len(result) == 0 {
+		// TODO: game ends on a challenge
+		result = append(result, NewAction())
+	}
+
 	return result
 }
 

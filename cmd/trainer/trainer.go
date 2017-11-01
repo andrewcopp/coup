@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"os/exec"
 	"time"
@@ -15,7 +16,7 @@ func init() {
 
 func main() {
 
-	for i := 0; i < 50; i++ {
+	for i := 0; i < 500; i++ {
 
 		if i != 0 {
 			infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i)
@@ -32,9 +33,12 @@ func main() {
 
 		wins := 0
 		losses := 0
-		for j := 0; j < 10000; j++ {
+		for j := 0; j < 1000; j++ {
 			var chooser coup.Chooser
-			chooser = coup.NewAgent(i, 1.0/float64(i))
+			k := 1.0
+			alpha := 0.95
+			t0 := 0
+			chooser = coup.NewAgent(i, 1.0-(1.0/(1.0+math.Exp(-k*alpha*float64(j-t0)))))
 			one := coup.NewPlayer("Player One", chooser, false)
 			rand.Seed(time.Now().UnixNano())
 			if i > 0 {

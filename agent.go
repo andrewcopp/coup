@@ -115,12 +115,16 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	if !second {
 		actions = DiscardsMoveAndChallenges(players, subject, objects)
 		if len(actions) == 0 {
-			fmt.Println("No moves")
+			if subject != 0 {
+				fmt.Println("No challenges")
+			} else {
+				fmt.Println("No moves")
+			}
 		}
 	} else {
 		actions = BlockAndChallenges(gm, mv, self)
 		if len(actions) == 0 {
-			fmt.Println("No challenges")
+			fmt.Println("No blocks")
 		}
 	}
 
@@ -793,6 +797,10 @@ func Hand(hand *Cards, discard *Discard) *Cards {
 }
 
 func (a *Agent) Score(states []*State, actions []*Action) []float64 {
+	if len(states) == 0 {
+		return []float64{}
+	}
+
 	tensors := [][]float64{}
 	for i := range states {
 		tensor := append(states[i].Tensor(), actions[i].Tensor()...)

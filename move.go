@@ -135,6 +135,17 @@ func (m *Move) Modify(gm *Game) {
 		}
 	}
 
+	alive := 0
+	for _, player := range gm.Players {
+		if player.Alive() {
+			alive++
+		}
+	}
+
+	if alive < 2 {
+		return
+	}
+
 	blocked := m.Blocked(gm)
 
 	if !blocked {

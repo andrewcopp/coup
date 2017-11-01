@@ -114,18 +114,8 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 
 	if !second {
 		actions = DiscardsMoveAndChallenges(players, subject, objects)
-		if len(actions) == 0 {
-			if subject != 0 {
-				fmt.Println("No challenges")
-			} else {
-				fmt.Println("No moves")
-			}
-		}
 	} else {
 		actions = BlockAndChallenges(gm, mv, self)
-		if len(actions) == 0 {
-			fmt.Println("No blocks")
-		}
 	}
 
 	// for _, action := range actions {

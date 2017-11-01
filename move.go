@@ -135,17 +135,6 @@ func (m *Move) Modify(gm *Game) {
 		}
 	}
 
-	alive := 0
-	for _, player := range gm.Players {
-		if player.Alive() {
-			alive++
-		}
-	}
-
-	if alive < 2 {
-		return
-	}
-
 	blocked := m.Blocked(gm)
 
 	if !blocked {
@@ -201,7 +190,12 @@ func (m *Move) Modify(gm *Game) {
 	}
 
 	for _, player := range gm.Players {
-		player.Observe(gm, nil, m.Block, false)
+		switch m.Case {
+		case Income, Coup, Tax, Exchange:
+			player.Observe(gm, m, nil, false)
+		case ForeignAid, Assassinate, Steal:
+			player.Observe(gm, nil, m.Block, false)
+		}
 	}
 
 }

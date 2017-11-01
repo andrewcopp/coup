@@ -135,7 +135,7 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	rand.Seed(time.Now().UnixNano())
 	if 1.0-a.Epsilon > rand.Float64() {
 		bestScore := -1.0
-		bestActions := []*Action{}
+		bestActions := []*Action{NewAction()}
 
 		states := make([]*State, len(actions))
 		for i := range actions {

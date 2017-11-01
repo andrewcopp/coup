@@ -78,6 +78,19 @@ func (a *Agent) Update(self *Player, gm *Game, mv *Move, blk *Block, second bool
 	// fmt.Printf("%+v\n", state)
 	// fmt.Printf("%+v\n", state.Bridge)
 
+	alive := 0
+	for _, player := range gm.Players {
+		if player.Alive() {
+			alive++
+		}
+	}
+
+	if alive < 2 {
+		a.Action = NewAction()
+		a.Actions = append(a.Actions, NewAction())
+		return
+	}
+
 	actions := []*Action{}
 
 	if self.Hand.Size() > 2 {

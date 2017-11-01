@@ -35,7 +35,7 @@ func main() {
 		losses := 0
 		for j := 0; j < 1000; j++ {
 			var chooser coup.Chooser
-			k := 1.0
+			k := 0.01
 			alpha := 0.95
 			t0 := 0
 			chooser = coup.NewAgent(i, 1.0-(1.0/(1.0+math.Exp(-k*alpha*float64(j-t0)))))

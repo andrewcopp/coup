@@ -15,7 +15,7 @@ func init() {
 
 func main() {
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 50; i++ {
 
 		if i != 0 {
 			infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i)
@@ -32,7 +32,7 @@ func main() {
 
 		wins := 0
 		losses := 0
-		for j := 0; j < 100; j++ {
+		for j := 0; j < 20; j++ {
 			var chooser coup.Chooser
 			chooser = coup.NewAgent(i, 1.0/float64(i))
 			one := coup.NewPlayer("Player One", chooser, false)
@@ -60,7 +60,7 @@ func main() {
 				losses++
 			}
 
-			fmt.Printf("Agent %d completed game %d.\n", i, j)
+			// fmt.Printf("Agent %d completed game %d.\n", i, j)
 		}
 		fmt.Println(float64(wins)/float64((wins+losses))*100.0, "%")
 	}

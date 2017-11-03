@@ -16,17 +16,17 @@ func init() {
 
 func main() {
 
-	for i := 0; i < 500; i++ {
+	for i := 0; i < 1000; i++ {
 
 		if i != 0 {
 			infile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i)
 			outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i+1)
-			if err := exec.Command("python3", "/home/ubuntu/reinforcement/transfer.py", infile, outfile).Run(); err != nil {
+			if err := exec.Command("python3", "./cmd/trainer/model/transfer.py", infile, outfile).Run(); err != nil {
 				fmt.Println(err)
 			}
 		} else {
 			outfile := fmt.Sprintf("./cmd/trainer/models/model_%d.cptk", i+1)
-			if err := exec.Command("python3", "/home/ubuntu/reinforcement/initialize.py", outfile).Run(); err != nil {
+			if err := exec.Command("python3", "./cmd/trainer/model/initialize.py", outfile).Run(); err != nil {
 				fmt.Println(err)
 			}
 		}

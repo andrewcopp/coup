@@ -1,5 +1,8 @@
 package coup
 
+// This file represents the complicated state space of the state.
+// All helper functions are here as well.
+
 type State struct {
 	OneCoins             float64
 	OneDukes             float64

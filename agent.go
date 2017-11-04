@@ -1,5 +1,8 @@
 package coup
 
+// This file is responsible for breaking down all of the logic in the game into what
+// is parseable by TensorFlow.
+
 import (
 	"fmt"
 	"math"

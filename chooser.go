@@ -1,5 +1,8 @@
 package coup
 
+// The interface required to make decisions in the game.
+// Implemented by Random, Human, and Agent.
+
 type Chooser interface {
 	Record(win bool)
 	Update(self *Player, gm *Game, mv *Move, blk *Block, second bool)

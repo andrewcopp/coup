@@ -1,5 +1,7 @@
 package coup
 
+// A random chooser for training early iterations
+
 import (
 	"math/rand"
 	"time"

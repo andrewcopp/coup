@@ -1,5 +1,7 @@
 package coup
 
+// Game is the driver of the whole setup. It figures out who goes next.
+
 import (
 	"fmt"
 	"math/rand"

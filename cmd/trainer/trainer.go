@@ -1,5 +1,7 @@
 package main
 
+// This file runs the simulations for training.
+
 import (
 	"fmt"
 	"math"

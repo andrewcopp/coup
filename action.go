@@ -1,5 +1,8 @@
 package coup
 
+// This file represents the complicated state space of the action.
+// All helper functions are here as well.
+
 type Action struct {
 	Discard        *Discard
 	Move           *ActionMove

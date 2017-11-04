@@ -1,5 +1,7 @@
 package coup
 
+// All moves are in this file. They handle all outcomes. Valid moves are also decided here.
+
 import "fmt"
 
 type MoveEnum int

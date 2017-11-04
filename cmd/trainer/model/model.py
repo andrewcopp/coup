@@ -3,6 +3,7 @@ import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+# The model is responsible for all of the TensorFlow logic.
 class Model:
 
     def __init__(self):

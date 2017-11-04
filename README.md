@@ -12,6 +12,8 @@ To run this project:
 
 This will run the script that simulates games and trains and fits against the TensorFlow model.
 
+The script is super slow unless you modify TensorFlow to run on a GPU and put it on an AWS EC2 instance. This is mostly to prove it works. 
+
 All Python code can be found in `cmd/trainer/model`
 
 This project was originally written in Go to help with concurrency. Concurrency was not
